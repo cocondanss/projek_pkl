@@ -1,0 +1,11 @@
+{
+    "require": {
+        "midtrans/midtrans-php": "^2.5",
+        "xendit/xendit-php": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "": "src/"
+        }
+    }
+}
