@@ -9,7 +9,7 @@ require 'cek.php';
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>User</title>
+        <title>Voucher</title>
         <link href="css/style.css" rel="stylesheet" />
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
@@ -51,12 +51,12 @@ require 'cek.php';
             <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid">
-                        <h1 class="mt-4">User</h1>
+                        <h1 class="mt-4">Voucher</h1>
                         </ol>
                         <div class="card mb-4">
                             <div class="card-header">
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
-                                    Tambah User
+                                    Tambah Voucher
                              </button>
                             </div>
                             <div class="card-body">
@@ -65,100 +65,95 @@ require 'cek.php';
                                         <thead>
                                             <tr>
                                                 <th>No</th>
-                                                <th>Nama User</th>
-                                                <th>Status</th>
-                                                <th>Umur</th>
+                                                <th>Code Voucher</th>
+                                                <th>Diskon</th>
+                                                <th>Keterangan</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-
-                                            <?php
-                                            $ambilsemuadatauser = mysqli_query($conn, "select * from user");
+                                        <?php
+                                            $ambilsemuadatavoucher = mysqli_query($conn, "select * from voucher");
                                             $i = 1;
-                                            while($data=mysqli_fetch_array($ambilsemuadatauser)){
-                                                $namauser = $data['namauser'];
-                                                $status = $data['status'];
-                                                $umur = $data['umur'];
-                                                $idu = $data['iduser'];
-
+                                            while($data=mysqli_fetch_array($ambilsemuadatavoucher)){
+                                                $codevoucher = $data['codevoucher'];
+                                                $diskon = $data['diskon'];
+                                                $keterangan = $data['keterangan'];
+                                                $idv = $data['idvoucher'];
 
                                             ?>
-
                                             <tr>
                                                 <td><?=$i++;?></td>
-                                                <td><?=$namauser;?></td>
-                                                <td><?=$status;?></td>
-                                                <td><?=$umur;?></td>
+                                                <td><?=$codevoucher;?></td>
+                                                <td><?=$diskon;?></td>
+                                                <td><?=$keterangan;?></td>
                                                 <td>
-                                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit<?=$idu;?>">
+                                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit<?=$idv;?>">
                                                         Edit
                                                 </button>
-                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete<?=$idu;?>">
+                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete<?=$idv;?>">
                                                         Delete
                                                 </button>
                                                 </td>
                                             </tr>
 
-
                                             <!-- Edit Modal -->
-                                            <div class="modal fade" id="edit<?=$idu;?>">
+                                            <div class="modal fade" id="edit<?=$idv;?>">
                                                 <div class="modal-dialog">
                                                 <div class="modal-content">
                                                 
                                                     <!-- Modal Header -->
                                                     <div class="modal-header">
-                                                    <h4 class="modal-title">Edit User</h4>
+                                                    <h4 class="modal-title">Edit Voucher</h4>
                                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                     </div>
                                                     
                                                     <!-- Modal body -->
                                                     <form method="post">
                                                     <div class="modal-body">
-                                                    <input type="text" name="namauser" value="<?=$namauser;?>" class="form-control" required><br>
-                                                    <input type="text" name="status" value="<?=$status;?>" class="form-control" required><br>
-                                                    <input type="number" name="umur" value="<?=$umur;?>" class="form-control" required><br>
-                                                    <input type="hidden" name="idu" value="<?=$idu?>">
-                                                    <button type="submit" class="btn btn-primary" name="updateuser">Submit</button><br>
+                                                    <input type="text" name="codevoucher" value="<?=$codevoucher;?>" class="form-control" required><br>
+                                                    <input type="number" name="diskon" value="<?=$diskon;?>" class="form-control" required><br>
+                                                    <input type="text" name="keterangan" value="<?=$keterangan;?>" class="form-control" required><br>
+                                                    <input type="hidden" name="idv" value="<?=$idv?>">
+                                                    <button type="submit" class="btn btn-primary" name="updatevoucher">Submit</button><br>
                                                     </div>
                                                     </form>
 
                                                     </div>
                                                     </div>
                                                 </div>
+                                            </div>
 
                                                 <!-- Delete Modal -->
-                                            <div class="modal fade" id="delete<?=$idu;?>">
+                                            <div class="modal fade" id="delete<?=$idv;?>">
                                                 <div class="modal-dialog">
                                                 <div class="modal-content">
                                                 
                                                     <!-- Modal Header -->
                                                     <div class="modal-header">
-                                                    <h4 class="modal-title">Hapus User?</h4>
+                                                    <h4 class="modal-title">Hapus Voucher?</h4>
                                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                     </div>
                                                     
                                                     <!-- Modal body -->
                                                     <form method="post">
                                                     <div class="modal-body">
-                                                    Apakah Anda Yakin Ingin Menghapus <?=$namauser;?>?
-                                                    <input type="hidden" name="idu" value="<?=$idu?>">
+                                                    Apakah Anda Yakin Ingin Menghapus <?=$codevoucher;?>?
+                                                    <input type="hidden" name="idv" value="<?=$idv?>">
                                                     <br>
                                                     <br>
-                                                    <button type="submit" class="btn btn-danger" name="hapususer">Hapus</button><br>
+                                                    <button type="submit" class="btn btn-danger" name="hapusvoucher">Hapus</button><br>
                                                     </div>
                                                     </form>
 
                                                     </div>
                                                     </div>
                                                 </div>
-
 
                                             <?php
                                             };
 
                                             ?>
-                                            
                                         </tbody>
                                     </table>
                                 </div>
@@ -186,10 +181,10 @@ require 'cek.php';
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/chart-area-demo.js"></script>
         <script src="assets/demo/chart-bar-demo.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/datatables-demo.js"></script>
     </body>
-
     <!-- The Modal -->
   <div class="modal fade" id="myModal">
     <div class="modal-dialog">
@@ -197,21 +192,17 @@ require 'cek.php';
       
         <!-- Modal Header -->
         <div class="modal-header">
-          <h4 class="modal-title">Tambah User</h4>
+          <h4 class="modal-title">Tambah Voucher</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         
         <!-- Modal body -->
          <form method="post">
          <div class="modal-body">
-        <input type="text" name="namauser" placeholder="Nama User" class="form-control" required><br>
-        <input type="text" name="status" placeholder="Status User" class="form-control" required><br>
-        <input type="number" name="umur" placeholder="Umur User" class="form-control" required><br>
-        <button type="submit" class="btn btn-primary" name="TambahUser">Submit</button><br>
+        <input type="text" name="codevoucher" placeholder="Code Voucher" class="form-control" required><br>
+        <input type="text" name="diskon" placeholder="Diskon" class="form-control" required><br>
+        <input type="text" name="keterangan" placeholder="Keterangan" class="form-control" required><br>
+        <button type="submit" class="btn btn-primary" name="TambahVoucher">Submit</button><br>
         </div>
         </form>
-
-    </div>
-    </div>
-</div>
 </html>
