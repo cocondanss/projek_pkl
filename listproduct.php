@@ -9,22 +9,12 @@
 </head>
 
 <body>
-    <style>
-        .btn-success{
-            margin-left: 20px;
-            margin-top: 15px;
-        }
-    </style>
-    <a href="produk.php">
-        <button type="button" class="btn btn-success">
-             Kembali
-        </button>
-    </a>
+    <a href="produk.php" class="button"><button>Kembali</button></a>
     <div class="container-index">
         <div class="header-index">
             <h1>Product List</h1>
         </div>
-        <div class="content">
+        <div class="content">   
             <div class="product-list" id="product-list">
                 <!-- Product items will be populated here -->
             </div>
@@ -58,50 +48,50 @@
         });
 
         function handleSubmit(event, discount, id, name, price) {
-            event.preventDefault();
-            const qrcodeDiv = document.getElementById('qrcode');
-            qrcodeDiv.innerHTML = `
-                <div class="container-confirmation">
-                    <div class="header-confirmation"></div>
-                    <div class="voucher-form">
-                        <button id="next-payment">Next Payment</button>
-                        <div class="order-details-confirmation">
-                            <h2 id="updated-price-${id}">IDR ${price}</h2>
-                        </div>
-                        <form id="voucher-form" class="form-inline" style="display:${discount ? 'contents' : 'none'};">
-                            <input type="hidden" name="product_id" value="${id}">
-                            <input type="hidden" name="product_name" value="${name}">
-                            <input type="hidden" name="product_price" value="${price}">
-                            <input type="text" name="voucher_code" placeholder="Enter Voucher Code">
-                            <button type="submit" class="apply-button">Apply Voucher</button>
-                        </form>
-                        <div id="voucher-message"></div>
-                        <div class="footer-confirmation">
-                            <div class="payment-logos">
-                                <img src="img/we-accept-the-payment.png" alt="method-payment">
-                            </div>
+        event.preventDefault();
+        const qrcodeDiv = document.getElementById('qrcode');
+        qrcodeDiv.innerHTML = `
+            <div class="container-confirmation">
+                <div class="header-confirmation"></div>
+                <div class="voucher-form">
+                    <button id="next-payment">Next Payment</button>
+                    <div class="order-details-confirmation">
+                        <h2 id="updated-price-${id}">IDR ${price}</h2>
+                    </div>
+                    <form id="voucher-form" class="form-inline" style="display:${discount ? 'contents' : 'none'};">
+                        <input type="hidden" name="product_id" value="${id}">
+                        <input type="hidden" name="product_name" value="${name}">
+                        <input type="hidden" name="product_price" value="${price}">
+                        <input type="text" name="voucher_code" placeholder="Enter Voucher Code">
+                        <button type="submit" class="apply-button">Apply Voucher</button>
+                    </form>
+                    <div id="voucher-message"></div>
+                    <div class="footer-confirmation">
+                        <div class="payment-logos">
+                            <img src="img/we-accept-the-payment.png" alt="method-payment">
                         </div>
                     </div>
                 </div>
-            `;
+            </div>
+        `;
 
-            document.getElementById('next-payment').addEventListener('click', function() {
-                const voucherCode = document.querySelector('input[name="voucher_code"]')?.value || '';
-                let updatedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', ''));
-                createTransaction(id, name, updatedPrice, discount, voucherCode);
+        // Pasang kembali event listener setelah konten diperbarui
+        document.getElementById('next-payment').addEventListener('click', function() {
+            const voucherCode = document.querySelector('input[name="voucher_code"]')?.value || '';
+            let updatedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', ''));
+            createTransaction(id, name, updatedPrice, discount, voucherCode);
+        });
+
+        if (discount) {
+            document.getElementById('voucher-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                applyVoucher(id, name, price);
             });
-
-            if (discount) {
-                document.getElementById('voucher-form').addEventListener('submit', function(event) {
-                    event.preventDefault();
-                    applyVoucher(id, name, price);
-                });
-            }
         }
+    }
 
         function applyVoucher(id, name, price) {
             const voucherCode = document.querySelector('input[name="voucher_code"]').value;
-
             fetch('api.php', {
                 method: 'POST',
                 headers: {

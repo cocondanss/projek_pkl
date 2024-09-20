@@ -3,7 +3,7 @@
 
 // Database configuration
 $db_host = 'localhost';
-$db_name = 'frame';
+$db_name = 'framee';
 $db_user = 'root';
 $db_pass = '';
 
@@ -15,8 +15,8 @@ try {
 }
 
 // Midtrans configuration
-define('MIDTRANS_SERVER_KEY', 'SB-Mid-server-NE3uxo99mRjQRVTngJB0UOTd');
-define('MIDTRANS_CLIENT_KEY', 'SB-Mid-client-abcde');
+define('MIDTRANS_SERVER_KEY', 'SB-Mid-server-BiPEZ8YxMZheywHq49sAQthl');
+define('MIDTRANS_CLIENT_KEY', 'SB-Mid-client-uJgC77ydf09Kgatf');
 
 // Set true for production environment
 define('IS_PRODUCTION', false);
@@ -27,7 +27,6 @@ require_once 'vendor/autoload.php';
 \Midtrans\Config::$isProduction = IS_PRODUCTION;
 \Midtrans\Config::$isSanitized = true;
 \Midtrans\Config::$is3ds = true;
-?>
 
 
 

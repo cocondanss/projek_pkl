@@ -1,10 +1,26 @@
 <?php
 session_start();
 //koneksi ke database
-$conn =mysqli_connect("localhost","root","","dashboard");
+$conn =mysqli_connect("localhost","root","","framee");
 //if($conn){
 //    echo 'berhasil';
 //}
+
+// Midtrans configuration
+define('MIDTRANS_SERVER_KEY', 'SB-Mid-server-BiPEZ8YxMZheywHq49sAQthl');
+define('MIDTRANS_CLIENT_KEY', 'SB-Mid-client-uJgC77ydf09Kgatf');
+
+// Set true for production environment
+define('IS_PRODUCTION', false);
+
+require_once 'vendor/autoload.php';
+
+\Midtrans\Config::$serverKey = MIDTRANS_SERVER_KEY;
+\Midtrans\Config::$isProduction = IS_PRODUCTION;
+\Midtrans\Config::$isSanitized = true;
+\Midtrans\Config::$is3ds = true;
+
+
 
 //menambah user baru
     if (isset($_POST['TambahUser'])) {
@@ -25,11 +41,16 @@ $conn =mysqli_connect("localhost","root","","dashboard");
 
 //menambah voucher
     if (isset($_POST['TambahVoucher'])) {
-        $codevoucher = $_POST['codevoucher'];
-        $diskon = $_POST['diskon'];
-        $keterangan = $_POST['keterangan'];
-
-    $addtotable = mysqli_query($conn,"insert into voucher (codevoucher, diskon, keterangan) values('$codevoucher','$diskon','$keterangan')");
+        $code_prefix = $_POST['code_prefix'];
+        $discount_amount = $_POST['discount_amount'];
+        $is_used = $_POST['is_used'];
+        $voucher_count = $_POST['voucher_count'];
+    
+    for ($i=0; $i < $voucher_count; $i++) { 
+        $random_number = mt_rand(1000000000, 9999999999);
+        $unique_code = $code_prefix . '' . $random_number;
+        $addtotable = mysqli_query($conn,"insert into vouchers (code, discount_amount, is_used) values('$unique_code','$discount_amount','$is_used')");
+    }
 
     if($addtotable){
         header("location:voucher.php");
@@ -39,14 +60,15 @@ $conn =mysqli_connect("localhost","root","","dashboard");
     }
     }
 
+
 //menambah transaksi
 if (isset($_POST['TambahTransaksi'])) {
-    $namabarang = $_POST['namabarang'];
-    $harga= $_POST['harga'];
+    $product_name = $_POST['product_name'];
+    $price= $_POST['price'];
     $tanggal = $_POST['tanggal'];
-    $penerima = $_POST['penerima'];
+    $status = $_POST['status'];
 
-$addtotable = mysqli_query($conn,"insert into transaksi (namabarang, harga, tanggal, penerima) values('$namabarang','$harga','$tanggal','$penerima')");
+$addtotable = mysqli_query($conn,"insert into transaksi (product_name, price, tanggal, status) values('$product_name','$price','$tanggal','$status')");
 
 if($addtotable){
     header("location:transaksi.php");
@@ -58,17 +80,19 @@ if($addtotable){
 
 //menambah produk
 if (isset($_POST['TambahProduk'])) {
-    $namabarang = $_POST['namabarang'];
-    $deskripsi = $_POST['deskripsi'];
-    $harga = $_POST['harga'];
+    $name = $_POST['name'];
+    $discount = $_POST['discount'];
+    $price = $_POST['price'];
 
-$addtotable = mysqli_query($conn,"insert into produk (namabarang, deskripsi, harga) values('$namabarang','$deskripsi','$harga')");
+$addtotable = mysqli_query($conn,"insert into products (name, price, discount) values('$name','$price','$discount')");
 
 if($addtotable){
     header("location:produk.php");
+    exit();
 } else{
     echo 'Gagal';
     header('location:produk.php');
+    exit();
 }
 }
 
@@ -89,11 +113,6 @@ if(isset($_POST['updateuser'])){
     }
 }
 
-
-
-
-
-
 //hapus user
 if (isset($_POST['hapususer'])) {
     $idu = $_POST['idu'];
@@ -110,12 +129,12 @@ if (isset($_POST['hapususer'])) {
 
 //edit produk
 if(isset($_POST['updatebarang'])){
-    $idb = $_POST['idb'];
-    $namabarang = $_POST['namabarang'];
-    $deskripsi = $_POST['deskripsi'];
-    $harga = $_POST['harga'];
+    $id = $_POST['id'];
+    $name = $_POST['name'];
+    $discount = $_POST['discount'];
+    $price = $_POST['price'];
 
-    $updatep = mysqli_query($conn,"update produk set namabarang='$namabarang', deskripsi='$deskripsi', harga='$harga' where idbarang ='$idb'");
+    $updatep = mysqli_query($conn,"update products set name='$name', discount='$discount', price='$price' where id ='$id'");
     if($updatep){
         header("location:produk.php");
     } else{
@@ -127,9 +146,9 @@ if(isset($_POST['updatebarang'])){
 
 //hapus produk
 if (isset($_POST['hapusbarang'])) {
-    $idb = $_POST['idb'];
+    $id = $_POST['id'];
 
-    $hapusp = mysqli_query($conn,"delete from produk where idbarang='$idb'");
+    $hapusp = mysqli_query($conn,"delete from products where id='$id'");
     if($hapusp){
         header("location:produk.php");
     } else{
@@ -139,30 +158,11 @@ if (isset($_POST['hapusbarang'])) {
 
 }
 
-
-//edit transaksi
-if(isset($_POST['updatetransaksi'])){
-    $idt = $_POST['idt'];
-    $namabarang = $_POST['namabarang'];
-    $harga = $_POST['harga'];
-    $tanggal = $_POST['tanggal'];
-    $penerima = $_POST['penerima'];
-
-    $updatet = mysqli_query($conn,"update transaksi set namabarang='$namabarang', harga='$harga', tanggal='$tanggal', penerima='$penerima' where idtransaksi ='$idt'");
-    if($updatet){
-        header("location:transaksi.php");
-    } else{
-        echo 'Gagal';
-        header('location:transaksi.php');
-    }
-}
-
-
 //hapus transaksi
 if (isset($_POST['hapustransaksi'])) {
     $idt = $_POST['idt'];
 
-    $hapust = mysqli_query($conn,"delete from transaksi where idtransaksi='$idt'");
+    $hapust = mysqli_query($conn,"delete from transaksi where product_id='$idt'");
     if($hapust){
         header("location:transaksi.php");
     } else{
@@ -175,12 +175,12 @@ if (isset($_POST['hapustransaksi'])) {
 
 //edit voucher
 if(isset($_POST['updatevoucher'])){
-    $idv = $_POST['idv'];
-    $codevoucher = $_POST['codevoucher'];
-    $diskon = $_POST['diskon'];
-    $keterangan = $_POST['keterangan'];
+    $id = $_POST['id'];
+    $code_prefix = $_POST['code_prefix'];
+    $discount_amount = $_POST['discount_amount'];
+    $is_used = $_POST['is_used'];
 
-    $updatev = mysqli_query($conn,"update voucher set codevoucher='$codevoucher', diskon='$diskon', keterangan='$keterangan' where idvoucher ='$idv'");
+    $updatev = mysqli_query($conn,"update vouchers set code_prefix='$code_prefix', discount_amount='$discount_amount', is_used='$is_used' where id ='$id'");
     if($updatev){
         header("location:voucher.php");
     } else{
@@ -189,17 +189,48 @@ if(isset($_POST['updatevoucher'])){
     }
 }
 
-
-//hapus voucher
-if (isset($_POST['hapusvoucher'])) {
-    $idv = $_POST['idv'];
-
-    $hapusv = mysqli_query($conn,"delete from voucher where idvoucher='$idv'");
-    if($hapusv){
+//hapus voucher yang sudah digunakan
+if (isset($_POST['hapus_voucher_digunakan'])) {
+    $hapus_voucher = mysqli_query($conn, "DELETE FROM vouchers WHERE is_used = 1");
+    if ($hapus_voucher) {
         header("location:voucher.php");
-    } else{
-        echo 'Gagal';
+    } else {
+        echo 'Gagal menghapus voucher';
         header('location:voucher.php');
     }
+}
 
+//hapus voucher
+// if (isset($_POST['hapusvoucher'])) {
+//     $id = mysqli_query($conn, "DELETE FROM vouchers WHERE id='$id'");
+
+//     $hapusv = mysqli_query($conn,"delete from vouchers where id='$id'");
+//     if($hapusv){
+//         header("location:voucher.php");
+//     } else{
+//         echo 'Gagal';
+//         header('location:voucher.php');
+//     }
+
+// }
+
+// delete all
+
+// Hapus voucher terpilih
+if (isset($_POST['hapusvoucher'])) {
+    if(isset($_POST['delete'])) {
+        foreach($_POST['delete'] as $id) {
+            $id = mysqli_real_escape_string($conn, $id);
+            $hapusv = mysqli_query($conn, "DELETE FROM vouchers WHERE id='$id'");
+        }
+        if($hapusv){
+            header("location:voucher.php");
+        } else {
+            echo 'Gagal menghapus voucher';
+            header('location:voucher.php');
+        }
+    } else {
+        echo 'Tidak ada voucher yang dipilih';
+        header('location:voucher.php');
+    }
 }

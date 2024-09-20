@@ -54,11 +54,11 @@ require 'cek.php';
                         <h1 class="mt-4">Transaksi</h1>
                         </ol>
                         <div class="card mb-4">
-                            <div class="card-header">
+                            <!-- <div class="card-header">
                             <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
                                     Tambah Transaksi
                              </button>
-                            </div>
+                            </div> -->
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -68,7 +68,7 @@ require 'cek.php';
                                                 <th>Nama Barang</th>
                                                 <th>Harga</th>
                                                 <th>Tanggal Terima</th>
-                                                <th>Penerima</th>
+                                                <th>Status</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -77,58 +77,26 @@ require 'cek.php';
                                             $ambilsemuadatatransaksi = mysqli_query($conn, "select * from transaksi");
                                             $i = 1;
                                             while($data=mysqli_fetch_array($ambilsemuadatatransaksi)){
-                                                $namabarang = $data['namabarang'];
-                                                $harga = $data['harga'];
+                                                $product_name = $data['product_name'];
+                                                $price = $data['price'];
                                                 $tanggal = $data['tanggal'];
-                                                $penerima = $data['penerima'];
-                                                $idt = $data['idtransaksi'];
+                                                $status = $data['status'];
+                                                $idt = $data['product_id'];
 
 
                                             ?>
                                             <tr>
                                                 <td><?=$i++;?></td>
-                                                <td><?=$namabarang;?></td>
-                                                <td><?=$harga;?></td>
+                                                <td><?=$product_name;?></td>
+                                                <td><?=$price;?></td>
                                                 <td><?=$tanggal;?></td>
-                                                <td><?=$penerima;?></td>
+                                                <td><?=$status;?></td>
                                                 <td>
-                                                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit<?=$idt;?>">
-                                                        Edit
-                                                </button>
                                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete<?=$idt;?>">
                                                         Delete
                                                 </button>
                                                 </td>
                                             </tr>
-
-                                            <!-- Edit Modal -->
-                                            <div class="modal fade" id="edit<?=$idt;?>">
-                                                <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                
-                                                    <!-- Modal Header -->
-                                                    <div class="modal-header">
-                                                    <h4 class="modal-title">Edit Transaksi</h4>
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    </div>
-                                                    
-                                                    <!-- Modal body -->
-                                                    <form method="post">
-                                                    <div class="modal-body">
-                                                    <input type="text" name="namabarang" value="<?=$namabarang;?>" class="form-control" required><br>
-                                                    <input type="number" name="harga" value="<?=$harga;?>" class="form-control" required><br>
-                                                    <input type="date" name="tanggal" value="<?=$tanggal;?>" class="form-control" required><br>
-                                                    <input type="text" name="penerima" value="<?=$penerima;?>" class="form-control" required><br>
-                                                    <input type="hidden" name="idt" value="<?=$idt;?>">
-                                                    <button type="submit" class="btn btn-primary" name="updatetransaksi">Submit</button><br>
-                                                    </div>
-                                                    </form>
-
-                                                    </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
                                                 <!-- Delete Modal -->
                                             <div class="modal fade" id="delete<?=$idt;?>">
                                                 <div class="modal-dialog">
@@ -143,7 +111,7 @@ require 'cek.php';
                                                     <!-- Modal body -->
                                                     <form method="post">
                                                     <div class="modal-body">
-                                                    Apakah Anda Yakin Ingin Menghapus <?=$namabarang;?>?
+                                                    Apakah Anda Yakin Ingin Menghapus <?=$product_name;?>?
                                                     <input type="hidden" name="idt" value="<?=$idt?>">
                                                     <br>
                                                     <br>
@@ -204,10 +172,10 @@ require 'cek.php';
         <!-- Modal body -->
          <form method="post">
          <div class="modal-body">
-        <input type="text" name="namabarang" placeholder="Nama Barang" class="form-control" required><br>
-        <input type="number" name="harga" placeholder="Harga" class="form-control" required><br>
+        <input type="text" name="product_name" placeholder="Nama Barang" class="form-control" required><br>
+        <input type="number" name="price" placeholder="Harga" class="form-control" required><br>
         <input type="date" name="tanggal" placeholder="Tanggal Masuk" class="form-control" required><br>
-        <input type="text" name="penerima" placeholder="Nama Penerima" class="form-control" required><br>
+        <input type="text" name="status" placeholder="Nama Penerima" class="form-control" required><br>
         <button type="submit" class="btn btn-primary" name="TambahTransaksi">Submit</button><br>
         </div>
         </form>
