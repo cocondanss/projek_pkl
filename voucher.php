@@ -154,6 +154,7 @@
                             <input type="number" name="discount_amount" placeholder="Jumlah Diskon" class="form-control" required><br>
                             <input type="number" name="voucher_count" placeholder="Jumlah Voucher" class="form-control" min="1" required><br>
                             <button type="submit" class="btn btn-primary" name="TambahVoucher">Simpan</button>
+                            <button type="submit" class="btn btn-info" name="TambahVoucherEkspor">Simpan dan Ekspor</button>
                         </div>
                     </form>
                 </div>
@@ -164,7 +165,7 @@
     $(document).ready(function() {
         // Fungsi untuk mengekspor voucher
         $("#eksporVoucher").click(function() {
-            window.location.href = 'ekspor_voucher.php';
+            window.location.href = 'ekspor_voucher.php';    
         });
     });
 
