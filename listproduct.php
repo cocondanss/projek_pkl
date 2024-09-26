@@ -120,40 +120,35 @@
         }
 
         function createTransaction(id, name, price, discount, voucherCode) {
-    let discountedPrice = price;
-    if (voucherCode) {
-        discountedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', '')) || price;
-    }
+            let discountedPrice = price;
+            if (voucherCode) {
+                discountedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', '')) || price;
+            }
 
-    fetch('api.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            action: 'create_transaction',
-            product_id: id,
-            product_name: name,
-            product_price: price,
-            discount: price - discountedPrice,
-            total_price: discountedPrice
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.snap_url) {
-            const qrcodeDiv = document.getElementById('qrcode');
-            qrcodeDiv.innerHTML = `<iframe src="${data.snap_url}" width="75%"></iframe>`;
-
-            // Tambahkan kode berikut untuk mengarahkan pengguna ke halaman transberhasil.php setelah transaksi selesai
-            setTimeout(function() {
-                window.location.href = 'transberhasil.php';
-            }, 3000); // Tunggu 3 detik sebelum mengarahkan pengguna ke halaman transberhasil.php
-        } else {
-            alert('Error: Unable to retrieve payment URL.');
+            fetch('api.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    action: 'create_transaction',
+                    product_id: id,
+                    product_name: name,
+                    product_price: price,
+                    discount: price - discountedPrice,
+                    total_price: discountedPrice
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.snap_url) {
+                    const qrcodeDiv = document.getElementById('qrcode');
+                    qrcodeDiv.innerHTML = `<iframe src="${data.snap_url}" width="75%"></iframe>`;
+                } else {
+                    alert('Error: Unable to retrieve payment URL.');
+                }
+            });
         }
-    });
-}
     </script>
 </body>
 
