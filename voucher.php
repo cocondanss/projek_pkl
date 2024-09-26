@@ -76,7 +76,7 @@
                                                     <th>No</th>
                                                     <th>Code</th>
                                                     <th>Diskon</th>
-                                                    <th>Status</th>x
+                                                    <th>Status</th>
                                                     <th>Tanggal Dibuat</th>
                                                     <th>Tanggal Digunakan</th>
                                                     <th>Aksi</th>
