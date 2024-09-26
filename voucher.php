@@ -70,13 +70,13 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <table id="tabel_voucher" class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                             <thead>
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Code</th>
                                                     <th>Diskon</th>
-                                                    <th>Status</th>
+                                                    <th>Status</th>x
                                                     <th>Tanggal Dibuat</th>
                                                     <th>Tanggal Digunakan</th>
                                                     <th>Aksi</th>
@@ -154,7 +154,7 @@
                             <input type="number" name="discount_amount" placeholder="Jumlah Diskon" class="form-control" required><br>
                             <input type="number" name="voucher_count" placeholder="Jumlah Voucher" class="form-control" min="1" required><br>
                             <button type="submit" class="btn btn-primary" name="TambahVoucher">Simpan</button>
-                            <button type="submit" class="btn btn-info" name="TambahVoucherEkspor">Simpan dan Ekspor</button>
+                            <button type="submit" class="btn btn-info" name="simpanEksporVoucher">Simpan dan Ekspor</button>
                         </div>
                     </form>
                 </div>
@@ -182,6 +182,46 @@
                 checkboxes[i].checked = source.checked;
             }
         }
+
+        $(document).ready(function() {
+    $('#simpanEksporVoucher').click(function(e) {
+        e.preventDefault();
+        var formData = $('#voucherForm').serialize();
+        formData += '&simpanEksporVoucher=1';
+
+        $.ajax({
+            url: 'function.php',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.startsWith('Kode,Jumlah Diskon,Status')) {
+                    // It's a CSV file, trigger download
+                    var blob = new Blob([response], { type: 'text/csv' });
+                    var link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'daftar_voucher.csv';
+                    link.click();
+
+                    // Update tabel voucher secara langsung
+                    $.ajax({
+                        url: 'function.php',
+                        type: 'POST',
+                        data: { action: 'update_tabel_voucher' },
+                        success: function(response) {
+                            $('#tabel_voucher').html(response);
+                        }
+                    });
+                } else {
+                    // It's an error message
+                    alert(response);
+                }
+            },
+            error: function() {
+                alert('Terjadi kesalahan. Silakan coba lagi.');
+            }
+        });
+    });
+});
     </script>
     </body>
     </html>

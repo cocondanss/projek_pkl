@@ -1,7 +1,7 @@
 <?php
 session_start();
 //koneksi ke database
-$conn =mysqli_connect("localhost","root","","framee");
+$conn =mysqli_connect("localhost","u529472640_root","AKuSukaMangga0?","u529472640_framee");
 //if($conn){
 //    echo 'berhasil';
 //}
@@ -61,39 +61,67 @@ require_once 'vendor/autoload.php';
     }
 
     // Menambah voucher dan mengekspor voucher
-if (isset($_POST['TambahVoucherEkspor'])) {
+if (isset($_POST['simpanEksporVoucher'])) {
     $code_prefix = $_POST['code_prefix'];
     $discount_amount = $_POST['discount_amount'];
-    // $is_used = $_POST['is_used'];
     $voucher_count = $_POST['voucher_count'];
+
+    $vouchers = array();
 
     for ($i=0; $i < $voucher_count; $i++) { 
         $random_number = mt_rand(1000000000, 9999999999);
-        $unique_code = $code_prefix . '' . $random_number;
-        $addtotable = mysqli_query($conn,"insert into vouchers (code, discount_amount, is_used) values('$unique_code','$discount_amount','')");
+        $unique_code = $code_prefix . $random_number;
+        $addtotable = mysqli_query($conn, "INSERT INTO vouchers (code, discount_amount, is_used) VALUES ('$unique_code', '$discount_amount', 0)");
+        
+        if ($addtotable) {
+            $vouchers[] = array($unique_code, $discount_amount, 'Belum Digunakan');
+        }
     }
 
-    if($addtotable){
-        // Mengekspor voucher ke file .txt
-        $output = fopen('php://output', 'w');
+    if (count($vouchers) > 0) {
+        // Prepare txt data
+        $txt_data = "Kode,Jumlah Diskon,Status\n";
+        foreach ($vouchers as $voucher) {
+            $txt_data .= implode(',', $voucher) . "\n";
+        }
+
+        // Send headers for file download
         header('Content-Type: text');
         header('Content-Disposition: attachment; filename="daftar_voucher.txt"');
 
-        fputcsv($output, array('Kode', 'Jumlah Diskon', 'Status'));
-
-        $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
-        while ($row = mysqli_fetch_assoc($ambilsemuadatavoucher)) {
-            $status = ($row['is_used'] == 0) ? 'Belum Digunakan' : 'Sudah Digunakan';
-            fputcsv($output, array($row['code'], $row['discount_amount'], $status));
-        }
-
-        fclose($output);
-        // header('location:voucher.php');
+        // Output txt data
+        echo $txt_data;
         exit;
-    } else{
-        echo 'Gagal';
-        header('location:voucher.php');
+    } else {
+        echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan voucher']);
     }
+}   
+
+// function.php
+if (isset($_POST['action']) && $_POST['action'] == 'update_tabel_voucher') {
+    $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
+    $i = 1;
+    $html = '';
+    while($data = mysqli_fetch_array($ambilsemuadatavoucher)){
+        $code = $data['code'];
+        $discount_amount = $data['discount_amount'];
+        $is_used = $data['is_used'];
+        $id = $data['id'];
+        $created_at = $data['created_at'];
+        $used_at = $data['used_at'];
+
+        $status = ($is_used == 1) ? "Sudah digunakan" : "Belum digunakan";
+
+        $html .= '<tr>';
+        $html .= '<td>'.$i++.'</td>';
+        $html .= '<td>'.$code.'</td>';
+        $html .= '<td>'.$discount_amount.'</td>';
+        $html .= '<td>'.$status.'</td>';
+        $html .= '<td>'.$created_at.'</td>';
+        $html .= '<td>'.$used_at ? $used_at : '-'.'</td>';
+        $html .= '</tr>';
+    }
+    echo $html;
 }
 
 //menambah transaksi
