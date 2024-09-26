@@ -33,12 +33,12 @@
                         const productDiv = document.createElement('div');
                         productDiv.className = 'product';
                         productDiv.innerHTML = `
-                            <h2>${name}</h2>
-                            <p id="price-${id}">Price: Rp ${price}</p>
-                            <form id="form-${id}" onsubmit="handleSubmit(event, ${discount}, ${id}, '${name}', ${price})">
-                                <input type="hidden" name="product_id" value="${id}">
-                                <input type="hidden" name="product_name" value="${name}">
-                                <input type="hidden" name="product_price" value="${price}">
+                            <h2>${product.name}</h2>
+                            <p id="price-${product.id}">Price: Rp ${product.price}</p>
+                            <form id="form-${product.id}" onsubmit="handleSubmit(event, ${product.discount}, ${product.id}, '${product.name}', ${product.price})">
+                                <input type="hidden" name="product_id" value="${product.id}">
+                                <input type="hidden" name="product_name" value="${product.name}">
+                                <input type="hidden" name="product_price" value="${product.price}">
                                 <button type="submit">Buy</button>
                             </form>
                         `;
@@ -49,9 +49,8 @@
 
         function handleSubmit(event, discount, id, name, price) {
         event.preventDefault();
-        const productDiv = document.getElementById(`product-${id}`);
-        const form = document.getElementById(`form-${id}`);
-        const qrcodeDiv = document.getElementById('qrcode').innerHTML = `
+        const qrcodeDiv = document.getElementById('qrcode');
+        qrcodeDiv.innerHTML = `
             <div class="container-confirmation">
                 <div class="header-confirmation"></div>
                 <div class="voucher-form">
@@ -78,9 +77,9 @@
 
         // Pasang kembali event listener setelah konten diperbarui
         document.getElementById('next-payment').addEventListener('click', function() {
-        const voucherCode = document.querySelector('input[name="voucher_code"]')?.value || '';
-        let updatedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', ''));
-        createTransaction(id, name, updatedPrice, discount, voucherCode);
+            const voucherCode = document.querySelector('input[name="voucher_code"]')?.value || '';
+            let updatedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', ''));
+            createTransaction(id, name, updatedPrice, discount, voucherCode);
         });
 
         if (discount) {
