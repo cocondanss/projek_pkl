@@ -64,6 +64,21 @@
             <a href="index.html" class="back-button">Kembali ke Beranda</a>
         </div>
     </div>
+    <?php
+    session_start();
+
+    if (isset($_SESSION['order_id'])) {
+        $order_id = $_SESSION['order_id'];
+
+        // Tampilkan pesan transaksi sukses
+        echo "Transaksi dengan order ID $order_id telah berhasil!";
+    } else {
+        echo "Tidak ada order ID yang tersedia.";
+    }
+
+    // Hapus order ID dari session
+    unset($_SESSION['order_id']);
+    ?>
 </body>
 
 </html>
