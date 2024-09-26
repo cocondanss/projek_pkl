@@ -47,46 +47,49 @@
                 });
         });
 
-        // Tambahkan tombol "Buy" lagi setelah pembayaran selesai
         function handleSubmit(event, discount, id, name, price) {
-    event.preventDefault();
-    const productDiv = document.getElementById(`product-${id}`);
-    const form = document.getElementById(`form-${id}`);
-
-    // Tambahkan tombol "Buy" lagi setelah pembayaran selesai
-    productDiv.innerHTML = `
-        <h2>${name}</h2>
-        <p id="price-${id}">Price: Rp ${price}</p>
-        <form id="form-${id}" onsubmit="handleSubmit(event, ${discount}, ${id}, '${name}', ${price})">
-            <input type="hidden" name="product_id" value="${id}">
-            <input type="hidden" name="product_name" value="${name}">
-            <input type="hidden" name="product_price" value="${price}">
-            <button type="submit">Buy</button>
-        </form>
-    `;
-
-    // Pasang kembali event listener setelah konten diperbarui
-    form.addEventListener('submit', function(event) {
         event.preventDefault();
-        const voucherCode = document.querySelector('input[name="voucher_code"]')?.value || '';
-        let updatedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', ''));
-        createTransaction(id, name, updatedPrice, discount, voucherCode);
-    });
-}
+        const qrcodeDiv = document.getElementById('qrcode');
+        qrcodeDiv.innerHTML = `
+            <div class="container-confirmation">
+                <div class="header-confirmation"></div>
+                <div class="voucher-form">
+                    <button id="next-payment">Next Payment</button>
+                    <div class="order-details-confirmation">
+                        <h2 id="updated-price-${id}">IDR ${price}</h2>
+                    </div>
+                    <form id="voucher-form" class="form-inline" style="display:${discount ? 'contents' : 'none'};">
+                        <input type="hidden" name="product_id" value="${id}">
+                        <input type="hidden" name="product_name" value="${name}">
+                        <input type="hidden" name="product_price" value="${price}">
+                        <input type="text" name="voucher_code" placeholder="Enter Voucher Code">
+                        <button type="submit" class="apply-button">Apply Voucher</button>
+                    </form>
+                    <div id="voucher-message"></div>
+                    <div class="footer-confirmation">
+                        <div class="payment-logos">
+                            <img src="img/we-accept-the-payment.png" alt="method-payment">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
 
-// Tambahkan event listener untuk tombol "Buy"
-document.addEventListener('DOMContentLoaded', function() {
-    const buyButtons = document.querySelectorAll('.buy-button');
-    buyButtons.forEach(function(button) {
-        button.addEventListener('click', function(event) {
-            const id = button.dataset.id;
-            const name = button.dataset.name;
-            const price = button.dataset.price;
-            const discount = button.dataset.discount;
-            handleSubmit(event, discount, id, name, price);
+        // Pasang kembali event listener setelah konten diperbarui
+        document.getElementById('next-payment').addEventListener('click', function() {
+            const voucherCode = document.querySelector('input[name="voucher_code"]')?.value || '';
+            let updatedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', ''));
+            createTransaction(id, name, updatedPrice, discount, voucherCode);
         });
-    });
-});
+
+        if (discount) {
+            document.getElementById('voucher-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+                applyVoucher(id, name, price);
+            });
+        }
+    }
+
         function applyVoucher(id, name, price) {
             const voucherCode = document.querySelector('input[name="voucher_code"]').value;
             fetch('api.php', {
