@@ -101,6 +101,3 @@ require 'cek.php';
                     };
                     ?>
                   </tbody>
-                </table>
-              </div>
-            </div>
