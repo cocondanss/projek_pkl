@@ -75,6 +75,7 @@
                                                     <th>Nama Produk</th>
                                                     <th>Harga</th>
                                                     <th>Diskon</th>
+                                                    <th>Stok</th>
                                                     <th>Aksi</th>
                                                 </tr>
                                             </thead>
@@ -88,6 +89,7 @@
                                                     $name = $data['name'];
                                                     $price = $data['price'];
                                                     $discount = $data['discount'];
+                                                    $stok = $data['stok'];
                                                     
                                                     $diskon = ($discount == 1) ? "Ada" : "Tidak Ada";
                                                 ?>
@@ -96,6 +98,7 @@
                                                     <td><?=$name;?></td>
                                                     <td><?=$price;?></td>
                                                     <td><?=$diskon;?></td>
+                                                    <td><?=$stok;?></td>
                                                     <td>
                                                     <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#edit<?=$id;?>">
                                                             Edit
@@ -123,9 +126,10 @@
                                                         <input type="text" name="name" value="<?=$name;?>" class="form-control" required><br>
                                                         <input type="number" name="price" value="<?=$price;?>" class="form-control" required><br>
                                                         <select name="discount" class="form-control" required>
-                                                                <option value="1" <?=$discount == '1' ? 'selected' : '';?>>Ada</option>
-                                                                <option value="0" <?=$discount == '0' ? 'selected' : '';?>>Tidak Ada</option>
-                                                            </select><br>
+                                                            <option value="1" <?=$discount == '1' ? 'selected' : '';?>>Ada</option>
+                                                            <option value="0" <?=$discount == '0' ? 'selected' : '';?>>Tidak Ada</option>
+                                                        </select><br>
+                                                            <input type="number" name="stok" value="<?=$stok;?>" class="form-control" required><br>
                                                         <input type="hidden" name="id" value="<?=$id;?>">
                                                         <button type="submit" class="btn btn-primary" name="updatebarang">Submit</button><br>
                                                         </div>
@@ -217,6 +221,7 @@
                 <option value="0" <?=$discount == '1' ? 'selected' : '';?>>Ada</option>
                 <option value="0" <?=$discount == '0' ? 'selected' : '';?>>Tidak Ada</option>
             </select><br>
+            <input type="number" name="stok" placeholder="Stok Barang" class="form-control" required><br>
             <button type="submit" class="btn btn-primary" name="TambahProduk">Submit</button><br>
             </div>
             </form>

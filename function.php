@@ -102,7 +102,6 @@ if (isset($_POST['simpanEksporVoucher'])) {
     }
 }   
 
-// function.php
 if (isset($_POST['action']) && $_POST['action'] == 'update_tabel_voucher') {
     $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
     $i = 1;
@@ -151,8 +150,9 @@ if (isset($_POST['TambahProduk'])) {
     $name = $_POST['name'];
     $discount = $_POST['discount'];
     $price = $_POST['price'];
+    $stok = $_POST['name'];
 
-$addtotable = mysqli_query($conn,"insert into products (name, price, discount) values('$name','$price','$discount')");
+$addtotable = mysqli_query($conn,"insert into products (name, price, discount, stok) values('$name','$price','$discount','$stok')");
 
 if($addtotable){
     header("location:produk.php");
