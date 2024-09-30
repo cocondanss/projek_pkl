@@ -80,7 +80,7 @@ if (isset($_POST['simpanEksporVoucher'])) {
 
     if (count($vouchers) > 0) {
         // Prepare txt data
-        $txt_data = "Kode,Jumlah Diskon,Status\n";
+        $txt_data = "Kode,Jumlah Diskon,Status,Tanggal Dibuat,Tanggal Digunakan";
         foreach ($vouchers as $voucher) {
             $txt_data .= implode(',', $voucher) . "\n";
         }
