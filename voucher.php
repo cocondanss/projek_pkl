@@ -162,37 +162,36 @@
             </div>           
     </form>
     <script>
-    $(document).ready(function() {
-        event.preventDefault();
-        $("#eksporVoucher").click(function() {
-        var table = $('#dataTable').DataTable();
-        var data = table.data().toArray();
-        
-        var fileContent = 'Kode Voucher | Jumlah Diskon | Status | Tanggal Digunakan\n';
-        data.forEach(function(row) {
-            fileContent += row[1] + ' | ' + row[2] + ' | ' + row[3] + ' | ' + row[5] + '\n';
-        });
+    $("#eksporVoucher").click(function(event) {
+    event.preventDefault();
+    var table = $('#dataTable').DataTable();
+    var data = table.data().toArray();
 
-        var blob = new Blob([fileContent], {type: 'text/plain'});
-        var link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'daftar_voucher.txt';
-        link.click();
+    var fileContent = 'Kode Voucher | Jumlah Diskon | Status | Tanggal Digunakan\n';
+    data.forEach(function(row) {
+        fileContent += row[1] + ' | ' + row[2] + ' | ' + row[3] + ' | ' + row[5] + '\n';
+    });
 
-            $.ajax({
-                type: 'POST',
-                url: 'ekspor_voucher.php',
-                data: {},
-                success: function(data) {
-                    // kode yang sudah ada
-                },
-                error: function(xhr, status, error) {
-                    console.error("Terjadi kesalahan: " + error);
-                    alert("Gagal mengekspor data. Silakan coba lagi.");
-                }
-            });
-        });
+    var blob = new Blob([fileContent], {type: 'text/plain'});
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'daftar_voucher.txt';
+    link.click();
 
+    $.ajax({
+        type: 'POST',
+        url: 'ekspor_voucher.php',
+        data: {},
+        success: function(data) {
+            // kode yang sudah ada
+            console.log("Data berhasil diunduh");
+        },
+        error: function(xhr, status, error) {
+            console.error("Terjadi kesalahan: " + error);
+            alert("Gagal mengekspor data. Silakan coba lagi.");
+        }
+    });
+});
     document.getElementById('select-all').onclick = function() {
         var checkboxes = document.getElementsByName('delete[]');
         for (var checkbox of checkboxes) {
@@ -246,7 +245,6 @@
             });
         });
     });
-});
     </script>
     </body>
     </html>
