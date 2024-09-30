@@ -102,25 +102,9 @@ if (isset($_POST['action']) && $_POST['action'] == 'update_tabel_voucher') {
     $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
     $i = 1;
     $html = '';
-    while($data = mysqli_fetch_array($ambilsemuadatavoucher)){
-        $code = $data['code'];
-        $discount_amount = $data['discount_amount'];
-        $is_used = $data['is_used'];
-        $id = $data['id'];
-        $created_at = $data['created_at'];
-        $used_at = $data['used_at'];
-
-        $status = ($is_used == 1) ? "Sudah digunakan" : "Belum digunakan";
-
-        $html .= '<tr>';
-        $html .= '<td>'.$i++.'</td>';
-        $html .= '<td>'.$code.'</td>';
-        $html .= '<td>'.$discount_amount.'</td>';
-        $html .= '<td>'.$status.'</td>';
-        $html .= '<td>'.$created_at.'</td>';
-        $html .= '<td>'.$used_at ? $used_at : '-'.'</td>';
-        $html .= '</tr>';
-    }
+while ($row = mysqli_fetch_assoc($ambilsemuadatavoucher)) {
+        $status = ($row['is_used'] == 0) ? 'Belum Digunakan' : 'Sudah Digunakan';
+        fputcsv($output, array($row['code'], $row['discount_amount'], $status, $row['created_at'], $row['used_at'] ? $row['used_at'] : '-'));
     echo $html;
 }
 
@@ -296,4 +280,5 @@ if (isset($_POST['hapusvoucher'])) {
         echo 'Tidak ada voucher yang dipilih';
         header('location:voucher.php');
     }
+}
 }
