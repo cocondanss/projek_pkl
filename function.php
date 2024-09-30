@@ -150,7 +150,7 @@ if (isset($_POST['TambahProduk'])) {
     $name = $_POST['name'];
     $discount = $_POST['discount'];
     $price = $_POST['price'];
-    $stok = $_POST['name'];
+    $stok = $_POST['stok'];
 
 $addtotable = mysqli_query($conn,"insert into products (name, price, discount, stok) values('$name','$price','$discount','$stok')");
 
@@ -201,8 +201,9 @@ if(isset($_POST['updatebarang'])){
     $name = $_POST['name'];
     $discount = $_POST['discount'];
     $price = $_POST['price'];
+    $stok = $_POST['stok'];
 
-    $updatep = mysqli_query($conn,"update products set name='$name', discount='$discount', price='$price' where id ='$id'");
+    $updatep = mysqli_query($conn,"update products set name='$name', discount='$discount', price='$price', stok='$stok' where id ='$id'");
     if($updatep){
         header("location:produk.php");
     } else{
