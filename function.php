@@ -53,10 +53,11 @@ require_once 'vendor/autoload.php';
         $date->setTimezone(new DateTimeZone('Asia/Jakarta')); // Atur zona waktu ke Jakarta
         $created_at = $date->format('Y-m-d H:i:s'); // Cetak waktu dalam format Y-m-d H:i:s
 
-        $addtotable = mysqli_query($conn,"insert into vouchers (code, discount_amount, is_used) values('$unique_code','$discount_amount','$is_used')");
+        $addtotable = mysqli_query($conn,"insert into vouchers (code, discount_amount, created_at) values('$unique_code','$discount_amount','$created_at')");
     }
 
     if($addtotable){
+        $vouchers[] = array($unique_code, $discount_amount, 'Belum Digunakan', $created_at);
         header("location:voucher.php");
     } else{
         echo 'Gagal';
