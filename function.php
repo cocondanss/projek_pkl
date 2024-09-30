@@ -68,18 +68,23 @@ require_once 'vendor/autoload.php';
     // Menambah voucher dan mengekspor voucher
 if (isset($_POST['simpanEksporVoucher'])) {
     $code_prefix = $_POST['code_prefix'];
-    $discount_amount = $_POST['discount_amount'];
-    $voucher_count = $_POST['voucher_count'];
-
-    $vouchers = array();
-
+        $discount_amount = $_POST['discount_amount'];
+        $is_used = $_POST['is_used'];
+        $voucher_count = $_POST['voucher_count'];
+    
     for ($i=0; $i < $voucher_count; $i++) { 
         $random_number = mt_rand(1000000000, 9999999999);
-        $unique_code = $code_prefix . $random_number;
-        $addtotable = mysqli_query($conn, "INSERT INTO vouchers (code, discount_amount, is_used) VALUES ('$unique_code', '$discount_amount', 0)");
-        
-        if ($addtotable) {
-            $vouchers[] = array($unique_code, $discount_amount, 'Belum Digunakan');
+        $unique_code = $code_prefix . '' . $random_number;
+        $date = new DateTime();
+        $date->setTimezone(new DateTimeZone('Asia/Jakarta')); // Atur zona waktu ke Jakarta
+        $created_at = $date->format('Y-m-d H:i:s'); // Cetak waktu dalam format Y-m-d H:i:s
+
+        $addtotable = mysqli_query($conn,"insert into vouchers (code, discount_amount, created_at) values('$unique_code','$discount_amount','$created_at')");
+    }
+
+    if($addtotable){
+        $vouchers[] = array($unique_code, $discount_amount, 'Belum Digunakan', $created_at);
+        header("location:voucher.php");
         }
     }
 
@@ -100,7 +105,6 @@ if (isset($_POST['simpanEksporVoucher'])) {
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan voucher']);
     }
-}   
 
 // function.php
 if (isset($_POST['action']) && $_POST['action'] == 'update_tabel_voucher') {
