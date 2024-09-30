@@ -10,7 +10,7 @@ header('Content-Disposition: attachment; filename="daftar_voucher.txt"');
 $output = fopen('php://output', 'w');
 
 // Tulis header CSV
-fputcsv($output, array('Kode', 'Jumlah Diskon', 'Status'));
+fputcsv($output, array('Kode', 'Jumlah Diskon', 'Status', 'Tanggal Dibuat', 'Tanggal Digunakan'));
 
 // Ambil data voucher dari database
 $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
@@ -18,7 +18,7 @@ $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
 // Tulis data voucher ke file CSV
 while ($row = mysqli_fetch_assoc($ambilsemuadatavoucher)) {
     $status = ($row['is_used'] == 0) ? 'Belum Digunakan' : 'Sudah Digunakan';
-    fputcsv($output, array($row['code'], $row['discount_amount'], $status));
+    fputcsv($output, array($row['code'], $row['discount_amount'], $status, $row['created_at'], $row['used_at'] ? $row['used_at'] : '-'));
 }
 
 // Tutup file
