@@ -162,14 +162,15 @@
             </div>           
     </form>
     <script>
-    $("#eksporVoucher").click(function(event) {
+    $(document).ready(function() {
+        $("#eksporVoucher").click(function(event) {
     event.preventDefault();
     var table = $('#dataTable').DataTable();
     var data = table.rows().data();
 
-    var fileContent = 'Kode Voucher | Jumlah Diskon | Status | Tanggal Digunakan\n';
+    var fileContent = 'No | Kode Voucher | Jumlah Diskon | Status | Tanggal Dibuat | Tanggal Digunakan\n';
     data.each(function(value, index) {
-        fileContent += value[1] + ' | ' + value[2] + ' | ' + value[3] + ' | ' + value[5] + '\n';
+        fileContent += value[0] + ' | ' + value[1] + ' | ' + value[2] + ' | ' + value[3] + ' | ' + value[4] + ' | ' + value[5] + '\n';
     });
 
     var blob = new Blob([fileContent], {type: 'text/plain'});
@@ -192,6 +193,7 @@
         }
     });
 });
+
     document.getElementById('select-all').onclick = function() {
         var checkboxes = document.getElementsByName('delete[]');
         for (var checkbox of checkboxes) {
@@ -245,6 +247,7 @@
             });
         });
     });
+});
     </script>
     </body>
     </html>
