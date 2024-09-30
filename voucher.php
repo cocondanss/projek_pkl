@@ -201,19 +201,9 @@
         });
     });
 
-    document.getElementById('select-all').onclick = function() {
-        var checkboxes = document.getElementsByName('delete[]');
-        for (var checkbox of checkboxes) {
-            checkbox.checked = this.checked;
-        }
-    }
-        // Fungsi untuk memilih/deselect semua checkbox
-        function toggle(source) {
-            checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            for (var i = 0; i < checkboxes.length; i++) {
-                checkboxes[i].checked = source.checked;
-            }
-        }
+    $('#selectAll').click(function() {
+            $('input[type="checkbox"]').prop('checked', this.checked);
+        });
 
         $(document).ready(function() {
     $('#simpanEksporVoucher').click(function(e) {
