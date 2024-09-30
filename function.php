@@ -49,7 +49,10 @@ require_once 'vendor/autoload.php';
     for ($i=0; $i < $voucher_count; $i++) { 
         $random_number = mt_rand(1000000000, 9999999999);
         $unique_code = $code_prefix . '' . $random_number;
-        $addtotable = mysqli_query($conn,"insert into vouchers (code, discount_amount, is_used) values('$unique_code','$discount_amount','$is_used')");
+        $date = new DateTime();
+        $date->setTimezone(new DateTimeZone('Asia/Jakarta')); // Atur zona waktu ke Jakarta
+        $created_at = $date->format('Y-m-d H:i:s'); // Cetak waktu dalam format Y-m-d H:i:s
+        $addtotable = mysqli_query($conn,"insert into vouchers (code, discount_amount, is_used) values('$unique_code','$discount_amount','$is_used','$created_at')");
     }
 
     if($addtotable){
