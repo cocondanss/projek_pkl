@@ -164,35 +164,42 @@
     <script>
     $(document).ready(function() {
         $("#eksporVoucher").click(function(event) {
-    event.preventDefault();
-    var table = $('#dataTable').DataTable();
-    var data = table.rows().data();
+        event.preventDefault();
+        var table = $('#tabel_voucher').DataTable();
+        var data = table.rows().data();
 
-    var fileContent = 'No | Kode Voucher | Jumlah Diskon | Status | Tanggal Dibuat | Tanggal Digunakan\n';
-    data.each(function(value, index) {
-        fileContent += value[0] + ' | ' + value[1] + ' | ' + value[2] + ' | ' + value[3] + ' | ' + value[4] + ' | ' + value[5] + '\n';
+        var fileContent = 'No | Kode Voucher | Jumlah Diskon | Status | Tanggal Dibuat | Tanggal Digunakan\n';
+        data.each(function(value, index) {
+            var no = value[0];
+            var code = value[1];
+            var discount_amount = value[2];
+            var status = value[3];
+            var created_at = value[4];
+            var used_at = value[5];
+
+            fileContent += no + ' | ' + code + ' | ' + discount_amount + ' | ' + status + ' | ' + created_at + ' | ' + (used_at ? used_at : '-') + '\n';
+        });
+
+        var blob = new Blob([fileContent], {type: 'text/plain'});
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'daftar_voucher.txt';
+        link.click();
+
+        $.ajax({
+            type: 'POST',
+            url: 'ekspor_voucher.php',
+            data: {},
+            success: function(data) {
+                // kode yang sudah ada
+                console.log("Data berhasil diunduh");
+            },
+            error: function(xhr, status, error) {
+                console.error("Terjadi kesalahan: " + error);
+                alert("Gagal mengekspor data. Silakan coba lagi.");
+            }
+        });
     });
-
-    var blob = new Blob([fileContent], {type: 'text/plain'});
-    var link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'daftar_voucher.txt';
-    link.click();
-
-    $.ajax({
-        type: 'POST',
-        url: 'ekspor_voucher.php',
-        data: {},
-        success: function(data) {
-            // kode yang sudah ada
-            console.log("Data berhasil diunduh");
-        },
-        error: function(xhr, status, error) {
-            console.error("Terjadi kesalahan: " + error);
-            alert("Gagal mengekspor data. Silakan coba lagi.");
-        }
-    });
-});
 
     document.getElementById('select-all').onclick = function() {
         var checkboxes = document.getElementsByName('delete[]');
