@@ -163,6 +163,7 @@
     </form>
     <script>
     $(document).ready(function() {
+        event.preventDefault();
         $("#eksporVoucher").click(function() {
         var table = $('#dataTable').DataTable();
         var data = table.data().toArray();
@@ -170,7 +171,7 @@
         var fileContent = 'Kode Voucher | Jumlah Diskon | Status | Tanggal Digunakan\n';
         data.forEach(function(row) {
             fileContent += row[1] + ' | ' + row[2] + ' | ' + row[3] + ' | ' + row[5] + '\n';
-        })});
+        });
 
         var blob = new Blob([fileContent], {type: 'text/plain'});
         var link = document.createElement('a');
@@ -242,6 +243,7 @@
             error: function() {
                 alert('Terjadi kesalahan. Silakan coba lagi.');
             }
+            });
         });
     });
 });
