@@ -121,6 +121,23 @@ function create_transaction($data) {
     $discount = isset($data['discount']) ? intval($data['discount']) : 0;
     $total_price = $product_price - $discount;
 
+    // Periksa stok produk
+    $stmt = $db->prepare("SELECT stok FROM products WHERE id = ?");
+    $stmt->execute([$product_id]);
+    $stok = $stmt->fetchColumn();
+
+    if ($stok <= 0) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Stok produk habis'
+        ]);
+        return;
+    }
+
+    // Kurangi stok produk
+    $stmt = $db->prepare("UPDATE products SET stok = stok - 1 WHERE id = ?");
+    $stmt->execute([$product_id]);
+
     if ($total_price < 0) {
         $total_price = 0;
     }
