@@ -165,11 +165,11 @@
     $("#eksporVoucher").click(function(event) {
     event.preventDefault();
     var table = $('#dataTable').DataTable();
-    var data = table.data().toArray();
+    var data = table.rows().data();
 
     var fileContent = 'Kode Voucher | Jumlah Diskon | Status | Tanggal Digunakan\n';
-    data.forEach(function(row) {
-        fileContent += row[1] + ' | ' + row[2] + ' | ' + row[3] + ' | ' + row[5] + '\n';
+    data.each(function(value, index) {
+        fileContent += value[1] + ' | ' + value[2] + ' | ' + value[3] + ' | ' + value[5] + '\n';
     });
 
     var blob = new Blob([fileContent], {type: 'text/plain'});
