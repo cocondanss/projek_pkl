@@ -62,6 +62,7 @@ if (isset($_POST['TambahVoucher'])) {
 
     // Tambahkan kode ini setelah proses tambah voucher selesai
     if (isset($_POST['simpan_ekspor'])) {
+    date_default_timezone_set('Asia/Jakarta');
     // Kode untuk menyimpan data ke database Anda
     $code_prefix = $_POST['code_prefix'];
     $discount_amount = $_POST['discount_amount'];
