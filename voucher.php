@@ -1,4 +1,4 @@
-    <?php
+<?php
     require 'function.php';
     require 'cek.php';
     ?>
@@ -54,20 +54,19 @@
                             <form method="post" action="voucher.php">
                             <h1 class="mt-4">Voucher</h1>
                             <div class="card mb-4">
-                                <div class="card-header">
+                            <div class="card-header">
                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
-                                        Tambah Voucher
+                                    Tambah Voucher
                                 </button>
-                                <button type="button" class="btn btn-info" id="eksporVoucher">
-                                        Ekspor Voucher
+                                <button type="button" class="btn btn-dark" id="eksporVoucher">Ekspor Voucher Keseluruhan
                                 </button>
-                                <button type="submit" name="hapusvoucher" class="btn btn-danger">
-                                        Hapus Voucher Terpilih
+                                <button type="submit" name="hapusvoucher" class="btn btn-dark">
+                                    Hapus Voucher Terpilih
                                 </button>
-                                <button type="submit" class="btn btn-danger" name="hapus_voucher_digunakan">
-                                        Hapus Voucher yang Sudah Digunakan
+                                <button type="submit" class="btn btn-dark" name="hapus_voucher_digunakan">
+                                    Hapus Voucher yang Sudah Digunakan
                                 </button>
-                                </div>
+                            </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
                                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -90,11 +89,10 @@
                                                     while($data = mysqli_fetch_array($ambilsemuadatavoucher)){
                                                         $code = $data['code'];
                                                         $discount_amount = $data['discount_amount'];
-                                                        $is_used = $data['is_used'];
+                                                        $is_used = $data['is_used']; // <-- Penambahan definisi variabel $is_used
                                                         $id = $data['id'];
                                                         $created_at = $data['created_at'];
                                                         $used_at = $data['used_at'];
-
                                                         $status = ($is_used == 1) ? "Sudah digunakan" : "Belum digunakan";
                                                 ?>
                                                     <tr>
@@ -148,12 +146,13 @@
                         <h4 class="modal-title">Tambah Voucher</h4>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-                    <form method="post">
+                    <form method="post" action="voucher.php">
                         <div class="modal-body">
-                            <input type="text" name="code_prefix" placeholder="Kode Voucher" class="form-control" required><br>
-                            <input type="number" name="discount_amount" placeholder="Jumlah Diskon" class="form-control" required><br>
-                            <input type="number" name="voucher_count" placeholder="Jumlah Voucher" class="form-control" min="1" required><br>
-                            <button type="submit" class="btn btn-primary" name="TambahVoucher">Simpan</button>
+                        <form method="post">
+                        <input type="text" name="code_prefix" placeholder="Kode Voucher" class="form-control" required><br>
+                        <input type="number" name="discount_amount" placeholder="Jumlah Diskon" class="form-control" required><br>
+                        <input type="number" name="voucher_count" placeholder="Jumlah Voucher" class="form-control" min="1" required><br>
+                        <button type="submit" name="simpan_ekspor" class="btn btn-primary">Tambah & Ekspor</button>
                         </div>
                     </form>
                 </div>
@@ -162,25 +161,40 @@
     </form>
     <script>
     $(document).ready(function() {
-        // Fungsi untuk mengekspor voucher
-        $("#eksporVoucher").click(function() {
-            window.location.href = 'ekspor_voucher.php';
+       $ ("#eksporVoucher").click(function() {
+        var table = $('#dataTable').DataTable();
+        var data = table.data().toArray();
+        
+        var fileContent = 'Kode Voucher | Jumlah Diskon | Status | Tanggal Digunakan\n';
+        data.forEach(function(row) {
+            fileContent += row[1] + ' | ' + row[2] + ' | ' + row[3] + ' | ' + row[5] + '\n';
+        });
+
+        var blob = new Blob([fileContent], {type: 'text/plain'});
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'daftar_voucher.txt';
+        link.click();
+
+            $.ajax({
+                type: 'POST',
+                url: 'ekspor_voucher.php',
+                data: {},
+                success: function(data) {
+                    // kode yang sudah ada
+                },
+                error: function(xhr, status, error) {
+                    console.error("Terjadi kesalahan: " + error);
+                    alert("Gagal mengekspor data. Silakan coba lagi.");
+                }
+            });
+        });
+
+        // Aktifkan fungsi checkbox pilih semua voucher
+        $('#selectAll').click(function() {
+            $('input[type="checkbox"]').prop('checked', this.checked);
         });
     });
-
-    document.getElementById('select-all').onclick = function() {
-        var checkboxes = document.getElementsByName('delete[]');
-        for (var checkbox of checkboxes) {
-            checkbox.checked = this.checked;
-        }
-    }
-        // Fungsi untuk memilih/deselect semua checkbox
-        function toggle(source) {
-            checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            for (var i = 0; i < checkboxes.length; i++) {
-                checkboxes[i].checked = source.checked;
-            }
-        }
-    </script>
+        </script>
     </body>
-    </html>
+</html>

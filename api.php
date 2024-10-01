@@ -138,7 +138,7 @@ function create_transaction($data) {
             'price' => $product_price,
             'quantity' => 1,
             'name' => $product_name
-        )
+         )
     );
 
     $customer_details = array(
