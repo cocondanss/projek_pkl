@@ -58,12 +58,13 @@
                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
                                     Tambah Voucher
                                 </button>
-                                <button type="button" class="btn btn-dark" id="eksporVoucher">Ekspor Voucher Keseluruhan
+                                <button type="button" class="btn btn-info" id="eksporVoucher">
+                                    Ekspor Voucher
                                 </button>
-                                <button type="submit" name="hapusvoucher" class="btn btn-dark">
+                                <button type="submit" name="hapusvoucher" class="btn btn-danger">
                                     Hapus Voucher Terpilih
                                 </button>
-                                <button type="submit" class="btn btn-dark" name="hapus_voucher_digunakan">
+                                <button type="submit" class="btn btn-danger" name="hapus_voucher_digunakan">
                                     Hapus Voucher yang Sudah Digunakan
                                 </button>
                             </div>

@@ -61,7 +61,7 @@
                                         Tambah Produk
                                 </button>
                                 <a href="listproduct.php">
-                                <button type="button" class="btn btn-dark">
+                                <button type="button" class="btn btn-success">
                                         Lihat List Produk
                                 </button>
                                 </a>
