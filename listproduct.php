@@ -39,7 +39,7 @@
 
 .display {
     width: 100%;
-    height: 50px;
+    height: 100px;
     background-color: #6c757d;
     color: #ffffff;
     text-align: center;
@@ -88,8 +88,8 @@
             </div>
         </div>
     </div>
-    <div class="modal" id="modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.5);">
-        <div class="modal-content" style="background-color: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <div class="modal" id="modal">
+        <div class="modal-content">
             <div class="calculator">
                 <div class="display" id="display"></div>
                 <div class="d-flex flex-wrap justify-content-center">
