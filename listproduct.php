@@ -10,7 +10,7 @@
 </head>
 
 <body>
-        <a href="produk.php">
+        <a href="login.php">
             <i class="fas fa-lock" style="font-size: 24px; position: absolute; right: 20px; top: 20px; color: rgba(0, 0, 0, 0.9); cursor: pointer;"></i>
         </a>
     <div class="container-index">
