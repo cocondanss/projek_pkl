@@ -39,7 +39,7 @@
 
 .display {
     width: 100%;
-    height: 50px;
+    height: 100px;
     background-color: #6c757d;
     color: #ffffff;
     text-align: center;
