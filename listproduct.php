@@ -11,7 +11,7 @@
 
 <body>
         <a href="produk.php">
-            <button type="button" class="btn btn-dark" i class="fas fa-lock" style="font-size: 24px; position: absolute; right: 20px; top: 20px; color: rgba(0, 0, 0, 0.9); cursor: pointer;"></bui>
+            <button type="button" class="btn btn-dark" i class="fas fa-lock">
             </button>
         </a>
     <div class="container-index">
