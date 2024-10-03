@@ -62,7 +62,6 @@
                                         Lihat Halaman User
                                 </button>
                                 </a>
-                                </div>
                                 <div class="row">
                                     <div class="col-3">Produk A</div>
                                     <div class="col-1">:</div>
@@ -139,6 +138,7 @@
                                     <div class="col-3">Content</div>
                                     <div class="col-1">:</div>
                                     <div class="col-8">Pembayaran Produk A Berhasil</div>
+                                </div>
                                 </div>
                             </div>
                         </div>
