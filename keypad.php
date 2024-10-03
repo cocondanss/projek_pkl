@@ -72,8 +72,10 @@
         let display = document.getElementById('display');
 
         function appendNumber(number) {
-            pinCode += number;
-            display.textContent = pinCode.replace(/./g, '*');
+            if (pinCode.length < 4) {
+                pinCode += number;
+                display.textContent = pinCode.replace(/./g, '*');
+            }
         }
 
         function backspace() {
@@ -90,7 +92,7 @@
 
         // Add event listeners for keyboard input
         document.addEventListener('keydown', function(event) {
-            if (event.key >= '0' && event.key <= '9') {
+            if (event.key >= '0' && event.key <= '9' && pinCode.length < 4) {
                 appendNumber(event.key);
             } else if (event.key === 'Backspace') {
                 backspace();
