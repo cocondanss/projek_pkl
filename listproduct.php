@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <a href="login.php" class="button"><button>Kembali</button></a>
+<button type="button" class="btn btn-primary" onclick="location.href='produk.php'">Kembali</button>
     <div class="container-index">
         <div class="header-index">
             <h1>Product List</h1>
