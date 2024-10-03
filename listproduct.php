@@ -31,7 +31,7 @@
         }
         .calculator {
     width: 250px;
-    padding: 20px;
+    padding: 50px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
@@ -39,7 +39,7 @@
 
 .display {
     width: 100%;
-    height: 100px;
+    height: 50px;
     background-color: #6c757d;
     color: #ffffff;
     text-align: center;
