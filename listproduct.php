@@ -30,8 +30,8 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .calculator {
-    width: 100px;
-    padding: 20px;
+    width: 250px;
+    padding: 250px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: #ffffff;
