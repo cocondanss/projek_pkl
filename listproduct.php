@@ -11,7 +11,7 @@
 
 <body>
         <a href="login.php">
-            <i class="fas fa-lock" style="font-size: 24px; position: absolute; right: 20px; top: 20px; color: rgba(0, 0, 0, 0.9); cursor: pointer;"></i>
+            <i class="fas fa-lock" style="font-size: 24px; position: absolute; right: 20px; top: 20px; color: rgba(0, 0, 0, 0.2); cursor: pointer;"></i>
         </a>
     <div class="container-index">
         <div class="header-index">
