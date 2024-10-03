@@ -80,9 +80,9 @@
                                     <div class="col-8">Rp250.000,00</div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-3">Title berhasil</div>
+                                    <div class="col-3">Id</div>
                                     <div class="col-1">:</div>
-                                    <div class="col-8">Sukses A</div>
+                                    <div class="col-8">suksesa</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-3">Content</div>
@@ -106,9 +106,9 @@
                                     <div class="col-8">Rp250.000,00</div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-3">Title berhasil</div>
+                                    <div class="col-3">Id</div>
                                     <div class="col-1">:</div>
-                                    <div class="col-8">Sukses B</div>
+                                    <div class="col-8">suksesb</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-3">Content</div>
@@ -132,9 +132,9 @@
                                     <div class="col-8">Rp250.000,00</div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-3">Title berhasil</div>
+                                    <div class="col-3">Id</div>
                                     <div class="col-1">:</div>
-                                    <div class="col-8">Sukses C</div>
+                                    <div class="col-8">suksesc</div>
                                 </div>
                                 <div class="row">
                                     <div class="col-3">Content</div>
