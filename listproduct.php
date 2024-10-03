@@ -32,9 +32,7 @@
     </style>
 </head>
 <body>
-    <a href="login.php">
         <i class="fas fa-lock" style="font-size: 24px; position: absolute; right: 20px; top: 20px; color: rgba(0, 0, 0, 0.3); cursor: pointer;" id="lock-icon"></i>
-    </a>
     <div class="container-index">
         <div class="header-index">
             <h1>Product List</h1>
