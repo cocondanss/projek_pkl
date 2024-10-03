@@ -19,19 +19,19 @@
 }
 
 .btn-kembali {
-  background-color: transparent;
-  border: none;
-  padding: 10px 20px;
-  cursor: pointer;
+    background-color: transparent;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
 }
 
 .btn-kembali svg {
-  margin-right: 10px;
-  vertical-align: middle;
+    margin-right: 10px;
+    vertical-align: middle;
 }
 
 .btn-kembali:hover {
-  background-color: transparent;
+    background-color: transparent;
 }
 
 
