@@ -10,8 +10,8 @@
 </head>
 
 <body>
-    <i class="fas fa-lock"></i>
     <div class="container-index">
+        <i class="fas fa-lock"></i>
         <div class="header-index">
             <h1>Product List</h1>
         </div>
