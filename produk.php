@@ -53,7 +53,7 @@
                 <div id="layoutSidenav_content">
                     <main>
                         <div class="container-fluid">
-                            <h1 class="mt-4">Produk</h1>
+                            <h1 class="mt-4">List Produk</h1>
                             </ol>
                             <div class="card mb-4">
                                 <div class="card-header">
@@ -62,6 +62,83 @@
                                         Lihat Halaman User
                                 </button>
                                 </a>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Produk A</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8"><input type="checkbox"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Deskripsi</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Produk Hebat Mantap</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Harga</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Rp250.000,00</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Title berhasil</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Sukses A</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Content</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Pembayaran Produk A Berhasil</div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-3">Produk B</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8"><input type="checkbox"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Deskripsi</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Produk Hebat Mantap</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Harga</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Rp250.000,00</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Title berhasil</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Sukses B</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Content</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Pembayaran Produk A Berhasil</div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-3">Produk C</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8"><input type="checkbox"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Deskripsi</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Produk Hebat Mantap</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Harga</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Rp250.000,00</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Title berhasil</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Sukses C</div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-3">Content</div>
+                                    <div class="col-1">:</div>
+                                    <div class="col-8">Pembayaran Produk A Berhasil</div>
                                 </div>
                             </div>
                         </div>

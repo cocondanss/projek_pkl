@@ -4,6 +4,20 @@
     box-sizing: border-box;
 }
 
+.content h1 {
+  font-size: 36px;
+  font-weight: bold;
+}
+.product-card {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+.product-card hr {
+  margin: 20px 0;
+}
+
 .button {
   position: relative;
   top: 25px; 
