@@ -10,25 +10,6 @@
         .blur {
             filter: blur(5px);
         }
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-        }
-        .modal-content {
-            position: relative;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
         .calculator {
         width: 250px;
         padding: 20px;
@@ -90,7 +71,6 @@
         </div>
     </div>
     <div class="modal" id="modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-        <div class="modal-content" style="background-color: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             <div class="calculator">
                 <div class="display" id="display"></div>
                 <div class="d-flex flex-wrap justify-content-center">
@@ -108,7 +88,6 @@
                     <button class="btn btn-enter" onclick="enter()"> <i class="fas fa-arrow-right"></i></button>
                 </div>
             </div>
-        </div>
     </div>
     <script>
         let pinCode = '';
