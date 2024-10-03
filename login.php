@@ -22,7 +22,7 @@ if(isset($_POST['login'])){
 if(!isset($_SESSION['log'])){
 
 } else {
-    header('location:index.php');
+    header('location:produk.php');
 }
 
 ?>
