@@ -10,18 +10,39 @@
         .blur {
             filter: blur(5px);
         }
+        .modal {
+            position: fixed; 
+            width: 100%; 
+            height: 100%; 
+            display: none; 
+            justify-content: center; 
+            align-items: center;
+        }
+        .modal-close {
+            position: absolute; 
+            background-color: rgba(0, 0, 0, 0.5); 
+            width: 100%; 
+            height: 100%; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            z-index: 0;
+        }
+
         .calculator {
-        width: 250px;
-        padding: 20px;
-        left: 50%;
-        border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        background-color: #ffffff; 
+            position: absolute;
+            margin: 0 auto;
+            width: 250px;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+            z-index: 1;
         }
 
         .display {
             width: 100%;
-            height: 100px;
+            height: 50px;
             background-color: #6c757d;
             color: #ffffff;
             text-align: center;
@@ -55,12 +76,8 @@
         }
     </style>
 </head>
-<body>
         <i class="fas fa-lock" style="font-size: 24px; position: absolute; right: 20px; top: 20px; color: rgba(0, 0, 0, 0.3); cursor: pointer;" id="lock-icon"></i>
     <div class="container-index">
-        <div class="header-index">
-            <h1>Product List</h1>
-        </div>
         <div class="content" id="content">
             <div class="product-list" id="product-list">
                 <!-- Product items will be populated here -->
@@ -70,9 +87,11 @@
             </div>
         </div>
     </div>
-    <div class="modal" id="modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-            <div class="calculator">
-                <div class="display" id="display"></div>
+    
+    <div class="modal" id="modal">
+        <div class="modal-close" id="modalClose"></div>
+        <div class="calculator" id="calculator">
+            <div class="display" id="display"></div>
                 <div class="d-flex flex-wrap justify-content-center">
                     <button class="btn btn-number" onclick="appendNumber('1')">1</button>
                     <button class="btn btn-number" onclick="appendNumber('2')">2</button>
@@ -86,15 +105,31 @@
                     <button class="btn btn-backspace" onclick="backspace()"> <i class="fas fa-arrow-left"></i></button>
                     <button class="btn btn-number" onclick="appendNumber('0')">0</button>
                     <button class="btn btn-enter" onclick="enter()"> <i class="fas fa-arrow-right"></i></button>
+                    <button id="close-button">Close</button>
                 </div>
             </div>
+        </div>
     </div>
+    </html>
+
     <script>
         let pinCode = '';
         let display = document.getElementById('display');
         let content = document.getElementById('content');
         let modal = document.getElementById('modal');
-        let lockIcon = document.getElementById('lock-icon');
+        let modalClose = document.getElementById('modalClose');
+        let calculator = document.getElementById('calculator');
+        const lockIcon = document.getElementById('lock-icon');
+        const closeButton = document.getElementById('close-button');
+        // Tambahkan event listener untuk menutup modal ketika tombol close di klik
+        
+        closeButton.addEventListener('click', function() {
+            modal.style.display = 'none';
+        });
+            
+        modalClose.addEventListener('click', function() {
+            modal.style.display = "none";
+        });
 
         function appendNumber(number) {
             if (pinCode.length < 4) {
@@ -118,7 +153,7 @@
         }
 
         lockIcon.addEventListener('click', function() {
-            modal.style.display = 'block';
+            modal.style.display = 'flex';
             content.classList.add('blur');
         });
 
