@@ -50,7 +50,7 @@
 </head>
 <body>
     <div class="calculator text-center">
-        <div class="display">112233</div>
+        <div class="display"><input type="number"></div>
         <div class="d-flex flex-wrap justify-content-center">
             <button class="btn btn-number">1</button>
             <button class="btn btn-number">2</button>
