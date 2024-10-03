@@ -11,9 +11,11 @@
 
 <body>
     <div class="container-index">
-    <a href="produk.php">
-        <i class="fas fa-lock" style="font-size: 24px; position: absolute; right: 20px; top: 20px; color: rgba(0, 0, 0, 0.5); cursor: pointer;"></i>
-    </a>
+        <span>
+            <a href="produk.php">
+                <i class="fas fa-lock" style="font-size: 24px; position: absolute; right: 20px; top: 20px; color: rgba(0, 0, 0, 0.9); cursor: pointer;"></i>
+            </a>
+        </span>
         <div class="header-index">
             <h1>Product List</h1>
         </div>
