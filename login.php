@@ -13,7 +13,7 @@ if(isset($_POST['login'])){
 
      if($hitung>0){
         $_SESSION['log'] = 'true';
-        header('location:produk.php');
+        header('location:index.php');
      } else {
         header('location:login.php');
      };
@@ -22,7 +22,7 @@ if(isset($_POST['login'])){
 if(!isset($_SESSION['log'])){
 
 } else {
-    header('location:produk.php');
+    header('location:index.php');
 }
 
 ?>
