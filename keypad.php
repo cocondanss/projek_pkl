@@ -87,6 +87,17 @@
             pinCode = '';
             display.textContent = '______';
         }
+
+        // Add event listeners for keyboard input
+        document.addEventListener('keydown', function(event) {
+            if (event.key >= '0' && event.key <= '9') {
+                appendNumber(event.key);
+            } else if (event.key === 'Backspace') {
+                backspace();
+            } else if (event.key === 'Enter') {
+                enter();
+            }
+        });
     </script>
 </body>
 </html>
