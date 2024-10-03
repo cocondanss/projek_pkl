@@ -11,7 +11,9 @@
 
 <body>
     <div class="container-index">
-        <i class="fas fa-lock"></i>
+        <a href="produk.php">
+            <i class="fas fa-lock" style="font-size: 24px; margin-right: 10px;"></i>
+        </a>
         <div class="header-index">
             <h1>Product List</h1>
         </div>
