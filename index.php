@@ -57,7 +57,7 @@
                             </ol>
                             <div class="card mb-4">
                                 <div class="card-header">
-                                <a href="index.php">
+                                <a href="listproduct.php">
                                 <button type="button" class="btn btn-dark">
                                         Lihat Halaman User
                                 </button>
