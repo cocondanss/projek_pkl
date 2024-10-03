@@ -1,5 +1,7 @@
 <?php
 session_start();
-session_destroy();
-header('location:listproduct.php');
+if (!isset($_SESSION['user'])) {
+    header('Location: listproduct.php');
+    exit;
+}
 ?>
