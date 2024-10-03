@@ -20,7 +20,7 @@
             display: none;
         }
         .modal-content {
-            position: center;
+            position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
@@ -88,8 +88,8 @@
             </div>
         </div>
     </div>
-    <div class="modal" id="modal">
-        <div class="modal-content">
+    <div class="modal" id="modal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(0, 0, 0, 0.5); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+        <div class="modal-content" style="background-color: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             <div class="calculator">
                 <div class="display" id="display"></div>
                 <div class="d-flex flex-wrap justify-content-center">
