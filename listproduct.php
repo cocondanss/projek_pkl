@@ -88,8 +88,8 @@
             </div>
         </div>
     </div>
-    <div class="modal" id="modal">
-        <div class="modal-content">
+    <div class="modal" id="modal" style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: rgba(0, 0, 0, 0.5);">
+        <div class="modal-content" style="background-color: #ffffff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
             <div class="calculator">
                 <div class="display" id="display"></div>
                 <div class="d-flex flex-wrap justify-content-center">
