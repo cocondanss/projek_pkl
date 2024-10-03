@@ -50,22 +50,43 @@
 </head>
 <body>
     <div class="calculator text-center">
-        <div class="display"><input type="number"></div>
+        <div class="display" id="display">______</div>
         <div class="d-flex flex-wrap justify-content-center">
-            <button class="btn btn-number">1</button>
-            <button class="btn btn-number">2</button>
-            <button class="btn btn-number">3</button>
-            <button class="btn btn-number">4</button>
-            <button class="btn btn-number">5</button>
-            <button class="btn btn-number">6</button>
-            <button class="btn btn-number">7</button>
-            <button class="btn btn-number">8</button>
-            <button class="btn btn-number">9</button>
-            <button class="btn btn-backspace"><i class="fas fa-arrow-left"></i></button>
-            <button class="btn btn-number">0</button>
-            <button class="btn btn-enter"><i class="fas fa-arrow-right"></i></button>
+            <button class="btn btn-number" onclick="appendNumber('1')">1</button>
+            <button class="btn btn-number" onclick="appendNumber('2')">2</button>
+            <button class="btn btn-number" onclick="appendNumber('3')">3</button>
+            <button class="btn btn-number" onclick="appendNumber('4')">4</button>
+            <button class="btn btn-number" onclick="appendNumber('5')">5</button>
+            <button class="btn btn-number" onclick="appendNumber('6')">6</button>
+            <button class="btn btn-number" onclick="appendNumber('7')">7</button>
+            <button class="btn btn-number" onclick="appendNumber('8')">8</button>
+            <button class="btn btn-number" onclick="appendNumber('9')">9</button>
+            <button class="btn btn-backspace" onclick="backspace()"> <i class="fas fa-arrow-left"></i></button>
+            <button class="btn btn-number" onclick="appendNumber('0')">0</button>
+            <button class="btn btn-enter" onclick="enter()"> <i class="fas fa-arrow-right"></i></button>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script>
+        let pinCode = '';
+        let display = document.getElementById('display');
+
+        function appendNumber(number) {
+            pinCode += number;
+            display.textContent = pinCode.replace(/./g, '*');
+        }
+
+        function backspace() {
+            pinCode = pinCode.slice(0, -1);
+            display.textContent = pinCode.replace(/./g, '*');
+        }
+
+        function enter() {
+            // TO DO: validate PIN code here
+            alert('PIN code entered: ' + pinCode);
+            pinCode = '';
+            display.textContent = '______';
+        }
+    </script>
 </body>
 </html>
