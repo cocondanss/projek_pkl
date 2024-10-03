@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <a href="produk.php" class="button"><button>Kembali</button></a>
+    <a href="login.php" class="button"><button>Kembali</button></a>
     <div class="container-index">
         <div class="header-index">
             <h1>Product List</h1>
