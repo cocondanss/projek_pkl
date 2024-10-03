@@ -9,12 +9,12 @@
 </head>
 
 <body>
-    <a href="login.php" class="button"><button>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="11" width="18" height="10" rx="2" fill="#fff" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-        </svg>
-    </button>
+<button type="button" class="btn btn-kembali" onclick="location.href='produk.php'">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke="black">
+        <rect x="3" y="11" width="18" height="10" rx="2" />
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+</button>
     </a>
     <div class="container-index">
         <div class="header-index">

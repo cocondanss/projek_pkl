@@ -18,43 +18,20 @@
   margin: 20px 0;
 }
 
-.button {
-  position: relative;
-  top: 25px; 
-  left: 60px;
-}
-
-.btn-primary {
-  background-color: #337ab7;
-  border-color: #2e6da4;
-  color: #fff;
+.btn-kembali {
+  background-color: transparent;
+  border: none;
   padding: 10px 20px;
-  border-radius: 5px;
   cursor: pointer;
 }
 
-.btn-primary svg {
+.btn-kembali svg {
   margin-right: 10px;
   vertical-align: middle;
 }
 
-.btn-primary:hover {
-  background-color: #23527c;
-  border-color: #1d4e7a;
-}
-
-.button button {
-  background-color: #02244c;
-  border-style: #02244c;
-  border-width: 4px;
-  color: #ffffff;
-  border-radius: 5px;
-}
-
-.button button:hover {
-  background-color: #02182f; /* Ubah warna latar belakang saat di-hover */
-  color: white; /* Ubah warna teks saat di-hover */
-  border-color: rgb(0, 0, 0); /* Ubah warna border saat di-hover */
+.btn-kembali:hover {
+  background-color: transparent;
 }
 
 
