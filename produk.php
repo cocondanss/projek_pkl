@@ -57,9 +57,6 @@
                             </ol>
                             <div class="card mb-4">
                                 <div class="card-header">
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
-                                        Tambah Produk
-                                </button>
                                 <a href="listproduct.php">
                                 <button type="button" class="btn btn-dark">
                                         Lihat List Produk
