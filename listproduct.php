@@ -10,10 +10,31 @@
         .blur {
             filter: blur(5px);
         }
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+        }
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
+    <a href="login.php">
         <i class="fas fa-lock" style="font-size: 24px; position: absolute; right: 20px; top: 20px; color: rgba(0, 0, 0, 0.3); cursor: pointer;" id="lock-icon"></i>
+    </a>
     <div class="container-index">
         <div class="header-index">
             <h1>Product List</h1>
@@ -27,28 +48,32 @@
             </div>
         </div>
     </div>
-    <div class="calculator" id="calculator" style="display: none;">
-        <div class="display" id="display"></div>
-        <div class="d-flex flex-wrap justify-content-center">
-            <button class="btn btn-number" onclick="appendNumber('1')">1</button>
-            <button class="btn btn-number" onclick="appendNumber('2')">2</button>
-            <button class="btn btn-number" onclick="appendNumber('3')">3</button>
-            <button class="btn btn-number" onclick="appendNumber('4')">4</button>
-            <button class="btn btn-number" onclick="appendNumber('5')">5</button>
-            <button class="btn btn-number" onclick="appendNumber('6')">6</button>
-            <button class="btn btn-number" onclick="appendNumber('7')">7</button>
-            <button class="btn btn-number" onclick="appendNumber('8')">8</button>
-            <button class="btn btn-number" onclick="appendNumber('9')">9</button>
-            <button class="btn btn-backspace" onclick="backspace()"> <i class="fas fa-arrow-left"></i></button>
-            <button class="btn btn-number" onclick="appendNumber('0')">0</button>
-            <button class="btn btn-enter" onclick="enter()"> <i class="fas fa-arrow-right"></i></button>
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="calculator">
+                <div class="display" id="display"></div>
+                <div class="d-flex flex-wrap justify-content-center">
+                    <button class="btn btn-number" onclick="appendNumber('1')">1</button>
+                    <button class="btn btn-number" onclick="appendNumber('2')">2</button>
+                    <button class="btn btn-number" onclick="appendNumber('3')">3</button>
+                    <button class="btn btn-backspace" onclick="backspace()"> <i class="fas fa-arrow-left"></i></button>
+                    <button class="btn btn-number" onclick="appendNumber('4')">4</button>
+                    <button class="btn btn-number" onclick="appendNumber('5')">5</button>
+                    <button class="btn btn-number" onclick="appendNumber('6')">6</button>
+                    <button class="btn btn-enter" onclick="enter()"> <i class="fas fa-arrow-right"></i></button>
+                    <button class="btn btn-number" onclick="appendNumber('7')">7</button>
+                    <button class="btn btn-number" onclick="appendNumber('8')">8</button>
+                    <button class="btn btn-number" onclick="appendNumber('9')">9</button>
+                    <button class="btn btn-number" onclick="appendNumber('0')">0</button>
+                </div>
+            </div>
         </div>
     </div>
     <script>
         let pinCode = '';
         let display = document.getElementById('display');
         let content = document.getElementById('content');
-        let calculator = document.getElementById('calculator');
+        let modal = document.getElementById('modal');
         let lockIcon = document.getElementById('lock-icon');
 
         function appendNumber(number) {
@@ -68,12 +93,12 @@
             alert('PIN code entered: ' + pinCode);
             pinCode = '';
             display.textContent = '';
-            calculator.style.display = 'none';
+            modal.style.display = 'none';
             content.classList.remove('blur');
         }
 
         lockIcon.addEventListener('click', function() {
-            calculator.style.display = 'block';
+            modal.style.display = 'block';
             content.classList.add('blur');
         });
 
@@ -98,7 +123,7 @@
                         productDiv.className = 'product';
                         productDiv.innerHTML = `
                             <h2>${product.name}</h2>
-                                                        <p id="price-${product.id}">Price: Rp ${product.price}</p>
+                            <p id="price-${product.id}">Price: Rp ${product.price}</p>
                             <form id="form-${product.id}" onsubmit="handleSubmit(event, ${product.discount}, ${product.id}, '${product.name}', ${product.price})">
                                 <input type="hidden" name="product_id" value="${product.id}">
                                 <input type="hidden" name="product_name" value="${product.name}">
