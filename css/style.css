@@ -19,25 +19,10 @@
 }
 
 .button {
-  position: relative;
+  position: right;
   top: 25px; 
   left: 60px;
 }
-
-.button button {
-  background-color: #02244c;
-  border-style: #02244c;
-  border-width: 4px;
-  color: #ffffff;
-  border-radius: 5px;
-}
-
-.button button:hover {
-  background-color: #02182f; /* Ubah warna latar belakang saat di-hover */
-  color: white; /* Ubah warna teks saat di-hover */
-  border-color: rgb(0, 0, 0); /* Ubah warna border saat di-hover */
-}
-
 
 .body-payment {
     font-family: 'Poppins', sans-serif;
