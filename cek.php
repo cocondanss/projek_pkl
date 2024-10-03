@@ -2,5 +2,5 @@
 if(isset($_SESSION['log'])){
 
 } else {
-    header('location:produk.php');
+    header('location:listproduct.php');
 }
