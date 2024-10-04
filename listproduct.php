@@ -105,7 +105,7 @@
                     <button class="btn btn-backspace" onclick="backspace()"> <i class="fas fa-arrow-left"></i></button>
                     <button class="btn btn-number" onclick="appendNumber('0')">0</button>
                     <button class="btn btn-enter" onclick="enter()"> <i class="fas fa-arrow-right"></i></button>
-                    <button id="close-button">Close</button>
+                    <!-- <button id="close-button">Close</button> -->
                 </div>
             </div>
         </div>
