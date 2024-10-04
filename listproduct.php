@@ -120,7 +120,7 @@
         let modalClose = document.getElementById('modalClose');
         let calculator = document.getElementById('calculator');
         const lockIcon = document.getElementById('lock-icon');
-        const closeButton = document.getElementById('close-button');
+        // const closeButton = document.getElementById('close-button');
         // Tambahkan event listener untuk menutup modal ketika tombol close di klik
         
         closeButton.addEventListener('click', function() {
