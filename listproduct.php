@@ -88,14 +88,26 @@
             width: 70%;
             max-width: 220px;
         }
-    </style>
+        </style>
 </head>
 
 <body>
     <div class="container-index">
-        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal" style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
-            <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
-        </button>
+        <div class="header-index">
+            <h1>Product List</h1>
+            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal" style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
+                <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
+            </button>
+            <div class="content">   
+                <div class="product-list" id="product-list">
+                    <!-- Product items will be populated here -->
+                </div>
+                <div class="container-qrcode" style="display: contents;">
+                    <div id="qrcode" class="qrcode"></div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="modal fade" id="keypadModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">    
             <div class="modal-body">
@@ -116,18 +128,6 @@
                         <button class="btn btn-enter" onclick="enter()"><i class="fas fa-check"></i></button>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-        <div class="header-index">
-            <h1>Product List</h1>
-        </div>
-        <div class="content">   
-            <div class="product-list" id="product-list">
-                <!-- Product items will be populated here -->
-            </div>
-            <div class="container-qrcode" style="display: contents;">
-                <div id="qrcode" class="qrcode"></div>
             </div>
         </div>
     </div>
