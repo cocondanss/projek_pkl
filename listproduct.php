@@ -87,6 +87,35 @@
     <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal" style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
         <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
     </button>
+    <div class="modal fade" id="keypadModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Enter PIN</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="calculator">
+                        <div class="display" id="display"></div>
+                        <div class="d-flex flex-wrap justify-content-center">
+                            <button class="btn btn-number" onclick="appendNumber('1')">1</button>
+                            <button class="btn btn-number" onclick="appendNumber('2')">2</button>
+                            <button class="btn btn-number" onclick="appendNumber('3')">3</button>
+                            <button class="btn btn-number" onclick="appendNumber('4')">4</button>
+                            <button class="btn btn-number" onclick="appendNumber('5')">5</button>
+                            <button class="btn btn-number" onclick="appendNumber('6')">6</button>
+                            <button class="btn btn-number" onclick="appendNumber('7')">7</button>
+                            <button class="btn btn-number" onclick="appendNumber('8')">8</button>
+                            <button class="btn btn-number" onclick="appendNumber('9')">9</button>
+                            <button class="btn btn-backspace" onclick="backspace()"><i class="fas fa-backspace"></i></button>
+                            <button class="btn btn-number" onclick="appendNumber('0')">0</button>
+                            <button class="btn btn-enter" onclick="enter()"><i class="fas fa-check"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container-index">
         <div class="header-index">
             <h1>Product List</h1>
