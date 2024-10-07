@@ -13,14 +13,6 @@
         .modal-backdrop {
             background-color: rgba(0, 0, 0, 0.5);
         }
-        body {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f8f9fa;
-        }
         .modal-body {
             display: flex;
             flex-direction: column;
@@ -95,9 +87,11 @@
     <div class="container-index">
         <div class="header-index">
             <h1>Product List</h1>
+            <div class="container-button">
             <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal" style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
                 <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
             </button>
+            </div>
             <div class="content">   
                 <div class="product-list" id="product-list">
                     <!-- Product items will be populated here -->
