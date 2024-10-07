@@ -92,9 +92,10 @@
 </head>
 
 <body>
-    <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal" style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
-        <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
-    </button>
+    <div class="container-index">
+        <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal" style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
+            <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
+        </button>
     <div class="modal fade" id="keypadModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">    
             <div class="modal-body">
@@ -118,7 +119,6 @@
             </div>
         </div>
     </div>
-    <div class="container-index">
         <div class="header-index">
             <h1>Product List</h1>
         </div>
