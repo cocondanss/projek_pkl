@@ -19,11 +19,16 @@ if(isset($_POST['login'])){
      };
 };
 
-if(!isset($_SESSION['log'])){
+    if(!isset($_SESSION['log'])){
 
-} else {
-    header('location:index.php');
-}
+    } else {
+        header('location:index.php');
+    }
+
+    if(isset($_POST['kembali'])){
+        header('location:listproduct.php');
+        exit;
+    }
 
 ?>
 <!DOCTYPE html>
@@ -59,6 +64,7 @@ if(!isset($_SESSION['log'])){
                                             </div>
                                             <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
                                                 <button class="btn btn-info" name="login"> Masuk</a>
+                                                <button class="btn btn-secondary" name="kembali"> Kembali</button>
                                             </div>
                                         </form>
                                     </div>

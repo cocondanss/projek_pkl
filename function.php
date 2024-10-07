@@ -1,10 +1,10 @@
 <?php
 session_start();
 //koneksi ke database
-$conn =mysqli_connect("localhost","u529472640_root","Daclen123","u529472640_framee");
+$conn =mysqli_connect("localhost","root","","framee");
 //if($conn){
 //    echo 'berhasil';
-//}
+//
 
 // Midtrans configuration
 define('MIDTRANS_SERVER_KEY', 'SB-Mid-server-BiPEZ8YxMZheywHq49sAQthl');
@@ -39,70 +39,21 @@ require_once 'vendor/autoload.php';
 }
 
 
-// Fungsi untuk menambah voucher
-if (isset($_POST['TambahVoucher'])) {
-    $code_prefix = $_POST['code_prefix'];
-    $discount_amount = $_POST['discount_amount'];
-    $is_used = $_POST['is_used'];
-    $voucher_count = $_POST['voucher_count'];
+//menambah voucher
+    if (isset($_POST['TambahVoucher'])) {
+        $code = $_POST['code'];
+        $discount_amount = $_POST['discount_amount'];
+        $keterangan = $_POST['is_used'];
 
-    for ($i = 0; $i < $voucher_count; $i++) {
-        $random_number = mt_rand(1000000000, 9999999999);
-        $unique_code = $code_prefix . '' . $random_number;
-        $addtotable = mysqli_query($conn, "insert into vouchers (code, discount_amount, is_used) values('$unique_code', '$discount_amount', '$is_used')");
-    }
+    $addtotable = mysqli_query($conn,"insert into vouchers (code, discount_amount, is_used) values('$code','$discount_amount','$keterangan')");
 
-    if ($addtotable) {
+    if($addtotable){
         header("location:voucher.php");
-    } else {
+    } else{
         echo 'Gagal';
         header('location:voucher.php');
     }
-}
-
-    // Tambahkan kode ini setelah proses tambah voucher selesai
-    if (isset($_POST['simpan_ekspor'])) {
-    // Kode untuk menyimpan data ke database Anda
-    $code_prefix = $_POST['code_prefix'];
-    $discount_amount = $_POST['discount_amount'];
-    $voucher_count = $_POST['voucher_count'];
-  
-    for ($i=0; $i < $voucher_count; $i++) { 
-      $random_number = mt_rand(1000000000, 9999999999);
-      $unique_code = $code_prefix . '' . $random_number;
-      $addtotable = mysqli_query($conn,"insert into vouchers (code, discount_amount, is_used) values('$unique_code','$discount_amount','0')");
     }
-  
-    // Kode untuk mengekspor data ke file teks
-    $fileName = 'voucher_data_' . date('d-m-Y') . '.txt';
-    $fileContent = '' . "";
-    $fileContent .= 'Daftar Voucher: ' . "\n";
-    $fileContent .= '====================================' . "\n";
-    $fileContent .= 'Kode Voucher | Jumlah Diskon | Status | Tanggal Digunakan' . "\n";
-    $fileContent .= '------------------------------------' . "\n";
-  
-    $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
-    while($data = mysqli_fetch_array($ambilsemuadatavoucher)){
-      $code = $data['code'];
-      $discount_amount = $data['discount_amount'];
-      $status = ($data['is_used'] == 0) ? 'Belum Digunakan' : 'Sudah Digunakan';
-      $used_at = $data['used_at'] ? $data['used_at'] : '-';
-      $fileContent .= $code . ' | ' . $discount_amount . ' | ' . $status . ' | ' . $used_at . "\n";
-    }
-
-        // Kode untuk mengunduh file yang diekspor
-        $file = fopen($fileName, 'w');
-        fwrite($file, $fileContent);
-        fclose($file);
-      
-        // Kode untuk mengunduh file secara otomatis
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . $fileName . '"');
-        header('Content-Length: ' . filesize($fileName));
-        readfile($fileName);
-        exit;
-    }
-
 
 //menambah transaksi
 if (isset($_POST['TambahTransaksi'])) {
@@ -156,6 +107,11 @@ if(isset($_POST['updateuser'])){
     }
 }
 
+
+
+
+
+
 //hapus user
 if (isset($_POST['hapususer'])) {
     $idu = $_POST['idu'];
@@ -201,6 +157,11 @@ if (isset($_POST['hapusbarang'])) {
 
 }
 
+
+//edit transaksi
+
+
+
 //hapus transaksi
 if (isset($_POST['hapustransaksi'])) {
     $idt = $_POST['idt'];
@@ -219,11 +180,11 @@ if (isset($_POST['hapustransaksi'])) {
 //edit voucher
 if(isset($_POST['updatevoucher'])){
     $id = $_POST['id'];
-    $code_prefix = $_POST['code_prefix'];
+    $code = $_POST['code'];
     $discount_amount = $_POST['discount_amount'];
-    $is_used = $_POST['is_used'];
+    $keterangan = $_POST['is_used'];
 
-    $updatev = mysqli_query($conn,"update vouchers set code_prefix='$code_prefix', discount_amount='$discount_amount', is_used='$is_used' where id ='$id'");
+    $updatev = mysqli_query($conn,"update vouchers set code='$code', discount_amount='$discount_amount', is_used='$keterangan' where id ='$id'");
     if($updatev){
         header("location:voucher.php");
     } else{
@@ -232,81 +193,19 @@ if(isset($_POST['updatevoucher'])){
     }
 }
 
-//hapus voucher yang sudah digunakan
-if (isset($_POST['hapus_voucher_digunakan'])) {
-    $hapus_voucher = mysqli_query($conn, "DELETE FROM vouchers WHERE is_used = 1");
-    if ($hapus_voucher) {
-        header("location:voucher.php");
-    } else {
-        echo 'Gagal menghapus voucher';
-        header('location:voucher.php');
-    }
-}
 
 //hapus voucher
-// if (isset($_POST['hapusvoucher'])) {
-//     $id = mysqli_query($conn, "DELETE FROM vouchers WHERE id='$id'");
-
-//     $hapusv = mysqli_query($conn,"delete from vouchers where id='$id'");
-//     if($hapusv){
-//         header("location:voucher.php");
-//     } else{
-//         echo 'Gagal';
-//         header('location:voucher.php');
-//     }
-
-// }
-
-// delete all
-
-// Hapus voucher terpilih
 if (isset($_POST['hapusvoucher'])) {
-    if(isset($_POST['delete'])) {
-        foreach($_POST['delete'] as $id) {
-            $id = mysqli_real_escape_string($conn, $id);
-            $hapusv = mysqli_query($conn, "DELETE FROM vouchers WHERE id='$id'");
-        }
-        if($hapusv){
-            header("location:voucher.php");
-        } else {
-            echo 'Gagal menghapus voucher';
-            header('location:voucher.php');
-        }
-    } else {
-        echo 'Tidak ada voucher yang dipilih';
+    $id = $_POST['id'];
+
+    $hapusv = mysqli_query($conn,"delete from vouchers where id='$id'");
+    if($hapusv){
+        header("location:voucher.php");
+    } else{
+        echo 'Gagal';
         header('location:voucher.php');
     }
+
 }
 
 
-if (isset($_POST['simpan_ekspor'])) {
-    // Kode untuk menyimpan data ke database Anda
-    $code_prefix = $_POST['code_prefix'];
-    $discount_amount = $_POST['discount_amount'];
-    $voucher_count = $_POST['voucher_count'];
-  
-    for ($i=0; $i < $voucher_count; $i++) { 
-      $random_number = mt_rand(1000000000, 9999999999);
-      $unique_code = $code_prefix . '' . $random_number;
-      $addtotable = mysqli_query($conn,"insert into vouchers (code, discount_amount, is_used) values('$unique_code','$discount_amount','0')");
-    }
-  
-    // Kode untuk mengekspor data ke file teks
-    $fileName = 'voucher_data_' . date('d-m-Y') . '.txt';
-    $fileContent = '' . "";
-    $fileContent .= 'Daftar Voucher: ' . "\n";
-  
-    $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
-    while($data = mysqli_fetch_array($ambilsemuadatavoucher)){
-      $code = $data['code'];
-      $fileContent .= $code . "\n";
-    }
-  
-    // Kode untuk mengunduh file yang diekspor
-    $file = fopen($fileName, 'w');
-    fwrite($file, $fileContent);
-    fclose($file);
-  
-    echo '<a href="' . $fileName . '" download="' . $fileName . '">Unduh File</a>';
-    exit;
-  }

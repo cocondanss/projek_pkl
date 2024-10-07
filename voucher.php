@@ -24,11 +24,11 @@
                     <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                         <div class="sb-sidenav-menu">
                             <div class="nav">
-                                <a class="nav-link" href="user.php">
+                                <a class="nav-link" href="index.php">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                     User
                                 </a>
-                                <a class="nav-link" href="index.php">
+                                <a class="nav-link" href="produk.php">
                                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                     Produk
                                 </a>
@@ -58,13 +58,12 @@
                                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
                                     Tambah Voucher
                                 </button>
-                                <button type="button" class="btn btn-info" id="eksporVoucher">
-                                    Ekspor Voucher
+                                <button type="button" class="btn btn-dark" id="eksporVoucher">Ekspor Voucher Keseluruhan
                                 </button>
-                                <button type="submit" name="hapusvoucher" class="btn btn-danger">
+                                <button type="submit" name="hapusvoucher" class="btn btn-dark">
                                     Hapus Voucher Terpilih
                                 </button>
-                                <button type="submit" class="btn btn-danger" name="hapus_voucher_digunakan">
+                                <button type="submit" class="btn btn-dark" name="hapus_voucher_digunakan">
                                     Hapus Voucher yang Sudah Digunakan
                                 </button>
                             </div>

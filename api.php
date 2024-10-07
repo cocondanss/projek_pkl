@@ -77,11 +77,8 @@ function apply_voucher($data) {
                 $discounted_price = $product_price - $discount;
                 $voucher_message = "Voucher berhasil diterapkan!";
                 
-                // STORE THE CODE HERE
-                date_default_timezone_set('Asia/Jakarta');
-                $currentTime = date("Y-m-d H:i:s");
-                $stmt = $db->prepare("UPDATE vouchers SET is_used = 1, used_at = ? WHERE id = ?");
-                $stmt->execute([$currentTime, $voucher['id']]);
+                $stmt = $db->prepare("UPDATE vouchers SET is_used = 1 WHERE id = ?");
+                $stmt->execute([$voucher['id']]);
 
                 echo json_encode([
                     'success' => true,
@@ -106,6 +103,7 @@ function apply_voucher($data) {
         echo json_encode(["error" => $e->getMessage()]);
     }
 }
+
 function create_transaction($data) {
     global $db;
 
@@ -138,7 +136,7 @@ function create_transaction($data) {
             'price' => $product_price,
             'quantity' => 1,
             'name' => $product_name
-         )
+        )
     );
 
     $customer_details = array(
@@ -160,7 +158,7 @@ function create_transaction($data) {
         $snap_url = \Midtrans\Snap::createTransaction($transaction)->redirect_url;
 
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, tanggal, status) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$order_id, $product_id, $product_name, $total_price, date("Y-m-d"), 'pending']);
+        $stmt->execute([$order_id, $product_id, $product_name, $total_price, date("Y-m-d"), 'success']);
 
         echo json_encode([
             'success' => true,
@@ -180,41 +178,19 @@ function create_transaction($data) {
 function midtrans_notification() {
     global $db;
 
-    $notification = new \Midtrans\Notification();
+    // Ambil notifikasi dari Midtrans
+    $notif = new \Midtrans\Notification();
 
-    error_log("Received notification: " . json_encode($notification));
-
-    $order_id = $notification->order_id;
-    $transaction_status = $notification->transaction_status;
-    $fraud_status = $notification->fraud_status;
-
-    error_log("Transaction status: $transaction_status, Fraud status: $fraud_status");
-
-    $new_status = 'pending';  // Default status
-
-    if ($transaction_status == 'capture') {
-        if ($fraud_status == 'challenge') {
-            $new_status = 'challenge';
-        } else if ($fraud_status == 'accept') {
-            $new_status = 'success';
-        }
-    } else if ($transaction_status == 'settlement') {
-        $new_status = 'success';
-    } else if ($transaction_status == 'cancel' || $transaction_status == 'deny' || $transaction_status == 'expire') {
-        $new_status = 'failure';
-    } else if ($transaction_status == 'pending') {
-        $new_status = 'pending';
-    }
+    $order_id = $notif->order_id;
+    $transaction_status = $notif->transaction_status;
 
     try {
+        // Perbarui status transaksi di database berdasarkan notifikasi Midtrans
         $stmt = $db->prepare("UPDATE transaksi SET status = ? WHERE order_id = ?");
-        $stmt->execute([$new_status, $order_id]);
+        $stmt->execute([$transaction_status, $order_id]);
 
-        error_log("Transaction status updated to: $new_status for order_id: $order_id");
-
-        echo "Transaction status updated to: " . $new_status;
+        echo json_encode(["success" => true]);
     } catch (Exception $e) {
-        error_log("Error updating transaction status: " . $e->getMessage());
-        http_response_code(500);
+        echo json_encode(["error" => $e->getMessage()]);
     }
 }

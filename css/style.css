@@ -4,37 +4,6 @@
     box-sizing: border-box;
 }
 
-.content h1 {
-  font-size: 36px;
-  font-weight: bold;
-}
-.product-card {
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 20px;
-  margin-bottom: 20px;
-}
-.product-card hr {
-  margin: 20px 0;
-}
-
-.btn-kembali {
-    background-color: transparent;
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-}
-
-.btn-kembali svg {
-    margin-right: 10px;
-    vertical-align: middle;
-}
-
-.btn-kembali:hover {
-    background-color: transparent;
-}
-
-
 .body-payment {
     font-family: 'Poppins', sans-serif;
     background-color: #f8f8f8;
