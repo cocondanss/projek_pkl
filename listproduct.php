@@ -62,6 +62,11 @@
             color: #ffffff;
         }
 
+        .modal-content {
+            background-color: rgba(0, 0, 0, 0);
+            border: #28a745;
+        }
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -103,23 +108,25 @@
         </div>
     </div>
     <div class="modal fade" id="keypadModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">    
-            <div class="modal-body">
-                <div class="calculator">
-                    <div class="display" id="display"></div>
-                    <div class="d-flex flex-wrap justify-content-center">
-                        <button class="btn btn-number" onclick="appendNumber('1')">1</button>
-                        <button class="btn btn-number" onclick="appendNumber('2')">2</button>
-                        <button class="btn btn-number" onclick="appendNumber('3')">3</button>
-                        <button class="btn btn-number" onclick="appendNumber('4')">4</button>
-                        <button class="btn btn-number" onclick="appendNumber('5')">5</button>
-                        <button class="btn btn-number" onclick="appendNumber('6')">6</button>
-                        <button class="btn btn-number" onclick="appendNumber('7')">7</button>
-                        <button class="btn btn-number" onclick="appendNumber('8')">8</button>
-                        <button class="btn btn-number" onclick="appendNumber('9')">9</button>
-                        <button class="btn btn-backspace" onclick="backspace()"><i class="fas fa-backspace"></i></button>
-                        <button class="btn btn-number" onclick="appendNumber('0')">0</button>
-                        <button class="btn btn-enter" onclick="enter()"><i class="fas fa-check"></i></button>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="calculator">
+                        <div class="display" id="display"></div>
+                        <div class="d-flex flex-wrap justify-content-center">
+                            <button class="btn btn-number" onclick="appendNumber('1')">1</button>
+                            <button class="btn btn-number" onclick="appendNumber('2')">2</button>
+                            <button class="btn btn-number" onclick="appendNumber('3')">3</button>
+                            <button class="btn btn-number" onclick="appendNumber('4')">4</button>
+                            <button class="btn btn-number" onclick="appendNumber('5')">5</button>
+                            <button class="btn btn-number" onclick="appendNumber('6')">6</button>
+                            <button class="btn btn-number" onclick="appendNumber('7')">7</button>
+                            <button class="btn btn-number" onclick="appendNumber('8')">8</button>
+                            <button class="btn btn-number" onclick="appendNumber('9')">9</button>
+                            <button class="btn btn-backspace" onclick="backspace()"><i class="fas fa-backspace"></i></button>
+                            <button class="btn btn-number" onclick="appendNumber('0')">0</button>
+                            <button class="btn btn-enter" onclick="enter()"><i class="fas fa-check"></i></button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -184,6 +191,7 @@
             pinCode = '';
             display.textContent = '';
         });
+
         document.addEventListener('DOMContentLoaded', function() {
             fetch('api.php')
                 .then(response => response.json())
