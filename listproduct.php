@@ -129,7 +129,65 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        let pinCode = '';
+        let display = document.getElementById('display');
+
+        function appendNumber(number) {
+            if (pinCode.length < 4) {
+                pinCode += number;
+                display.textContent = '*'.repeat(pinCode.length);
+            }
+        }
+
+        function backspace() {
+            pinCode = pinCode.slice(0, -1);
+            display.textContent = '*'.repeat(pinCode.length);
+        }
+
+        function enter() {
+            if (pinCode.length === 4) {
+                $.ajax({
+                    url: 'keypad.php',
+                    method: 'POST',
+                    data: { pin: pinCode },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.href = 'login.php';
+                        } else {
+                            $('#keypadModal').modal('hide');
+                            $('#errorModal').modal('show');
+                            pinCode = '';
+                            display.textContent = '';
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            }
+        }
+
+        // Add event listeners for keyboard input when the modal is open
+        $('#keypadModal').on('shown.bs.modal', function () {
+            $(document).on('keydown.keypad', function(event) {
+                if (event.key >= '0' && event.key <= '9' && pinCode.length < 4) {
+                    appendNumber(event.key);
+                } else if (event.key === 'Backspace') {
+                    backspace();
+                } else if (event.key === 'Enter') {
+                    enter();
+                }
+            });
+        }).on('hidden.bs.modal', function () {
+            $(document).off('keydown.keypad');
+            pinCode = '';
+            display.textContent = '';
+        });
         document.addEventListener('DOMContentLoaded', function() {
             fetch('api.php')
                 .then(response => response.json())
