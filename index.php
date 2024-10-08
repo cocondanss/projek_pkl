@@ -51,100 +51,45 @@
                     </nav>
                 </div>
                 <div id="layoutSidenav_content">
-                    <main>
-                        <div class="container-fluid">
-                            <h1 class="mt-4">List Produk</h1>
-                            </ol>
-                            <div class="card mb-4">
-                                <div class="card-header">
+                <main>
+                    <div class="container-fluid">
+                        <h1 class="mt-4">List Produk</h1>
+                        <div class="card mb-4">
+                            <div class="card-header">
                                 <a href="listproduct.php">
-                                <button type="button" class="btn btn-dark">
+                                    <button type="button" class="btn btn-dark">
                                         Lihat Halaman User
-                                </button>
+                                    </button>
                                 </a>
                                 <p></p>
                                 <p></p>
-                                <div class="row">
-                                    <div class="col-3">Produk A</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8"><input type="checkbox"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Deskripsi</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">Produk Hebat Mantap</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Harga</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">Rp250.000,00</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Id</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">suksesa</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Content</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">Pembayaran Produk A Berhasil</div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-3">Produk B</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8"><input type="checkbox"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Deskripsi</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">Produk Hebat Mantap</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Harga</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">Rp250.000,00</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Id</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">suksesb</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Content</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">Pembayaran Produk A Berhasil</div>
-                                </div>
-                                <hr>
-                                <div class="row">
-                                    <div class="col-3">Produk C</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8"><input type="checkbox"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Deskripsi</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">Produk Hebat Mantap</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Harga</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">Rp250.000,00</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Id</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">suksesc</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-3">Content</div>
-                                    <div class="col-1">:</div>
-                                    <div class="col-8">Pembayaran Produk A Berhasil</div>
-                                </div>
-                                </div>
+                                <?php foreach ($products as $product): ?>
+                                    <div class="row">
+                                        <div class="col-3"><?php echo $product['name']; ?></div>
+                                        <div class="col-1">:</div>
+                                        <div class="col-8"><input type="checkbox"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">Deskripsi</div>
+                                        <div class="col-1">:</div>
+                                        <div class="col-8"><?php echo $product['description']; ?></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">Harga</div>
+                                        <div class="col-1">:</div>
+                                        <div class="col-8">Rp<?php echo number_format($product['price'], 2); ?></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">Id</div>
+                                        <div class="col-1">:</div>
+                                        <div class="col-8"><?php echo $product['id']; ?></div>
+                                    </div>
+                                    <hr>
+                                <?php endforeach; ?>
                             </div>
                         </div>
-                    </main>
+                    </div>
+                </main>
                     <footer class="py-4 bg-light mt-auto">
                         <div class="container-fluid">
                             <div class="d-flex align-items-center justify-content-between small">
