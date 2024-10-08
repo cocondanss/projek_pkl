@@ -232,36 +232,36 @@ require 'cek.php';
         // });
 
         function handleSubmit(event, discount, id, name, price) {
-            event.preventDefault();
-            const qrcodeDiv = document.getElementById('qrcode');
-            qrcodeDiv.innerHTML = `
-                <div class="container-confirmation">
-                    <div class="header-confirmation"></div>
-                    <div class="voucher-form">
-                        <button id="next-payment">Next Payment</button>
-                        <div class="order-details-confirmation">
-                            <h2 id="updated-price-${id}">IDR ${price}</h2>
-                        </div>
-                        <form id="voucher-form" class="form-inline" style="display:${discount ? 'contents' : 'none'};">
-                            <input type="hidden" name="product_id" value="${id}">
-                            <input type="hidden" name="product_name" value="${name}">
-                            <input type="hidden" name="product_price" value="${price}">
-                            <input type="text" name="voucher_code" placeholder="Enter Voucher Code">
-                            <button type="submit" class="apply-button">Apply Voucher</button>
-                        </form>
-                    <div id="voucher-message"></div>
-                    <div class="footer-confirmation">
-                        <div class="payment-logos">
-                            <img src="img/we-accept-the-payment.png" alt="method-payment">
-                        </div>
+        event.preventDefault();
+        const qrcodeDiv = document.getElementById('qrcode');
+        qrcodeDiv.innerHTML = `
+            <div class="container-confirmation">
+                <div class="header-confirmation"></div>
+                <div class="voucher-form">
+                    <button id="next-payment">Next Payment</button>
+                    <div class="order-details-confirmation">
+                        <h2 id="updated-price-${id}">IDR ${price}</h2>
+                    </div>
+                    <form id="voucher-form" class="form-inline" style="display:${discount ? 'contents' : 'none'};">
+                        <input type="hidden" name="product_id" value="${id}">
+                        <input type="hidden" name="product_name" value="${name}">
+                        <input type="hidden" name="product_price" value="${price}">
+                        <input type="text" name="voucher_code" placeholder="Enter Voucher Code">
+                        <button type="submit" class="apply-button">Apply Voucher</button>
+                    </form>
+                <div id="voucher-message"></div>
+                <div class="footer-confirmation">
+                    <div class="payment-logos">
+                        <img src="img/we-accept-the-payment.png" alt="method-payment">
                     </div>
                 </div>
-                `;
+            </div>
+            `;
 
         // Pasang kembali event listener setelah konten diperbarui
         document.getElementById('next-payment').addEventListener('click', function() {
             const voucherCode = document.querySelector('input[name="voucher_code"]')?.value || '';
-            let updatedPrice = parseInt(document.getElementById(updated-price-${id}).innerText.replace('IDR ', ''));
+            let updatedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', ''));
             createTransaction(id, name, updatedPrice, discount, voucherCode);
         });
 
@@ -274,62 +274,62 @@ require 'cek.php';
     }
 
     function applyVoucher(id, name, price) {
-        const voucherCode = document.querySelector('input[name="voucher_code"]').value;
-        fetch('apply_voucher.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                product_id: id,
-                product_name: name,
-                product_price: price,
-                voucher_code: voucherCode
-            })
+    const voucherCode = document.querySelector('input[name="voucher_code"]').value;
+    fetch('apply_voucher.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            product_id: id,
+            product_name: name,
+            product_price: price,
+            voucher_code: voucherCode
         })
-        .then(response => response.json())
-        .then(data => {
-            const messageDiv = document.getElementById('voucher-message');
-            if (data.success) {
-                const discountedPrice = data.discounted_price;
-                document.getElementById(updated-price-${id}).innerText = IDR ${discountedPrice};
-                document.getElementById(price-${id}).innerText = Price: Rp ${discountedPrice};
-                messageDiv.innerHTML = <p class="success">${data.message}</p>;
-            } else {
-                messageDiv.innerHTML = <p class="alert">${data.message}</p>;
-            }
-        });
-    }
-
-    function createTransaction(id, name, price, discount, voucherCode) {
-        let discountedPrice = price;
-        if (voucherCode) {
-            discountedPrice = parseInt(document.getElementById(updated-price-${id}).innerText.replace('IDR', '')) || price;
+    })
+    .then(response => response.json())
+    .then(data => {
+        const messageDiv = document.getElementById('voucher-message');
+        if (data.success) {
+            const discountedPrice = data.discounted_price;
+            document.getElementById(`updated-price-${id}`).innerText = `IDR ${discountedPrice}`;
+            document.getElementById(`price-${id}`).innerText = `Price: Rp ${discountedPrice}`;
+            messageDiv.innerHTML = `<p class="success">${data.message}</p>`;
+        } else {
+            messageDiv.innerHTML = `<p class="alert">${data.message}</p>`;
         }
+    });
+}
 
-        fetch('create_transaction.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                product_id: id,
-                product_name: name,
-                product_price: price,
-                discount: price - discountedPrice,
-                total_price: discountedPrice
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.snap_url) {
-                const qrcodeDiv = document.getElementById('qrcode');
-                qrcodeDiv.innerHTML = <iframe src="${data.snap_url}" width="75%"></iframe>;
-            } else {
-                alert('Error: Unable to retrieve payment URL.');
-            }
-        });
+function createTransaction(id, name, price, discount, voucherCode) {
+    let discountedPrice = price;
+    if (voucherCode) {
+        discountedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', ''));
     }
+
+    fetch('create_transaction.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            product_id: id,
+            product_name: name,
+            product_price: price,
+            discount: price - discountedPrice,
+            total_price: discountedPrice
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.snap_url) {
+            const qrcodeDiv = document.getElementById('qrcode');
+            qrcodeDiv.innerHTML = `<iframe src="${data.snap_url}" width="75%"></iframe>`;
+        } else {
+            alert('Error: Unable to retrieve payment URL.');
+        }
+    });
+}
 </script>
 </body>
 </html>
