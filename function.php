@@ -1,7 +1,7 @@
 <?php
 session_start();
 //koneksi ke database
-$conn =mysqli_connect("localhost","u529472640_root","Daclen123","u529472640_framee");
+$conn =mysqli_connect("localhost","root","","framee");
 //if($conn){
 //    echo 'berhasil';
 //
@@ -31,10 +31,10 @@ require_once 'vendor/autoload.php';
     $addtotable = mysqli_query($conn,"insert into user (namauser, status, umur) values('$namauser','$status','$umur')");
 
     if($addtotable){
-        header("location:index.php");
+        header("location:user.php");
     } else{
         echo 'Gagal';
-        header('location:index.php');
+        header('location:user.php');
     }
 }
 
@@ -81,11 +81,11 @@ if (isset($_POST['TambahProduk'])) {
 $addtotable = mysqli_query($conn,"insert into products (name, price, discount) values('$name','$price','$discount')");
 
 if($addtotable){
-    header("location:produk.php");
+    header("location:index.php");
     exit();
 } else{
     echo 'Gagal';
-    header('location:produk.php');
+    header('location:index.php');
     exit();
 }
 }
@@ -100,10 +100,10 @@ if(isset($_POST['updateuser'])){
 
     $update = mysqli_query($conn,"update user set namauser='$namauser', status='$status', umur='$umur' where iduser ='$idu'");
     if($update){
-        header("location:index.php");
+        header("location:user.php");
     } else{
         echo 'Gagal';
-        header('location:index.php');
+        header('location:user.php');
     }
 }
 
@@ -125,38 +125,6 @@ if (isset($_POST['hapususer'])) {
     }
 
 }
-
-//edit produk
-if(isset($_POST['updatebarang'])){
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $discount = $_POST['discount'];
-    $price = $_POST['price'];
-
-    $updatep = mysqli_query($conn,"update products set name='$name', discount='$discount', price='$price' where id ='$id'");
-    if($updatep){
-        header("location:produk.php");
-    } else{
-        echo 'Gagal';
-        header('location:produk.php');
-    }
-}
-
-
-//hapus produk
-if (isset($_POST['hapusbarang'])) {
-    $id = $_POST['id'];
-
-    $hapusp = mysqli_query($conn,"delete from products where id='$id'");
-    if($hapusp){
-        header("location:produk.php");
-    } else{
-        echo 'Gagal';
-        header('location:produk.php');
-    }
-
-}
-
 
 //edit transaksi
 
@@ -209,3 +177,7 @@ if (isset($_POST['hapusvoucher'])) {
 }
 
 
+// Fetch products from database
+$query = "SELECT * FROM products";
+$result = mysqli_query($conn, $query);
+$products = mysqli_fetch_all($result, MYSQLI_ASSOC);
