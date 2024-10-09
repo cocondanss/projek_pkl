@@ -1,7 +1,7 @@
 <?php
 session_start();
 //koneksi ke database
-$conn =mysqli_connect("localhost","u529472640_root","Daclen123","u529472640_framee");
+$conn =mysqli_connect("localhost","root","","framee");
 //if($conn){
 //    echo 'berhasil';
 //
@@ -181,3 +181,4 @@ if (isset($_POST['hapusvoucher'])) {
 $query = "SELECT * FROM products";
 $result = mysqli_query($conn, $query);
 $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$products = mysqli_query($conn,"select * from products");

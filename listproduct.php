@@ -1,6 +1,5 @@
 <?php
 require 'function.php';
-require 'cek.php';
 ?>
 <!doctype html>
 <html lang="en">
@@ -14,6 +13,51 @@ require 'cek.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .container-index {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .product-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .product {
+            background-color: #2b2d42;
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        .product h2 {
+            margin-top: 0;
+            font-size: 24px;
+        }
+        .product p {
+            margin: 10px 0;
+        }
+        .product button {
+            background-color: #d3d3d3;
+            color: #2b2d42;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            align-self: flex-end;
+            margin-top: auto;
+        }
+        .product button:hover {
+            background-color: #b0b0b0;
+        }
         .modal-backdrop {
             background-color: rgba(0, 0, 0, 0.5);
         }
@@ -93,7 +137,7 @@ require 'cek.php';
 </head>
 
 <body>
-    <div class="container-index">
+<div class="container-index">
         <div class="header-index">
             <h1>Product List</h1>
             <div class="container-button">
@@ -101,25 +145,19 @@ require 'cek.php';
                 <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
             </button>
             </div>
-            <div class="content">   
+            <div class="content">
                 <div class="product-list" id="product-list">
                 <?php foreach ($products as $product): ?>
                     <div class="product">
                         <h2><?php echo htmlspecialchars($product['name']); ?></h2>
-                        <p id="price-<?php echo $product['id']; ?>">Rp <?php echo number_format($product['price'], 2); ?></p>
+                        <p id="price-<?php echo $product['id']; ?>">Rp <?php echo number_format($product['price'], 0, ',', '.'); ?></p>
                         <p id="description-<?php echo $product['id']; ?>"><?php echo htmlspecialchars($product['description']); ?></p>
-                        <form id="form-<?php echo $product['id']; ?>" onsubmit="handleSubmit(event, <?php echo $product['discount']; ?>, <?php echo $product['id']; ?>, '<?php echo htmlspecialchars($product['name']); ?>', <?php echo $product['price']; ?>)">
-                            <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                            <input type="hidden" name="product_name" value="<?php echo htmlspecialchars($product['name']); ?>">
-                            <input type="hidden" name="product_price" value="<?php echo $product['price']; ?>">
-                            <button type="submit">Buy</button>
-                        </form>
+                        <button onclick="showPaymentModal(<?php echo $product['id']; ?>, '<?php echo htmlspecialchars($product['name']); ?>', <?php echo $product['price']; ?>, <?php echo $product['discount']; ?>)">Buy</button>
                     </div>
                 <?php endforeach; ?>
                 </div>
                 <div class="container-qrcode" style="display: contents;">
                     <div id="qrcode" class="qrcode"></div>
-                </div>
             </div>
         </div>
     </div>
@@ -142,6 +180,36 @@ require 'cek.php';
                             <button class="btn btn-backspace" onclick="backspace()"><i class="fas fa-backspace"></i></button>
                             <button class="btn btn-number" onclick="appendNumber('0')">0</button>
                             <button class="btn btn-enter" onclick="enter()"><i class="fas fa-check"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="container-confirmation">
+                        <div class="header-confirmation"></div>
+                        <div class="voucher-form">
+                            <button id="next-payment">Next Payment</button>
+                            <div class="order-details-confirmation">
+                                <h2 id="modal-price"></h2>
+                            </div>
+                            <form id="voucher-form" class="form-inline">
+                                <input type="hidden" id="modal-product-id" name="product_id">
+                                <input type="hidden" id="modal-product-name" name="product_name">
+                                <input type="hidden" id="modal-product-price" name="product_price">
+                                <input type="text" name="voucher_code" placeholder="Enter Voucher Code">
+                                <button type="submit" class="apply-button">Apply Voucher</button>
+                            </form>
+                            <div id="voucher-message"></div>
+                            <div class="footer-confirmation">
+                                <div class="payment-logos">
+                                    <img src="img/we-accept-the-payment.png" alt="method-payment">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -231,105 +299,92 @@ require 'cek.php';
         //         });
         // });
 
-        function handleSubmit(event, discount, id, name, price) {
-        event.preventDefault();
-        const qrcodeDiv = document.getElementById('qrcode');
-        qrcodeDiv.innerHTML = `
-            <div class="container-confirmation">
-                <div class="header-confirmation"></div>
-                <div class="voucher-form">
-                    <button id="next-payment">Next Payment</button>
-                    <div class="order-details-confirmation">
-                        <h2 id="updated-price-${id}">IDR ${price}</h2>
-                    </div>
-                    <form id="voucher-form" class="form-inline" style="display:${discount ? 'contents' : 'none'};">
-                        <input type="hidden" name="product_id" value="${id}">
-                        <input type="hidden" name="product_name" value="${name}">
-                        <input type="hidden" name="product_price" value="${price}">
-                        <input type="text" name="voucher_code" placeholder="Enter Voucher Code">
-                        <button type="submit" class="apply-button">Apply Voucher</button>
-                    </form>
-                <div id="voucher-message"></div>
-                <div class="footer-confirmation">
-                    <div class="payment-logos">
-                        <img src="img/we-accept-the-payment.png" alt="method-payment">
-                    </div>
-                </div>
-            </div>
-            `;
+        function showPaymentModal(id, name, price, discount) {
+            document.getElementById('modal-product-id').value = id;
+            document.getElementById('modal-product-name').value = name;
+            document.getElementById('modal-product-price').value = price;
+            document.getElementById('modal-price').innerText = `IDR ${price}`;
+            
+            if (discount) {
+                document.getElementById('voucher-form').style.display = 'contents';
+            } else {
+                document.getElementById('voucher-form').style.display = 'none';
+            }
 
-        // Pasang kembali event listener setelah konten diperbarui
+            $('#paymentModal').modal('show');
+        }
+
         document.getElementById('next-payment').addEventListener('click', function() {
+            const id = document.getElementById('modal-product-id').value;
+            const name = document.getElementById('modal-product-name').value;
+            const price = document.getElementById('modal-product-price').value;
             const voucherCode = document.querySelector('input[name="voucher_code"]')?.value || '';
-            let updatedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', ''));
-            createTransaction(id, name, updatedPrice, discount, voucherCode);
+            let updatedPrice = parseInt(document.getElementById('modal-price').innerText.replace('IDR ', ''));
+            createTransaction(id, name, updatedPrice, price - updatedPrice, voucherCode);
         });
 
-        if (discount) {
-            document.getElementById('voucher-form').addEventListener('submit', function(event) {
-                event.preventDefault();
-                applyVoucher(id, name, price);
+        document.getElementById('voucher-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const id = document.getElementById('modal-product-id').value;
+            const name = document.getElementById('modal-product-name').value;
+            const price = document.getElementById('modal-product-price').value;
+            applyVoucher(id, name, price);
+        });
+
+        function applyVoucher(id, name, price) {
+            const voucherCode = document.querySelector('input[name="voucher_code"]').value;
+            fetch('api.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    product_id: id,
+                    product_name: name,
+                    product_price: price,
+                    voucher_code: voucherCode
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const messageDiv = document.getElementById('voucher-message');
+                if (data.success) {
+                    const discountedPrice = data.discounted_price;
+                    document.getElementById('modal-price').innerText = `IDR ${discountedPrice}`;
+                    messageDiv.innerHTML = `<p class="success">${data.message}</p>`;
+                } else {
+                    messageDiv.innerHTML = `<p class="alert">${data.message}</p>`;
+                }
             });
         }
-    }
 
-    function applyVoucher(id, name, price) {
-    const voucherCode = document.querySelector('input[name="voucher_code"]').value;
-    fetch('apply_voucher.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            product_id: id,
-            product_name: name,
-            product_price: price,
-            voucher_code: voucherCode
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        const messageDiv = document.getElementById('voucher-message');
-        if (data.success) {
-            const discountedPrice = data.discounted_price;
-            document.getElementById(`updated-price-${id}`).innerText = `IDR ${discountedPrice}`;
-            document.getElementById(`price-${id}`).innerText = `Price: Rp ${discountedPrice}`;
-            messageDiv.innerHTML = `<p class="success">${data.message}</p>`;
-        } else {
-            messageDiv.innerHTML = `<p class="alert">${data.message}</p>`;
+        function createTransaction(id, name, price, discount, voucherCode) {
+            fetch('api.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    product_id: id,
+                    product_name: name,
+                    product_price: price,
+                    discount: discount,
+                    total_price: price,
+                    voucher_code: voucherCode
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.snap_url) {
+                    $('#paymentModal').modal('hide');
+                    const qrcodeDiv = document.createElement('div');
+                    qrcodeDiv.innerHTML = `<iframe src="${data.snap_url}" width="75%"></iframe>`;
+                    document.body.appendChild(qrcodeDiv);
+                } else {
+                    alert('Error: Unable to retrieve payment URL.');
+                }
+            });
         }
-    });
-}
-
-function createTransaction(id, name, price, discount, voucherCode) {
-    let discountedPrice = price;
-    if (voucherCode) {
-        discountedPrice = parseInt(document.getElementById(`updated-price-${id}`).innerText.replace('IDR ', ''));
-    }
-
-    fetch('create_transaction.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            product_id: id,
-            product_name: name,
-            product_price: price,
-            discount: price - discountedPrice,
-            total_price: discountedPrice
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.snap_url) {
-            const qrcodeDiv = document.getElementById('qrcode');
-            qrcodeDiv.innerHTML = `<iframe src="${data.snap_url}" width="75%"></iframe>`;
-        } else {
-            alert('Error: Unable to retrieve payment URL.');
-        }
-    });
-}
 </script>
 </body>
 </html>
