@@ -24,26 +24,26 @@
                     <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                         <div class="sb-sidenav-menu">
                             <div class="nav">
-                                <a class="nav-link" href="index.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                    User
-                                </a>
-                                <a class="nav-link" href="index.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                    Produk
-                                </a>
-                                <a class="nav-link" href="transaksi.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                    Transaksi
-                                </a>
-                                <a class="nav-link" href="voucher.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                    Voucher
-                                </a>
-                                <a class="nav-link" href="logout.php">
-                                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                    Logout
-                                </a>
+                            <a class="nav-link" href="user.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                User
+                            </a>
+                            <a class="nav-link" href="index.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Produk
+                            </a>
+                            <a class="nav-link" href="transaksi.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Transaksi
+                            </a>
+                            <a class="nav-link" href="voucher.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Voucher
+                            </a>
+                            <a class="nav-link" href="logout.php">
+                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                                Logout
+                            </a>
                             </div>
                         </div>
                     </nav>
