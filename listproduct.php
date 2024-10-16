@@ -17,15 +17,25 @@ require 'function.php';
             font-family: 'Poppins', sans-serif;
         }
         .container-index {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
         }
         .product-list {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
+        }
+        .product {
+            background-color: #2b2d42;
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
         }
         .product {
             background-color: #2b2d42;
@@ -58,6 +68,7 @@ require 'function.php';
         .product button:hover {
             background-color: #b0b0b0;
         }
+        
         .modal-backdrop {
             background-color: rgba(0, 0, 0, 0.5);
         }
@@ -133,20 +144,74 @@ require 'function.php';
             width: 70%;
             max-width: 220px;
         }
+        .qr-modal .modal-content {
+        background-color: #ffffff;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+    .qr-modal .modal-body {
+        padding: 30px;
+        text-align: center;
+    }
+    .qr-modal .modal-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+    .qr-modal .qr-code-container {
+        background-color: #ffffff;
+        border-radius: 10px;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+    .qr-modal .qr-code-image {
+        max-width: 200px;
+        height: auto;
+    }
+    .qr-modal .qr-instructions {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 20px;
+    }
+    .qr-modal .btn-cancel {
+        background-color: #2b3242;
+        font-size: 110%;
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center ;
+        min-width: 120px;
+        margin-right: 40%;
+    }
+    .qr-modal .btn-check {
+        background-color: #e9ecef;
+        font-size: 110%;
+        color: #2b3242;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center ;
+        min-width: 120px;
+        margin-left: 40%;
+    }
         </style>
 </head>
 
 <body>
 <div class="container-index">
         <div class="header-index">
-            <h1>Product List</h1>
             <div class="container-button">
             <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal" style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
                 <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
             </button>
             </div>
             <div class="content">
-                <div class="product-list" id="product-list">
+            <div class="product-list" id="product-list">
                 <?php foreach ($products as $product): ?>
                     <div class="product">
                         <h2><?php echo htmlspecialchars($product['name']); ?></h2>
@@ -155,7 +220,7 @@ require 'function.php';
                         <button onclick="showPaymentModal(<?php echo $product['id']; ?>, '<?php echo htmlspecialchars($product['name']); ?>', <?php echo $product['price']; ?>, <?php echo $product['discount']; ?>)">Buy</button>
                     </div>
                 <?php endforeach; ?>
-                </div>
+            </div>
                 <div class="container-qrcode" style="display: contents;">
                     <div id="qrcode" class="qrcode"></div>
             </div>
@@ -175,41 +240,11 @@ require 'function.php';
                             <button class="btn btn-number" onclick="appendNumber('5')">5</button>
                             <button class="btn btn-number" onclick="appendNumber('6')">6</button>
                             <button class="btn btn-number" onclick="appendNumber('7')">7</button>
-                            <button class="btn btn-number" onclick="appendNumber('8')">8</button>
+                                <button class="btn btn-number" onclick="appendNumber('8')">8</button>
                             <button class="btn btn-number" onclick="appendNumber('9')">9</button>
                             <button class="btn btn-backspace" onclick="backspace()"><i class="fas fa-backspace"></i></button>
                             <button class="btn btn-number" onclick="appendNumber('0')">0</button>
                             <button class="btn btn-enter" onclick="enter()"><i class="fas fa-check"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="container-confirmation">
-                        <div class="header-confirmation"></div>
-                        <div class="voucher-form">
-                            <button id="next-payment">Next Payment</button>
-                            <div class="order-details-confirmation">
-                                <h2 id="modal-price"></h2>
-                            </div>
-                            <form id="voucher-form" class="form-inline">
-                                <input type="hidden" id="modal-product-id" name="product_id">
-                                <input type="hidden" id="modal-product-name" name="product_name">
-                                <input type="hidden" id="modal-product-price" name="product_price">
-                                <input type="text" name="voucher_code" placeholder="Enter Voucher Code">
-                                <button type="submit" class="apply-button">Apply Voucher</button>
-                            </form>
-                            <div id="voucher-message"></div>
-                            <div class="footer-confirmation">
-                                <div class="payment-logos">
-                                    <img src="img/we-accept-the-payment.png" alt="method-payment">
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -300,91 +335,161 @@ require 'function.php';
         // });
 
         function showPaymentModal(id, name, price, discount) {
-            document.getElementById('modal-product-id').value = id;
-            document.getElementById('modal-product-name').value = name;
-            document.getElementById('modal-product-price').value = price;
-            document.getElementById('modal-price').innerText = `IDR ${price}`;
-            
-            if (discount) {
-                document.getElementById('voucher-form').style.display = 'contents';
-            } else {
-                document.getElementById('voucher-form').style.display = 'none';
+    createTransaction(id, name, price, discount).then(response => {
+        if (response.success) {
+            // Hapus modal lama jika ada
+            const existingModal = document.getElementById('qrCodeModal');
+            if (existingModal) {
+                existingModal.remove();
             }
 
-            $('#paymentModal').modal('show');
+            // Buat elemen modal baru
+            const modalHTML = `
+                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <div class="modal-title">
+                                    <img src="img/Logo_QRIS-removebg-preview.png" alt="QRIS Logo" style="max-width: 20%; height: auto;">
+                                </div>
+                                <div class="qr-code-container">
+                                    <img src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
+                                </div>
+                                <p class="qr-instructions">*scan QR code ini untuk melakukan pembayaran</p>
+                                <button type="button" class="btn btn-cancel" data-bs-dismiss="modal">Batal</button>
+                                <button type="button" class="btn btn-check" onclick="checkPaymentStatus('${response.order_id}')">Cek</button>
+                                <div class="status-message mt-3"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Tambahkan modal ke body
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+            // Dapatkan referensi ke modal yang baru dibuat
+            const qrCodeModal = document.getElementById('qrCodeModal');
+
+            // Set atribut data-transaction-id
+            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
+
+            // Tampilkan modal
+            const modalInstance = new bootstrap.Modal(qrCodeModal);
+            modalInstance.show();
+        } else {
+            alert('Error: ' + response.message);
         }
+    }).catch(error => {
+        console.error('Error in createTransaction:', error);
+        alert('Terjadi kesalahan saat membuat transaksi.');
+    });
+}
 
-        document.getElementById('next-payment').addEventListener('click', function() {
-            const id = document.getElementById('modal-product-id').value;
-            const name = document.getElementById('modal-product-name').value;
-            const price = document.getElementById('modal-product-price').value;
-            const voucherCode = document.querySelector('input[name="voucher_code"]')?.value || '';
-            let updatedPrice = parseInt(document.getElementById('modal-price').innerText.replace('IDR ', ''));
-            createTransaction(id, name, updatedPrice, price - updatedPrice, voucherCode);
-        });
-
-        document.getElementById('voucher-form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const id = document.getElementById('modal-product-id').value;
-            const name = document.getElementById('modal-product-name').value;
-            const price = document.getElementById('modal-product-price').value;
-            applyVoucher(id, name, price);
-        });
-
-        function applyVoucher(id, name, price) {
-            const voucherCode = document.querySelector('input[name="voucher_code"]').value;
-            fetch('api.php', {
+        
+        function createTransaction(id, name, price, discount) {
+            return fetch('api.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    action: 'create_transaction',
                     product_id: id,
                     product_name: name,
                     product_price: price,
-                    voucher_code: voucherCode
+                    discount: discount
                 })
             })
             .then(response => response.json())
-            .then(data => {
-                const messageDiv = document.getElementById('voucher-message');
-                if (data.success) {
-                    const discountedPrice = data.discounted_price;
-                    document.getElementById('modal-price').innerText = `IDR ${discountedPrice}`;
-                    messageDiv.innerHTML = `<p class="success">${data.message}</p>`;
-                } else {
-                    messageDiv.innerHTML = `<p class="alert">${data.message}</p>`;
-                }
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memproses permintaan.');
             });
         }
 
-        function createTransaction(id, name, price, discount, voucherCode) {
-            fetch('api.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    product_id: id,
-                    product_name: name,
-                    product_price: price,
-                    discount: discount,
-                    total_price: price,
-                    voucher_code: voucherCode
-                })
+        function checkPaymentStatus() {
+        const modal = document.getElementById('qrCodeModal');
+        const statusMessage = modal.querySelector('.status-message');
+        const checkButton = modal.querySelector('.btn-check');
+        
+        // Disable the check button and show loading state
+        checkButton.disabled = true;
+        checkButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memeriksa...';
+        
+        // Assuming you have a way to get the current transaction ID
+        const transactionId = getCurrentTransactionId();
+        
+        fetch('api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                action: 'check_payment_status',
+                transaction_id: transactionId
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.snap_url) {
-                    $('#paymentModal').modal('hide');
-                    const qrcodeDiv = document.createElement('div');
-                    qrcodeDiv.innerHTML = `<iframe src="${data.snap_url}" width="75%"></iframe>`;
-                    document.body.appendChild(qrcodeDiv);
-                } else {
-                    alert('Error: Unable to retrieve payment URL.');
+        })
+        .then(response => response.json())
+        .then(data => {
+            checkButton.disabled = false;
+            checkButton.innerHTML = 'Cek';
+            
+            if (data.success) {
+                switch (data.status) {
+                    case 'settlement':
+                        statusMessage.innerHTML = '<div class="alert alert-success" role="alert">Pembayaran berhasil!</div>';
+                        setTimeout(() => {
+                            const qrCodeModal = bootstrap.Modal.getInstance(modal);
+                            qrCodeModal.hide();
+                            // Optionally, refresh the page or update the UI
+                            // window.location.reload();
+                        }, 2000);
+                        break;
+                    case 'pending':
+                        statusMessage.innerHTML = '<div class="alert alert-warning" role="alert">Pembayaran masih dalam proses. Silakan coba cek lagi nanti.</div>';
+                        break;
+                    case 'expire':
+                        statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran telah kedaluwarsa. Silakan lakukan pemesanan ulang.</div>';
+                        break;
+                    case 'cancel':
+                        statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran dibatalkan. Silakan lakukan pemesanan ulang jika diperlukan.</div>';
+                        break;
+                    default:
+                        statusMessage.innerHTML = '<div class="alert alert-info" role="alert">Status pembayaran: ' + data.status + '</div>';
                 }
-            });
-        }
+            } else {
+                statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan: ' + data.message + '</div>';
+            }
+        })
+        .catch(error => {
+            checkButton.disabled = false;
+            checkButton.innerHTML = 'Cek';
+            statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat memeriksa status. Silakan coba lagi.</div>';
+            console.error('Error:', error);
+        });
+    }
+
+    function getCurrentTransactionId() {
+    // Mencari modal QR code
+    const modal = document.getElementById('qrCodeModal');
+    
+    if (!modal) {
+        console.error('Modal QR code tidak ditemukan');
+        return null;
+    }
+    
+    // Mencoba mendapatkan ID transaksi dari atribut data
+    const transactionId = modal.getAttribute('data-transaction-id');
+    
+    if (!transactionId) {
+        console.error('ID transaksi tidak ditemukan pada modal');
+        return null;
+    }
+    return modal.getAttribute('data-transaction-id');
+    return transactionId;
+}
+
 </script>
 </body>
 </html>
