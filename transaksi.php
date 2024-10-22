@@ -24,7 +24,7 @@ require 'cek.php';
                 <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                     <div class="sb-sidenav-menu">
                         <div class="nav">
-                        <a class="nav-link" href="index.php">
+                            <a class="nav-link" href="user.php">
                                 <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                                 User
                             </a>
@@ -74,7 +74,7 @@ require 'cek.php';
                                         </thead>
                                         <tbody>
                                         <?php
-                                            $ambilsemuadatatransaksi = mysqli_query($conn, "select * from transaksi");
+                                            $ambilsemuadatatransaksi = mysqli_query($conn, "SELECT * FROM transaksi ORDER BY tanggal DESC");
                                             $i = 1;
                                             while($data=mysqli_fetch_array($ambilsemuadatatransaksi)){
                                                 $product_name = $data['product_name'];
@@ -158,25 +158,4 @@ require 'cek.php';
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/datatables-demo.js"></script>
     </body>
-    <!-- The Modal -->
-  <div class="modal fade" id="myModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-      
-        <!-- Modal Header -->
-        <div class="modal-header">
-          <h4 class="modal-title">Tambah Transaksi</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        
-        <!-- Modal body -->
-         <form method="post">
-         <div class="modal-body">
-        <input type="text" name="product_name" placeholder="Nama Barang" class="form-control" required><br>
-        <input type="number" name="price" placeholder="Harga" class="form-control" required><br>
-        <input type="date" name="tanggal" placeholder="Tanggal Masuk" class="form-control" required><br>
-        <input type="text" name="status" placeholder="Nama Penerima" class="form-control" required><br>
-        <button type="submit" class="btn btn-primary" name="TambahTransaksi">Submit</button><br>
-        </div>
-        </form>
 </html>

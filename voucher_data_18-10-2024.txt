@@ -1,0 +1,24 @@
+Daftar Voucher: 
+====================================
+Kode Voucher | Jumlah Diskon | Status | Tanggal Digunakan
+------------------------------------
+A6240077328 |  | Belum Digunakan | -
+A7644723608 |  | Belum Digunakan | -
+A1955187464 |  | Belum Digunakan | -
+A6201988318 |  | Belum Digunakan | -
+A3383928337 |  | Belum Digunakan | -
+A8187300565 |  | Belum Digunakan | -
+A8791177594 |  | Belum Digunakan | -
+A6237596080 |  | Belum Digunakan | -
+A1613832802 |  | Belum Digunakan | -
+A3230742466 |  | Belum Digunakan | -
+B5892182045 |  | Belum Digunakan | -
+B9913400834 |  | Belum Digunakan | -
+B6613641081 |  | Belum Digunakan | -
+B6065367251 |  | Belum Digunakan | -
+B2452861934 |  | Belum Digunakan | -
+B3394321998 |  | Belum Digunakan | -
+B6768413823 |  | Belum Digunakan | -
+B7159891401 |  | Belum Digunakan | -
+B3432609803 |  | Belum Digunakan | -
+B3302760815 |  | Belum Digunakan | -

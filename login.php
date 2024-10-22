@@ -25,7 +25,7 @@ if(isset($_POST['login'])){
         header('location:index.php');
     }
 
-    if(isset($_POST['kembali'])){
+    if(isset($_POST['kembali'])){    
         header('location:listproduct.php');
         exit;
     }

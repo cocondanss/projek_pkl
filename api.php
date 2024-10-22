@@ -25,14 +25,13 @@ try {
                     create_transaction($data);
                 } elseif ($data['action'] === 'apply_voucher') {
                     apply_voucher($data);
+                } elseif($data['action'] === 'check_payment_status') {
+                    check_payment_status($data);
                 }
             } else {
                 header("HTTP/1.0 400 Bad Request");
                 echo json_encode(["error" => "Missing action in request"]);
             }
-            break;
-        case 'check_payment_status':
-            check_payment_status($data);
             break;
         default:
             header("HTTP/1.0 405 Method Not Allowed");
@@ -121,6 +120,7 @@ function create_transaction($data) {
         return;
     }
 
+    $order_id = uniqid();
     $product_id = $data['product_id'];
     $product_name = $data['product_name'];
     $product_price = intval($data['product_price']);
@@ -182,7 +182,8 @@ function create_transaction($data) {
 
         echo json_encode([
             'success' => true,
-            'qr_code_url' => $qr_code_url
+            'qr_code_url' => $qr_code_url,
+            'order_id' => $order_id
         ]);
     } catch (\Exception $e) {
         echo json_encode([
