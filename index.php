@@ -16,6 +16,13 @@ require 'cek.php';
             <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
             </head>
+
+            <style>
+                body {
+                    font-family: 'Poppins', sans-serif;
+                }
+            </style>
+
         <body class="sb-nav-fixed">
             <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
                 <a class="navbar-brand" href="index.php" style="color: white;">Daclen</a>
