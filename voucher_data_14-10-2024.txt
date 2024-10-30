@@ -1,6 +1,0 @@
-Daftar Voucher: 
-====================================
-Kode Voucher | Jumlah Diskon | Status | Tanggal Digunakan
-------------------------------------
-A4712915359 | 100000 | Belum Digunakan | -
-A1553108228 | 100000 | Belum Digunakan | -

@@ -1,6 +1,19 @@
 <?php
-require 'function.php';
+require_once 'function.php';
 require 'cek.php';
+
+if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
+    // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
+    $sql = "DELETE FROM vouchers2 WHERE used_at IS NOT NULL AND one_time_use = 1"; // Hanya hapus voucher yang sudah digunakan dan sekali pakai
+
+    if ($conn->query($sql) === TRUE) {
+        echo "Voucher yang sudah digunakan dan sekali pakai berhasil dihapus.";
+    } else {
+        echo "Error: " . $conn->error; // Tampilkan kesalahan jika ada
+        // Tambahkan log untuk debugging
+        error_log("Query failed: " . $sql);
+    }
+}
 
 function generateVoucherCode($length = 8) {
     $characters = '0123456789';
@@ -27,12 +40,12 @@ if (isset($_POST['TambahVoucherOtomatis'])) {
         $discountAmount = $diskonVoucher;
     }
 
-    $query = "ALTER TABLE vouchers CHANGE id id INT AUTO_INCREMENT;";
+    $query = "ALTER TABLE vouchers2 CHANGE id id INT AUTO_INCREMENT;";
 mysqli_query($conn, $query);
 
 for ($i = 0; $i < $voucherCount; $i++) {
     $voucherCode = generateVoucherCode();
-    $query = "INSERT INTO vouchers (code, discount_amount) VALUES ('$voucherCode', '$discountAmount')";
+    $query = "INSERT INTO vouchers2 (code, discount_amount) VALUES ('$voucherCode', '$discountAmount')";
     mysqli_query($conn, $query);
 }
 
@@ -43,21 +56,33 @@ for ($i = 0; $i < $voucherCount; $i++) {
     header('Location: voucher.php');
 }
 if (isset($_POST['TambahVoucherManual'])) {
-    $manualCode = trim($_POST['manual_code']); // tambahkan trim() untuk menghilangkan spasi
-    $manualCode = mysqli_real_escape_string($conn, $manualCode); // tambahkan mysqli_real_escape_string() untuk menghindari SQL injection
+    $manualCode = trim($_POST['manual_code']);
+    $manualCode = mysqli_real_escape_string($conn, $manualCode);
     $nominal = $_POST['nominal'];
     $isFree = isset($_POST['is_free']) ? 1 : 0;
     $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
 
-    $query = "INSERT INTO vouchers (code, discount_amount, is_free, one_time_use) VALUES ('$manualCode', '$nominal', '$isFree', '$oneTimeUse') ON DUPLICATE KEY UPDATE discount_amount = VALUES(discount_amount), is_free = VALUES(is_free), one_time_use = VALUES(one_time_use)";
-    mysqli_query($conn, $query);
+    $query = "INSERT INTO vouchers2 (code, discount_amount, is_free, one_time_use) 
+              VALUES ('$manualCode', '$nominal', '$isFree', '$oneTimeUse') 
+              ON DUPLICATE KEY UPDATE 
+              discount_amount = VALUES(discount_amount), 
+              is_free = VALUES(is_free), 
+              one_time_use = VALUES(one_time_use)";
+    
+    if (mysqli_query($conn, $query)) {
+        header('Location: voucher.php?status=success&message=Voucher manual berhasil ditambahkan');
+        exit();
+    } else {
+        header('Location: voucher.php?status=error&message=Gagal menambahkan voucher');
+        exit();
+    }
 }
 
     // echo "<script>alert('Voucher manual berhasil ditambahkan');</script>";
 
  if (isset($_POST['hapusvoucher'])) {
     $id = $_POST['delete'];
-    $query = "DELETE FROM vouchers WHERE id IN (" . implode(',', $id) . ")";
+    $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
     mysqli_query($conn, $query);
     header('Location: voucher.php');
 }
@@ -78,13 +103,6 @@ if (isset($_POST['TambahVoucherManual'])) {
         .hidden { display: none; }
     </style>                    
 </head>
-
-    <style>
-            body {
-                font-family: 'Poppins', sans-serif;
-            }
-    </style>
-
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <a class="navbar-brand" href="index.php" style="color: white;">Daclen</a>
@@ -143,9 +161,11 @@ if (isset($_POST['TambahVoucherManual'])) {
                                     Hapus Voucher Terpilih
                                 </button>
                                 <p></p>
-                                <button type="submit" class="btn btn-danger" name="hapus_voucher_digunakan">
-                                    Hapus Voucher yg Sudah Digunakan
-                                </button>
+                                <form method="POST" action="voucher.php">
+                                    <button type="submit" name="hapusVoucherYangSudahDigunakan" class="btn btn-danger" id="btnHapusVoucher" onclick="return confirm('Apakah Anda yakin ingin menghapus semua voucher yang sudah digunakan?');">
+                                        Hapus Voucher yang Sudah Digunakan
+                                    </button>
+                                </form>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
@@ -156,8 +176,8 @@ if (isset($_POST['TambahVoucherManual'])) {
                                                 <th>Code</th>
                                                 <th>Diskon</th>
                                                 <th>Status</th>
-                                                <th>Gratis</th>
-                                                <th>Sekali Pakai</th>
+                                                <th>gratis</th>
+                                                <th>sekali pakai</th>
                                                 <th>Tanggal Dibuat</th>
                                                 <th>Tanggal Digunakan</th>
                                                 <th>Aksi</th>
@@ -165,54 +185,54 @@ if (isset($_POST['TambahVoucherManual'])) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                                <?php
-                                                   $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
-                                                   $i = 1;
-                                                   while($data = mysqli_fetch_array($ambilsemuadatavoucher)){
-                                                       $code = $data['code'];
-                                                       $discount_amount = $data['discount_amount'];
-                                                       $is_used = $data['is_used'];
-                                                       $is_free = $data['is_free'];
-                                                       $one_time_use = $data['one_time_use'];
-                                                       $id = $data['id'];
-                                                       $created_at = $data['created_at'];
-                                                       $used_at = $data['used_at'];
-                                                       
-                                                       // Tentukan status berdasarkan used_at
-                                                       $status = ($used_at !== null) ? "Sudah digunakan" : "Belum digunakan";
-                                                       
-                                                       $isFreeDisplay = ($is_free == 1) ? "Ya" : "Tidak";
-                                                       $oneTimeUse = ($one_time_use == 1) ? "Ya" : "Tidak";
-                                                       
-                                                       // Jika voucher gratis, set discount_amount menjadi 0
-                                                       if ($is_free == 1) {
-                                                           $discount_amount = 0;
-                                                       }
-                                                   
-                                                       $voucherType = ($discount_amount > 100) ? 'rupiah' : 'diskon';
-                                                   ?>
-                                                   <tr>
-                                                       <td><?=$i++;?></td>
-                                                       <td><?=$code;?></td>
-                                                       <td>
-                                                           <?php if ($is_free == 1): ?>
-                                                               0
-                                                           <?php elseif ($voucherType == 'diskon'): ?>
-                                                               <?= $discount_amount . '%' ?>
-                                                           <?php else: ?>
-                                                               <?= 'Rp ' . number_format($discount_amount, 0, ',', '.') ?>
-                                                           <?php endif; ?>
-                                                       </td>
-                                                       <td><?=$status;?></td>
-                                                       <td><?=$isFreeDisplay;?></td>
-                                                       <td><?=$oneTimeUse;?></td>
-                                                       <td><?=$created_at;?></td>
-                                                       <td><?= $used_at ? $used_at : '-'; ?></td>
-                                                       <td><input type="checkbox" name="delete[]" value="<?=$id;?>"></td>
-                                                   </tr>
                                             <?php
-                                            }
-                                            ?>
+                                                $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers2");
+                                                $i = 1;
+                                                while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
+                                                    $code = $data['code'];
+                                                    $discount_amount = $data['discount_amount'];
+                                                    $is_free = $data['is_free'];
+                                                    $one_time_use = $data['one_time_use'];
+                                                    $id = $data['id'];
+                                                    $created_at = $data['created_at'];
+                                                    $used_at = $data['used_at'];
+
+                                                    // Tentukan status berdasarkan used_at
+                                                    $status_used = !empty($used_at) ? "Sudah digunakan" : "Belum digunakan";
+
+                                                    $isFreeDisplay = ($is_free == 1) ? "Ya" : "Tidak";
+                                                    $oneTimeUse = ($one_time_use == 1) ? "Ya" : "Tidak";
+
+                                                    // Jika voucher gratis, set discount_amount menjadi 0
+                                                    if ($is_free == 1) {
+                                                        $discount_amount = 0;
+                                                    }
+
+                                                    // Tentukan jenis voucher (diskon atau rupiah)
+                                                    $voucherType = ($discount_amount > 100) ? 'rupiah' : 'diskon';
+                                                ?>
+                                                    <tr>
+                                                        <td><?= $i++; ?></td>
+                                                        <td><?= htmlspecialchars($code); ?></td>
+                                                        <td>
+                                                            <?php if ($is_free == 1): ?>
+                                                                0
+                                                            <?php elseif ($voucherType == 'diskon'): ?>
+                                                                <?= htmlspecialchars($discount_amount) . '%' ?>
+                                                            <?php else: ?>
+                                                                <?= 'Rp ' . number_format($discount_amount, 0, ',', '.') ?>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td><?= htmlspecialchars($status_used); ?></td> <!-- Menampilkan status -->
+                                                        <td><?= htmlspecialchars($isFreeDisplay); ?></td>
+                                                        <td><?= htmlspecialchars($oneTimeUse); ?></td>
+                                                        <td><?= htmlspecialchars($created_at); ?></td>
+                                                        <td><?= !empty($used_at) ? htmlspecialchars($used_at) : '-'; ?></td>
+                                                        <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
+                                                    </tr>
+                                                <?php
+                                                }
+                                                ?>
                                         </tbody>
                                     </table>
                                 </div>

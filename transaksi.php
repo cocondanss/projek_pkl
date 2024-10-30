@@ -14,13 +14,6 @@ require 'cek.php';
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     </head>
-
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
-
     <body class="sb-nav-fixed">
         <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
             <a class="navbar-brand" href="index.php" style="color: white;">Daclen</a>
@@ -28,32 +21,63 @@ require 'cek.php';
         </nav>
         <div id="layoutSidenav">
             <div id="layoutSidenav_nav">
-                <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                    <div class="sb-sidenav-menu">
-                        <div class="nav">
-                            <a class="nav-link" href="user.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                User
-                            </a>
-                            <a class="nav-link" href="index.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Produk
-                            </a>
-                            <a class="nav-link" href="transaksi.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Transaksi
-                            </a>
-                            <a class="nav-link" href="voucher.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Voucher
-                            </a>
-                            <a class="nav-link" href="logout.php">
-                                <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                                Logout
-                            </a>
+                <!-- Modifikasi pada bagian nav di index.php dan halaman lainnya -->
+                    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                        <div class="sb-sidenav-menu">
+                            <div class="nav">
+                                <?php
+                                // Get current page filename
+                                $current_page = basename($_SERVER['PHP_SELF']);
+                                
+                                // Array of menu items with their corresponding files and icons
+                                $menu_items = [
+                                    'user' => ['file' => 'user.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'User'],
+                                    'produk' => ['file' => 'index.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Produk'],
+                                    'transaksi' => ['file' => 'transaksi.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Transaksi'],
+                                    'voucher' => ['file' => 'voucher.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Voucher'],
+                                    'settings' => ['file' => 'settings.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Settings'],
+                                    'logout' => ['file' => 'logout.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Logout']
+                                ];
+
+                                // Generate menu items
+                                foreach ($menu_items as $key => $item) {
+                                    // Check if current page is index.php and menu item is produk
+                                    $isActive = ($current_page === $item['file']) || 
+                                            ($current_page === 'index.php' && $key === 'produk');
+                                    
+                                    $activeClass = $isActive ? 'active' : '';
+                                    
+                                    echo '<a class="nav-link ' . $activeClass . '" href="' . $item['file'] . '">
+                                            <div class="sb-nav-link-icon"><i class="' . $item['icon'] . '"></i></div>
+                                            ' . $item['text'] . '
+                                        </a>';
+                                }
+                                ?>
+                            </div>
                         </div>
-                    </div>
-                </nav>
+                    </nav>
+
+                    <style>
+                    /* Add this to your style.css file */
+                    .nav-link.active {
+                        background-color: rgba(255, 255, 255, 0.1);
+                        color: #fff !important;
+                        font-weight: 500;
+                    }
+
+                    .nav-link {
+                        transition: background-color 0.2s ease-in-out;
+                    }
+
+                    .nav-link:hover {
+                        background-color: rgba(255, 255, 255, 0.05);
+                    }
+
+                    /* Tambahan untuk memastikan ikon juga terlihat lebih jelas saat aktif */
+                    .nav-link.active .sb-nav-link-icon {
+                        color: #fff;
+                    }
+                    </style>
             </div>
             <div id="layoutSidenav_content">
                 <main>
@@ -95,7 +119,7 @@ require 'cek.php';
                                             <tr>
                                                 <td><?=$i++;?></td>
                                                 <td><?=$product_name;?></td>
-                                                <td><?=$price;?></td>
+                                                <td>Rp<?=$price;?></td>
                                                 <td><?=$tanggal;?></td>
                                                 <td><?=$status;?></td>
                                                 <td>

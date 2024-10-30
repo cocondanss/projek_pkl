@@ -59,50 +59,48 @@ function get_products() {
 function apply_voucher($data) {
     global $db;
 
-    if (!isset($data['voucher_code'])) {
+    if (!isset($data['product_id']) || !isset($data['voucher_code']) || !isset($data['product_price'])) {
         header("HTTP/1.0 400 Bad Request");
-        echo json_encode(["error" => "Missing voucher code"]);
+        echo json_encode(["error" => "Missing required fields"]);
         return;
     }
 
+    $product_id = $data['product_id'];
     $voucher_code = $data['voucher_code'];
+    $product_price = $data['product_price'];
 
     try {
         $stmt = $db->prepare("SELECT id, discount_amount, is_used FROM vouchers WHERE code = ?");
         $stmt->execute([$voucher_code]);
         $voucher = $stmt->fetch();
 
-        if ($voucher && $voucher['is_used'] == 0) {
-            $discount = intval($voucher['discount_amount']);
+        if ($voucher) {
+            if ($voucher['is_used'] == 0) {
+                $discount = intval($voucher['discount_amount']);
+                $discounted_price = $product_price - $discount;
+                $voucher_message = "Voucher berhasil diterapkan!";
+                
+                date_default_timezone_set('Asia/Jakarta');
+                $currentTime = date("Y-m-d H:i:s");
+                $stmt = $db->prepare("UPDATE vouchers SET is_used = 1, used_at = ? WHERE id = ?");
+                $stmt->execute([$currentTime, $voucher['id']]);
 
-            // Get all products
-            $stmt = $db->prepare("SELECT id, price FROM products");
-            $stmt->execute();
-            $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            $discounted_prices = [];
-            foreach ($products as $product) {
-                $discounted_price = max(0, $product['price'] - $discount);
-                $discounted_prices[] = [
-                    'id' => $product['id'],
-                    'discounted_price' => $discounted_price
-                ];
+                echo json_encode([
+                    'success' => true,
+                    'discount' => $discount,
+                    'discounted_price' => $discounted_price,
+                    'message' => $voucher_message
+                ]);
+            } else {
+                echo json_encode([
+                    'success' => false,
+                    'message' => "Kode voucher sudah digunakan!"
+                ]);
             }
-
-            // Mark voucher as used
-            $stmt = $db->prepare("UPDATE vouchers SET is_used = 1, used_at = NOW() WHERE id = ?");
-            $stmt->execute([$voucher['id']]);
-
-            echo json_encode([
-                'success' => true,
-                'discount' => $discount,
-                'discounted_prices' => $discounted_prices,
-                'message' => "Voucher berhasil diterapkan ke semua produk!"
-            ]);
         } else {
             echo json_encode([
                 'success' => false,
-                'message' => $voucher ? "Kode voucher sudah digunakan!" : "Kode voucher tidak valid!"
+                'message' => "Kode voucher tidak valid!"
             ]);
         }
     } catch (Exception $e) {
@@ -120,28 +118,20 @@ function create_transaction($data) {
         return;
     }
 
-    $order_id = uniqid();
+    $order_id = 'TRX-' . time() . '-' . uniqid();
     $product_id = $data['product_id'];
     $product_name = $data['product_name'];
-    $product_price = intval($data['product_price']);
-    $discount = isset($data['discount']) ? intval($data['discount']) : 0;
-    $total_price = $product_price - $discount;
-
-    if ($total_price < 0) {
-        $total_price = 0;
-    }
-
-    $order_id = time();
+    $product_price = intval($data['product_price']); // This will now be the discounted price if a discount was applied
 
     $transaction_details = array(
         'order_id' => $order_id,
-        'gross_amount' => $total_price,
+        'gross_amount' => $product_price, // Using the potentially discounted price
     );
 
     $item_details = array(
         array(
             'id' => $product_id,
-            'price' => $total_price,
+            'price' => $product_price, // Using the potentially discounted price
             'quantity' => 1,
             'name' => $product_name
         )
@@ -177,8 +167,8 @@ function create_transaction($data) {
             throw new Exception("QR code URL not found in the response");
         }
 
-        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, tanggal, status) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$order_id, $product_id, $product_name, $total_price, date("Y-m-d"), 'pending']);
+        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, tanggal, status, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$order_id, $product_id, $product_name, $product_price, date("Y-m-d"), 'pending']);
 
         echo json_encode([
             'success' => true,

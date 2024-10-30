@@ -4,18 +4,20 @@ require 'function.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product_id = $_POST['product_id'];
     $visible = $_POST['visible'];
-
-    $query = "UPDATE products SET visible = ? WHERE id = ?";
-    $stmt = $conn->prepare($query);
+    
+    // Prepare statement untuk mencegah SQL injection
+    $stmt = $conn->prepare("UPDATE products SET visible = ? WHERE id = ?");
     $stmt->bind_param("ii", $visible, $product_id);
-
+    
+    $response = array();
     if ($stmt->execute()) {
-        echo json_encode(['success' => true]);
+        $response['success'] = true;
+        $response['message'] = 'Visibility updated successfully';
     } else {
-        echo json_encode(['success' => false, 'error' => $conn->error]);
+        $response['success'] = false;
+        $response['error'] = $stmt->error;
     }
-
-    $stmt->close();
-} else {
-    echo json_encode(['success' => false, 'error' => 'Invalid request method']);
+    
+    echo json_encode($response);
+    exit;
 }

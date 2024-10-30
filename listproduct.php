@@ -2,12 +2,94 @@
 require 'function.php';
 
 // Modify the query to only fetch visible products
-$query = "SELECT * FROM products WHERE visible = 1";
+$query = "SELECT * FROM products WHERE visible = 0 ";
 $result = mysqli_query($conn, $query);
 $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+function applyVoucher($voucherCode, $price) {
+    global $conn;
+    
+    $debug_info = "Voucher Code: $voucherCode, Original Price: $price\n";
+
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
+    $stmt->bind_param("s", $voucherCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        $debug_info .= "Voucher found: " . print_r($row, true) . "\n";
+
+        $discountAmount = $row['discount_amount'];
+        $debug_info .= "Discount Amount: $discountAmount\n";
+
+        $discountedPrice = $price - $discountAmount;
+        
+        $debug_info .= "Calculated Discounted Price: $discountedPrice\n";
+
+        $finalPrice = max($discountedPrice, 0); // Ensure price is not negative
+        
+        // Jika Anda ingin menyimpan informasi debug, Anda bisa menggunakan logging
+        // error_log($debug_info);
+        
+        return $finalPrice;
+    }
+
+    $debug_info .= "No voucher found\n";
+    // error_log($debug_info);
+    
+    return $price;
+}
+
+
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
+    if ($stmt === false) {
+        $debug_info .= "Failed to prepare statement: " . $conn->error . "\n";
+        error_log($debug_info);
+    $debug_info .= "No voucher found\n";
+    // error_log($debug_info);
+    
+    return $price;
+}
+// Inisialisasi array untuk menyimpan pesan voucher
+$voucherMessages = [];
+$voucherCode = '';
+// Jika ada permintaan POST untuk voucher
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
+    $voucherCode = $_POST['voucher_code'];
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
+    $stmt->bind_param("s", $voucherCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher hanya dapat digunakan sekali</p>";
+        } else {
+            // Proses penerapan voucher
+            date_default_timezone_set('Asia/Jakarta');
+            $currentDateTime = date('Y-m-d H:i:s');
+            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+            $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+            $updateStmt->execute();
+            
+            $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
+        }
+    } else {
+        $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
+    }
+}
+
+// Ambil data produk
+$produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1 ");
+if (!$produk) {
+    die("Query gagal: " . mysqli_error($conn));
+}
+
+// Jika ini adalah permintaan AJAX, hanya render bagian daftar produk
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
+    ob_start();
+}
 ?>
-
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -27,6 +109,16 @@ $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* height: 100vh; */
+        }
+
+        .header-index {
+            padding-top: 20px;
         }
 
         .product-list {
@@ -76,11 +168,61 @@ $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
             cursor: pointer;
             font-weight: bold;
             align-self: flex-end;
-            margin-top: auto;
+            min-width: 80px; /* Memberikan lebar minimum */
+            white-space: nowrap;
         }
 
         .product button:hover {
             background-color: #b0b0b0;
+        }
+
+        #modal-price {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2b2d42;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .product .price-changed {
+            animation: highlight 4s ease-in-out;
+        }
+
+        .product .original-price {
+            text-decoration: line-through;
+            color: #a0a0a0;
+        }
+
+        .product .discounted-price {
+            color: white;
+        }
+        .voucher-form {
+            margin:20px auto;
+            width: 300px;
+        }
+
+        .voucher-form input[type="text"] {
+            width: 100%;
+            margin-right: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .voucher-form button[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #282A51;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            
+        }
+
+        .voucher-form button[type="submit"]:hover {
+            background-color: #2B3044;
         }
 
         .modal-backdrop {
@@ -230,6 +372,63 @@ $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
             min-width: 120px;
             position: relative;
         }
+        #voucher-form {
+            width: 107%;
+            padding: 20px;
+            margin-bottom: 15px;
+            /* border: 1px solid #ccc;*/
+            border-radius: 5px;
+            
+        }
+
+        #product-list {
+            position: relative;
+            top: 0px;
+            left: 0px;
+        }
+        #product-container {
+            max-width: 1200px;
+            /* margin: 0 auto; */
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+            margin-top: 10px;
+            
+        }
+        h1.product-list-title {
+            margin-bottom: 10px;
+            font-size: 24px;
+            color: #333;
+            /* margin: 0 0 10px 0; */
+            padding: 10px 0;
+            border-bottom: 2px solid #eee;
+        }
+        .price-container {
+            min-height: 50px; 
+            transition: all 0.3s ease;
+
+        }
+        #product-container {
+            margin-top: 10px;
+        }
+        #voucher-message-container {
+            transition: opacity 0.5s ease-in-out;
+        }
+        .voucher-message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .voucher-message.error {
+            background-color: #ffecec;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .voucher-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
     </style>
 </head>
 <body>
@@ -241,20 +440,40 @@ $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
                 </button>
             </div>
-            <div class="content">
+            <div class="product-container">
                 <div class="product-list" id="product-list">
-                    <?php foreach ($products as $product): ?>
-                        <div class="product">
-                            <h2><?php echo htmlspecialchars($product['name']); ?></h2>
-                            <p id="price-<?php echo $product['id']; ?>">Rp
-                                <?php echo number_format($product['price'], 0, ',', '.'); ?>
-                            </p>
-                            <p id="description-<?php echo $product['id']; ?>">
-                                <?php echo htmlspecialchars($product['description']); ?>
-                            </p>
-                            <button onclick="showPaymentModal(<?php echo $product['id']; ?>, '<?php echo htmlspecialchars($product['name']); ?>', <?php echo $product['price']; ?>, <?php echo $product['discount']; ?>)">Buy</button>
+                    <?php foreach ($produk as $item): 
+                        $originalPrice = $item['price'];
+                        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                    ?>
+                        <div class="product" data-product-id="<?php echo $item['id']; ?>">
+                            <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+                            <div class="price-container">
+                                <?php if ($discountedPrice < $originalPrice): ?>
+                                    <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                                    <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?></span></p>
+                                <?php else: ?>
+                                    <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                                <?php endif; ?>
+                            </div>
+                            <p><?php echo htmlspecialchars($item['description']); ?></p>
+                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $originalPrice; ?>)">Buy</button>
                         </div>
                     <?php endforeach; ?>
+                    <div class="voucher-form">
+                        <div id="voucher-message-container">
+                            <?php
+                            // Tampilkan semua pesan voucher
+                                foreach ($voucherMessages as $message) {
+                                echo $message;
+                            }
+                            ?>
+                        </div>
+                        <form id="voucher-form" method="POST">
+                            <input type="text" name="voucher_code" placeholder="Masukkan kode voucher">
+                            <button type="submit">Terapkan Voucher</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -275,8 +494,7 @@ $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                 <button class="btn btn-number" onclick="appendNumber('7')">7</button>
                                 <button class="btn btn-number" onclick="appendNumber('8')">8</button>
                                 <button class="btn btn-number" onclick="appendNumber('9')">9</button>
-                                <button class="btn btn-backspace" onclick="backspace()"><i
-                                        class="fas fa-backspace"></i></button>
+                                <button class="btn btn-backspace" onclick="backspace()"><i class="fas fa-backspace"></i></button>
                                 <button class="btn btn-number" onclick="appendNumber('0')">0</button>
                                 <button class="btn btn-enter" onclick="enter()"><i class="fas fa-check"></i></button>
                             </div>
@@ -289,6 +507,76 @@ $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
+
+            function showAndHideMessage() {
+                var messageContainer = document.getElementById('voucher-message-container');
+                if (messageContainer) {
+                    <?php
+                    if (isset($_SESSION['voucher_message'])) {
+                        echo "messageContainer.innerHTML = '" . $_SESSION['voucher_message'] . "';";
+                        echo "messageContainer.style.display = 'block';";
+                        unset($_SESSION['voucher_message']); // Hapus pesan dari session
+                    }
+                    ?>
+                    
+                    if (messageContainer.innerHTML.trim() !== '') {
+                        setTimeout(function() {
+                            $(messageContainer).fadeOut(500, function() {
+                                messageContainer.innerHTML = '';
+                            });
+                        }, 3000); // Pesan akan hilang setelah 3 detik
+                    }
+                }
+            }
+
+            // Panggil fungsi saat DOM selesai dimuat
+            document.addEventListener('DOMContentLoaded', showAndHideMessage);
+
+            // Fungsi untuk menangani submit form voucher
+            $(document).ready(function() {
+                $('#voucher-form').on('submit', function(e) {
+                    e.preventDefault();
+                    var formData = $(this).serialize();
+
+                    $.ajax({
+                        url: 'listproduct.php',
+                        type: 'POST',
+                        data: formData,
+                        success: function(response) {
+                            var $response = $(response);
+                            $('#product-list').html($response.find('#product-list').html());
+                            
+                            // Tampilkan pesan
+                            var message = $response.find('#voucher-message-container').html();
+                            $('#voucher-message-container').html(message).show();
+                            
+                            // Sembunyikan pesan setelah beberapa detik
+                            setTimeout(function() {
+                                $('#voucher-message-container').fadeOut(500, function() {
+                                    $(this).html('');
+                                });
+                            }, 1000);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX error:', status, error);
+                            alert('Terjadi kesalahan saat memproses voucher. Silakan coba lagi.');
+                        }
+                    });
+                });
+            });
+
+            function showPaymentModal(id, name, price) {
+                if (id && name && price) {
+                    document.getElementById('modal-product-id').value = id;
+                    document.getElementById('modal-product-name').value = name;
+                    document.getElementById('modal-product-price').value = price;
+                    document.getElementById('modal-price').innerText = 'Rp ' + price;
+                    $('#paymentModal').modal('show');
+                } else {
+                    console.error('Parameter tidak valid');
+                }
+            }
+
             let pinCode = '';
             let display = document.getElementById('display');
 
@@ -368,14 +656,27 @@ $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
             //         });
             // });
 
-            function showPaymentModal(id, name, price, discount) {
-                createTransaction(id, name, price, discount).then(response => {
-                    if (response.success) {
-                        // Hapus modal lama jika ada
-                        const existingModal = document.getElementById('qrCodeModal');
-                        if (existingModal) {
-                            existingModal.remove();
-                        }
+            function showPaymentModal(id, name, price) {
+                // Get the actual displayed price (which may be discounted)
+                const productElement = document.querySelector(`[data-product-id="${id}"]`);
+                let finalPrice = price;
+                
+                if (productElement) {
+                    const discountedPriceElement = productElement.querySelector('.discounted-price span');
+                    if (discountedPriceElement) {
+                        // Remove 'Rp ' and '.', then parse as integer
+                        finalPrice = parseInt(discountedPriceElement.textContent.replace(/[Rp\s\.]/g, ''));
+                    }
+                }
+
+                if (id && name && finalPrice !== undefined) {
+                    createTransaction(id, name, finalPrice)
+                        .then(response => {
+                            if (response.success) {
+                                const existingModal = document.getElementById('qrCodeModal');
+                                if (existingModal) {
+                                    existingModal.remove();
+                                }
                         // Buat elemen modal baru
                         const modalHTML = `
                         <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1" aria-hidden="true">
@@ -401,26 +702,23 @@ $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
                         </div>
                         `
 
-                        // Tambahkan modal ke body
                         document.body.insertAdjacentHTML('beforeend', modalHTML);
-                        // Dapatkan referensi ke modal yang baru dibuat
                         const qrCodeModal = document.getElementById('qrCodeModal');
-
-                        // Set atribut data-transaction-id
                         qrCodeModal.setAttribute('data-transaction-id', response.order_id);
-
-                        // Tampilkan modal
                         const modalInstance = new bootstrap.Modal(qrCodeModal);
                         modalInstance.show();
-                        
                     } else {
                         alert('Error: ' + response.message);
                     }
-                }).catch(error => {
+                })
+                .catch(error => {
                     console.error('Error in createTransaction:', error);
                     alert('Terjadi kesalahan saat membuat transaksi.');
                 });
-            }
+        } else {
+            console.error('Invalid parameters');
+        }
+    }
 
 
             function createTransaction(id, name, price, discount) {

@@ -14,12 +14,13 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Midtrans configuration
-define('MIDTRANS_SERVER_KEY', 'SB-Mid-server-BiPEZ8YxMZheywHq49sAQthl');
-define('MIDTRANS_CLIENT_KEY', 'SB-Mid-client-uJgC77ydf09Kgatf');
+// Get Midtrans settings from database
+$stmt = $db->query("SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('midtrans_server_key', 'midtrans_client_key', 'midtrans_is_production')");
+$settings = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
 
-// Set true for production environment
-define('IS_PRODUCTION', false);
+define('MIDTRANS_SERVER_KEY', $settings['midtrans_server_key']);
+define('MIDTRANS_CLIENT_KEY', $settings['midtrans_client_key']);
+define('IS_PRODUCTION', $settings['midtrans_is_production'] === '1');
 
 require_once 'vendor/autoload.php';
 

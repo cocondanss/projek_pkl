@@ -3,24 +3,30 @@ require 'function.php';
 
 //cek login, terdaftar atau tidak
 if(isset($_POST['login'])){
-     $email  = $_POST['email'];
-     $password = $_POST['password'];
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-     //cocokan dengan database
-     $cekdatabase = mysqli_query($conn, "SELECT * FROM login where email='$email' and password='$password'");
-     //hitung jumlah data
-     $hitung = mysqli_num_rows($cekdatabase);
+    $stmt = $conn->prepare("SELECT setting_key, setting_value FROM settings WHERE setting_key IN ('admin_email', 'admin_password')");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $settings = [];
+    while ($row = $result->fetch_assoc()) {
+        $settings[$row['setting_key']] = $row['setting_value'];
+    }
 
-     if($hitung>0){
+    if($email === $settings['admin_email'] && $password === $settings['admin_password']){
         $_SESSION['log'] = 'true';
         header('location:index.php');
-     } else {
-        header('location:login.php');
-     };
-};
-
+        exit;
+    } else {
+        $error = "Email atau password salah";
+        // Tambahkan ini untuk menampilkan pesan error
+        echo "<script>alert('Email atau password salah!');</script>";
+        // header('location:login.php');
+    }
+}
     if(!isset($_SESSION['log'])){
-
+            
     } else {
         header('location:index.php');
     }
@@ -43,11 +49,6 @@ if(isset($_POST['login'])){
         <link href="css/style.css" rel="stylesheet" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     </head>
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
     <body class="bg-dark">
             <div>
                 <main>
