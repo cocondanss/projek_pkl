@@ -109,34 +109,36 @@ if (isset($_POST['TambahVoucherManual'])) {
         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
     </nav>
     <div id="layoutSidenav">
+        <!-- Sidebar Navigasi -->
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <!-- <a class="nav-link" href="user.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            User
-                        </a> -->
-                        <a class="nav-link" href="index.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Produk
-                        </a>
-                        <a class="nav-link" href="transaksi.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Transaksi
-                        </a>
-                        <a class="nav-link" href="voucher.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Voucher
-                        </a>
-                        <a class="nav-link" href="settings.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Settings
-                        </a>
-                        <a class="nav-link" href="logout.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Logout
-                        </a>
+                        <?php
+                        // Mendapatkan nama file halaman saat ini
+                        $current_page = basename($_SERVER['PHP_SELF']);
+                        
+                        // Array menu navigasi
+                        $menu_items = [
+                            'produk' => ['file' => 'index.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Produk'],
+                            'transaksi' => ['file' => 'transaksi.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Transaksi'],
+                            'voucher' => ['file' => 'voucher.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Voucher'],
+                            'settings' => ['file' => 'settings.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Settings'],
+                            'logout' => ['file' => 'logout.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Logout']
+                        ];
+
+                        // Membuat menu items
+                        foreach ($menu_items as $key => $item) {
+                            $isActive = ($current_page === $item['file']) || 
+                                      ($current_page === 'index.php' && $key === 'produk');
+                            $activeClass = $isActive ? 'active' : '';
+                            
+                            echo '<a class="nav-link ' . $activeClass . '" href="' . $item['file'] . '">
+                                    <div class="sb-nav-link-icon"><i class="' . $item['icon'] . '"></i></div>
+                                    ' . $item['text'] . '
+                                </a>';
+                        }
+                        ?>
                     </div>
                 </div>
             </nav>

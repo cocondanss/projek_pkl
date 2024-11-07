@@ -228,7 +228,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <i class="fas fa-bars"></i>
         </button>
     </nav>
-
     <div id="layoutSidenav">
         <!-- Sidebar Navigasi -->
         <div id="layoutSidenav_nav">

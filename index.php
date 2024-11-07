@@ -56,65 +56,40 @@ while ($row = mysqli_fetch_assoc($result)) {
                 <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
             </nav>
             <div id="layoutSidenav">
-                <div id="layoutSidenav_nav">
-                    <!-- Modifikasi pada bagian nav di index.php dan halaman lainnya -->
-                    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                        <div class="sb-sidenav-menu">
-                            <div class="nav">
-                                <?php
-                                // Get current page filename
-                                $current_page = basename($_SERVER['PHP_SELF']);
-                                
-                                // Array of menu items with their corresponding files and icons
-                                $menu_items = [
-                                    // 'user' => ['file' => 'user.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'User'],
-                                    'produk' => ['file' => 'index.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Produk'],
-                                    'transaksi' => ['file' => 'transaksi.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Transaksi'],
-                                    'voucher' => ['file' => 'voucher.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Voucher'],
-                                    'settings' => ['file' => 'settings.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Settings'],
-                                    'logout' => ['file' => 'logout.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Logout']
-                                ];
+        <!-- Sidebar Navigasi -->
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <?php
+                        // Mendapatkan nama file halaman saat ini
+                        $current_page = basename($_SERVER['PHP_SELF']);
+                        
+                        // Array menu navigasi
+                        $menu_items = [
+                            'produk' => ['file' => 'index.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Produk'],
+                            'transaksi' => ['file' => 'transaksi.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Transaksi'],
+                            'voucher' => ['file' => 'voucher.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Voucher'],
+                            'settings' => ['file' => 'settings.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Settings'],
+                            'logout' => ['file' => 'logout.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Logout']
+                        ];
 
-                                // Generate menu items
-                                foreach ($menu_items as $key => $item) {
-                                    // Check if current page is index.php and menu item is produk
-                                    $isActive = ($current_page === $item['file']) || 
-                                            ($current_page === 'index.php' && $key === 'produk');
-                                    
-                                    $activeClass = $isActive ? 'active' : '';
-                                    
-                                    echo '<a class="nav-link ' . $activeClass . '" href="' . $item['file'] . '">
-                                            <div class="sb-nav-link-icon"><i class="' . $item['icon'] . '"></i></div>
-                                            ' . $item['text'] . '
-                                        </a>';
-                                }
-                                ?>
-                            </div>
-                        </div>
-                    </nav>
-
-                    <style>
-                    /* Add this to your style.css file */
-                    .nav-link.active {
-                        background-color: rgba(255, 255, 255, 0.1);
-                        color: #fff !important;
-                        font-weight: 500;
-                    }
-
-                    .nav-link {
-                        transition: background-color 0.2s ease-in-out;
-                    }
-
-                    .nav-link:hover {
-                        background-color: rgba(255, 255, 255, 0.05);
-                    }
-
-                    /* Tambahan untuk memastikan ikon juga terlihat lebih jelas saat aktif */
-                    .nav-link.active .sb-nav-link-icon {
-                        color: #fff;
-                    }
-                    </style>
+                        // Membuat menu items
+                        foreach ($menu_items as $key => $item) {
+                            $isActive = ($current_page === $item['file']) || 
+                                      ($current_page === 'index.php' && $key === 'produk');
+                            $activeClass = $isActive ? 'active' : '';
+                            
+                            echo '<a class="nav-link ' . $activeClass . '" href="' . $item['file'] . '">
+                                    <div class="sb-nav-link-icon"><i class="' . $item['icon'] . '"></i></div>
+                                    ' . $item['text'] . '
+                                </a>';
+                        }
+                        ?>
+                    </div>
                 </div>
+            </nav>
+        </div>
                 <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid">
