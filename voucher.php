@@ -1,31 +1,20 @@
 <?php
-/**
- * File: voucher.php
- * Deskripsi: Halaman manajemen voucher untuk sistem
- */
-
 require_once 'function.php';
 require 'cek.php';
 
-/**
- * Fungsi untuk menghapus voucher yang sudah digunakan
- */
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
-    $sql = "DELETE FROM vouchers2 WHERE used_at IS NOT NULL AND one_time_use = 1";
-    
+    // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
+    $sql = "DELETE FROM vouchers2 WHERE used_at IS NOT NULL AND one_time_use = 1"; // Hanya hapus voucher yang sudah digunakan dan sekali pakai
+
     if ($conn->query($sql) === TRUE) {
         echo "Voucher yang sudah digunakan dan sekali pakai berhasil dihapus.";
     } else {
-        echo "Error: " . $conn->error;
+        echo "Error: " . $conn->error; // Tampilkan kesalahan jika ada
+        // Tambahkan log untuk debugging
         error_log("Query failed: " . $sql);
     }
 }
 
-/**
- * Fungsi untuk menghasilkan kode voucher acak
- * @param int $length Panjang kode voucher yang diinginkan
- * @return string Kode voucher yang dihasilkan
- */
 function generateVoucherCode($length = 8) {
     $characters = '0123456789';
     $charactersLength = strlen($characters);
@@ -36,12 +25,8 @@ function generateVoucherCode($length = 8) {
     return $randomString;
 }
 
-// Inisialisasi kode voucher otomatis
-$voucherCode = generateVoucherCode();
+$voucherCode = generateVoucherCode(); // Buat kode voucher otomatis setiap kali halaman dibuka
 
-/**
- * Handler untuk menambah voucher otomatis
- */
 if (isset($_POST['TambahVoucherOtomatis'])) {
     $voucherCode = $_POST['code_prefix'];
     $voucherCount = $_POST['voucher_count'];
@@ -49,26 +34,30 @@ if (isset($_POST['TambahVoucherOtomatis'])) {
     $nominalVoucher = $_POST['nominalVoucher'];
     $diskonVoucher = $_POST['diskonVoucher'];
 
-    // Menentukan jumlah diskon berdasarkan tipe voucher
-    $discountAmount = ($voucherType == 'rupiah') ? $nominalVoucher : $diskonVoucher;
-
-    // Reset auto increment
-    mysqli_query($conn, "ALTER TABLE vouchers2 CHANGE id id INT AUTO_INCREMENT;");
-
-    // Generate voucher sesuai jumlah yang diminta
-    for ($i = 0; $i < $voucherCount; $i++) {
-        $voucherCode = generateVoucherCode();
-        mysqli_query($conn, "INSERT INTO vouchers2 (code, discount_amount) VALUES ('$voucherCode', '$discountAmount')");
+    if ($voucherType == 'rupiah') {
+        $discountAmount = $nominalVoucher;
+    } elseif ($voucherType == 'diskon') {
+        $discountAmount = $diskonVoucher;
     }
 
-    header('Location: voucher.php');
+    $query = "ALTER TABLE vouchers2 CHANGE id id INT AUTO_INCREMENT;";
+mysqli_query($conn, $query);
+
+for ($i = 0; $i < $voucherCount; $i++) {
+    $voucherCode = generateVoucherCode();
+    $query = "INSERT INTO vouchers2 (code, discount_amount) VALUES ('$voucherCode', '$discountAmount')";
+    mysqli_query($conn, $query);
 }
 
-/**
- * Handler untuk menambah voucher manual
- */
+    unset($voucherCode);
+    unset($discountAmount);
+    $voucherCode = $_POST['code_prefix'];
+    // echo "<script>alert('Voucher berhasil ditambahkan');</script>";
+    header('Location: voucher.php');
+}
 if (isset($_POST['TambahVoucherManual'])) {
-    $manualCode = trim(mysqli_real_escape_string($conn, $_POST['manual_code']));
+    $manualCode = trim($_POST['manual_code']);
+    $manualCode = mysqli_real_escape_string($conn, $manualCode);
     $nominal = $_POST['nominal'];
     $isFree = isset($_POST['is_free']) ? 1 : 0;
     $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
@@ -82,16 +71,16 @@ if (isset($_POST['TambahVoucherManual'])) {
     
     if (mysqli_query($conn, $query)) {
         header('Location: voucher.php?status=success&message=Voucher manual berhasil ditambahkan');
+        exit();
     } else {
         header('Location: voucher.php?status=error&message=Gagal menambahkan voucher');
+        exit();
     }
-    exit();
 }
 
-/**
- * Handler untuk menghapus voucher terpilih
- */
-if (isset($_POST['hapusvoucher'])) {
+    // echo "<script>alert('Voucher manual berhasil ditambahkan');</script>";
+
+ if (isset($_POST['hapusvoucher'])) {
     $id = $_POST['delete'];
     $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
     mysqli_query($conn, $query);
@@ -99,109 +88,55 @@ if (isset($_POST['hapusvoucher'])) {
 }
 ?>
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
     <title>Voucher</title>
-    <!-- CSS imports -->
     <link href="css/style.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
-<!-- Add this in the <head> section -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .hidden { display: none; }
+    </style>                    
 </head>
-<!-- Add this in the <head> section of all three files -->
-<style>
-    /* Apply Poppins font globally */
-    body {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    /* Enhanced navbar styling */
-    .navbar-brand {
-        font-weight: 600;
-        letter-spacing: 0.5px;
-    }
-
-    /* Navigation styling */
-    .nav-link {
-        font-size: 0.9rem;
-        padding: 12px 20px;
-        transition: all 0.3s ease;
-    }
-
-    .nav-link.active {
-        background-color: #4a6cf7 !important;
-        color: #fff !important;
-        font-weight: 500;
-        border-radius: 8px;
-    }
-
-    .nav-link:hover {
-        background-color: rgba(74, 108, 247, 0.05);
-        transform: translateX(5px);
-    }
-
-    .nav-link .sb-nav-link-icon {
-        margin-right: 10px;
-    }
-
-    /* Sidebar menu container */
-    .sb-sidenav-menu {
-        padding: 1rem;
-    }
-
-    .sb-sidenav-menu .nav {
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    /* Remove existing conflicting styles */
-    .nav-link.active {
-        background-color: #4a6cf7 !important;
-        color: #fff !important;
-    }
-
-    .nav-link:hover {
-        background-color: rgba(74, 108, 247, 0.05);
-    }
-
-    .nav-link.active .sb-nav-link-icon {
-        color: #fff !important;
-    }
-</style>
-        <!-- Replace the existing sidebar navigation section in all three files with: -->
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand" href="index.php" style="color: white;">Daclen</a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+    </nav>
+    <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <?php
-                        $current_page = basename($_SERVER['PHP_SELF']);
-                        
-                        $menu_items = [
-                            'produk' => ['file' => 'index.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Produk'],
-                            'transaksi' => ['file' => 'transaksi.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Transaksi'],
-                            'voucher' => ['file' => 'voucher.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Voucher'],
-                            'settings' => ['file' => 'settings.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Settings'],
-                            'logout' => ['file' => 'logout.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Logout']
-                        ];
-
-                        foreach ($menu_items as $key => $item) {
-                            $isActive = ($current_page === $item['file']) || 
-                                    ($current_page === 'index.php' && $key === 'produk');
-                            $activeClass = $isActive ? 'active' : '';
-                            
-                            echo '<a class="nav-link ' . $activeClass . '" href="' . $item['file'] . '">
-                                    <div class="sb-nav-link-icon"><i class="' . $item['icon'] . '"></i></div>
-                                    ' . $item['text'] . '
-                                </a>';
-                        }
-                        ?>
+                        <!-- <a class="nav-link" href="user.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            User
+                        </a> -->
+                        <a class="nav-link" href="index.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Produk
+                        </a>
+                        <a class="nav-link" href="transaksi.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Transaksi
+                        </a>
+                        <a class="nav-link" href="voucher.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Voucher
+                        </a>
+                        <a class="nav-link" href="settings.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Settings
+                        </a>
+                        <a class="nav-link" href="logout.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Logout
+                        </a>
                     </div>
                 </div>
             </nav>
