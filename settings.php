@@ -121,7 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     .nav-link.active {
-        background-color: #2c3e50 !important;
         color: #fff !important;
         font-weight: 500;
         border-radius: 8px;
