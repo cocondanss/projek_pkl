@@ -339,6 +339,133 @@ if (isset($_POST['TambahVoucherManual'])) {
     <!-- input Tambah Voucher otomatis -->
 
 
+    <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid">
+                    <form method="post" action="voucher.php">
+                        <h1 class="mt-4">Voucher</h1>
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#voucherModal">
+                                    Tambah Voucher otomatis
+                                </button>
+                                <button type="button" class="btn btn-info" id="eksporVoucher">
+                                    Ekspor Voucher
+                                </button>
+                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#manualVoucherModal">
+                                    Tambah Voucher Manual
+                                </button>
+                                <button type="submit" name="hapusvoucher" id="hapusvoucher" class="btn btn-danger">
+                                    Hapus Voucher Terpilih
+                                </button>
+                                <p></p>
+                                <!-- <form method="POST" action="voucher.php">
+                                    <button type="submit" name="hapusVoucherYangSudahDigunakan" class="btn btn-danger" id="btnHapusVoucher" onclick="return confirm('Apakah Anda yakin ingin menghapus semua voucher yang sudah digunakan?');">
+                                        Hapus Voucher Digunakan
+                                    </button>
+                                </form> -->
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                        <thead>
+                                            <tr>
+                                                <th>No</th>
+                                                <th>Code</th>
+                                                <th>Diskon</th>
+                                                <th>Status</th>
+                                                <th>gratis</th>
+                                                <th>sekali pakai</th>
+                                                <th>Tanggal Dibuat</th>
+                                                <th>Tanggal Digunakan</th>
+                                                <th>Aksi</th>
+                                                <input type="checkbox" id="selectAll" onclick="toggle(this)"> Pilih Semua Voucher<br><br>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                                $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers2");
+                                                $i = 1;
+                                                while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
+                                                    $code = $data['code'];
+                                                    $discount_amount = $data['discount_amount'];
+                                                    $is_free = $data['is_free'];
+                                                    $one_time_use = $data['one_time_use'];
+                                                    $id = $data['id'];
+                                                    $created_at = $data['created_at'];
+                                                    $used_at = $data['used_at'];
+
+                                                    // Tentukan status berdasarkan used_at
+                                                    $status_used = !empty($used_at) ? "Sudah digunakan" : "Belum digunakan";
+
+                                                    $isFreeDisplay = ($is_free == 1) ? "Ya" : "Tidak";
+                                                    $oneTimeUse = ($one_time_use == 1) ? "Ya" : "Tidak";
+
+                                                    // Jika voucher gratis, set discount_amount menjadi 0
+                                                    if ($is_free == 1) {
+                                                        $discount_amount = 0;
+                                                    }
+
+                                                    // Tentukan jenis voucher (diskon atau rupiah)
+                                                    $voucherType = ($discount_amount > 100) ? 'rupiah' : 'diskon';
+                                                ?>
+                                                    <tr>
+                                                        <td><?= $i++; ?></td>
+                                                        <td><?= htmlspecialchars($code); ?></td>
+                                                        <td>
+                                                            <?php if ($is_free == 1): ?>
+                                                                0
+                                                            <?php elseif ($voucherType == 'diskon'): ?>
+                                                                <?= htmlspecialchars($discount_amount) . '%' ?>
+                                                            <?php else: ?>
+                                                                <?= 'Rp ' . number_format($discount_amount, 0, ',', '.') ?>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                        <td><?= htmlspecialchars($status_used); ?></td> <!-- Menampilkan status -->
+                                                        <td><?= htmlspecialchars($isFreeDisplay); ?></td>
+                                                        <td><?= htmlspecialchars($oneTimeUse); ?></td>
+                                                        <td><?= htmlspecialchars($created_at); ?></td>
+                                                        <td><?= !empty($used_at) ? htmlspecialchars($used_at) : '-'; ?></td>
+                                                        <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
+                                                    </tr>
+                                                <?php
+                                                }
+                                                ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Your Website 2020</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/chart-area-demo.js"></script>
+        <script src="assets/demo/chart-bar-demo.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/datatables-demo.js"></script>
+    </div>
+
+    <!-- input Tambah Voucher otomatis -->
+
+
     <div class="modal fade" id="voucherModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -365,45 +492,46 @@ if (isset($_POST['TambahVoucherManual'])) {
                     <div id="diskonInput" class="hidden">
                         <label for="diskonVoucher">Diskon (%):</label>
                         <input type="number" name="diskonVoucher" id="diskonVoucher" class="form-control" min="1" max="100">
+                        <span>%</span><br><br>
                     </div>
                     <button type="submit" class="btn btn-primary" name="TambahVoucherOtomatis">Simpan</button>
                 </div>
             </form>
         </div>
     </div>
-</div>   
+</div>
 
     <!-- Input Tambah Vocher Manual -->
     <div class="modal fade" id="manualVoucherModal">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">Tambah Voucher Manual</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                    <form method="post" id="voucherForm">
-                                    <div class="modal-body">
-                                        <!-- Input Voucher Code -->
-                                        <input type="text" name="manual_code" placeholder="Kode Voucher" class="form-control" required><br>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Tambah Voucher Manual</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                    <form method="post" id="voucherForm">
+                        <div class="modal-body">
+                            <!-- Input Voucher Code -->
+                            <input type="text" name="manual_code" placeholder="Kode Voucher" class="form-control" required><br>
 
-                                        <!-- Nominal (Rp) Input -->
-                                        <input type="number" name="nominal" placeholder="Nominal (Rp)" class="form-control" required><br>
+                            <!-- Nominal (Rp) Input -->
+                            <input type="number" name="nominal" placeholder="Nominal (Rp)" class="form-control" required><br>
 
-                                        <!-- Checkbox for Free Option -->
-                                        <input type="checkbox" name="is_free" id="isFree" onchange="toggleNominal()"> 
-                                        <label for="isFree">Gratis</label><br><br>
+                            <!-- Checkbox for Free Option -->
+                            <input type="checkbox" name="is_free" id="isFree" onchange="toggleNominal()"> 
+                            <label for="isFree">Gratis</label><br><br>
 
-                                        <!-- Checkbox for One-Time Use -->
-                                        <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
-                                        <label for="oneTimeUse">Sekali Pakai</label><br><br>
+                            <!-- Checkbox for One-Time Use -->
+                            <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
+                            <label for="oneTimeUse">Sekali Pakai</label><br><br>
 
                                         <!-- Button to Create Voucher -->
-                                        <button type="submit" class="btn btn-primary" name="TambahVoucherManual">Tambah Voucher Manual</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
+                            <button type="submit" class="btn btn-primary" name="TambahVoucherManual">Tambah Voucher Manual</button>
                         </div>
+                    </form>
+                </div>
+            </div>
+        </div>
             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
             <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
@@ -427,18 +555,12 @@ if (isset($_POST['TambahVoucherManual'])) {
                                 }
 
                                 // Jalankan fungsi showInput ketika halaman dimuat pertama kali
+                                showInput();
+
+                                // Tambahkan event listener ke radio button
                                 document.getElementById('rupiahRadio').addEventListener('change', showInput);
                                 document.getElementById('diskonRadio').addEventListener('change', showInput);
 
-                                // Run showInput when modal opens to ensure inputs are hidden
-                                $('#voucherModal').on('show.bs.modal', function () {
-                                    // Reset radio buttons
-                                    document.getElementById('rupiahRadio').checked = false;
-                                    document.getElementById('diskonRadio').checked = false;
-                                    // Hide inputs
-                                    showInput();
-                                });
-                                
                                 // Script untuk ekspor data voucher
                                 $("#eksporVoucher").click(function(event) {
                                 event.preventDefault();
