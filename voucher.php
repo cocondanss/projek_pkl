@@ -539,33 +539,33 @@ if (isset($_POST['TambahVoucherManual'])) {
 
          <script>
             // Fungsi untuk menampilkan input berdasarkan pilihan radio
-                                    function showInput() {
-                                    const rupiahRadio = document.getElementById('rupiahRadio');
-                                    const diskonRadio = document.getElementById('diskonRadio');
-                                    const nominalInput = document.getElementById('nominalInput');
-                                    const diskonInput = document.getElementById('diskonInput');
+            function showInput() {
+                const rupiahRadio = document.getElementById('rupiahRadio');
+                const diskonRadio = document.getElementById('diskonRadio');
+                const nominalInput = document.getElementById('nominalInput');
+                const diskonInput = document.getElementById('diskonInput');
 
-                                    if (rupiahRadio.checked) {
-                                    nominalInput.classList.remove('hidden');
-                                    diskonInput.classList.add('hidden');
-                                    } else if (diskonRadio.checked) {
-                                    diskonInput.classList.remove('hidden');
-                                    nominalInput.classList.add('hidden');
-                                    }
-                                }
+                if (rupiahRadio.checked) {
+                    nominalInput.classList.remove('hidden');
+                    diskonInput.classList.add('hidden');
+                } else if (diskonRadio.checked) {
+                    diskonInput.classList.remove('hidden');
+                    nominalInput.classList.add('hidden');
+                }
+            }
 
                                 // Jalankan fungsi showInput ketika halaman dimuat pertama kali
-                                showInput();
+            showInput();
 
                                 // Tambahkan event listener ke radio button
-                                document.getElementById('rupiahRadio').addEventListener('change', showInput);
-                                document.getElementById('diskonRadio').addEventListener('change', showInput);
+            document.getElementById('rupiahRadio').addEventListener('change', showInput);
+            document.getElementById('diskonRadio').addEventListener('change', showInput);
 
                                 // Script untuk ekspor data voucher
-                                $("#eksporVoucher").click(function(event) {
-                                event.preventDefault();
-                                var table = $('#dataTable').DataTable(); // Ubah id tabel menjadi dataTable
-                                var data = table.rows().data();
+            $("#eksporVoucher").click(function(event) {
+            event.preventDefault();
+            var table = $('#dataTable').DataTable(); // Ubah id tabel menjadi dataTable
+            var data = table.rows().data();
 
                                 var fileContent = 'Kode Voucher\n';
                                 data.each(function(value, index) {
