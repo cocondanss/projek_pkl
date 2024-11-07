@@ -76,7 +76,7 @@ if(isset($_POST['kembali'])){
                                            name="email" 
                                            id="inputEmailAddress" 
                                            type="email" 
-                                           placeholder="Masukan email admin" 
+                                           placeholder="Masukan email admin"/>
                                 </div>
                                 <!-- Input password -->
                                 <div class="form-group">
@@ -85,7 +85,7 @@ if(isset($_POST['kembali'])){
                                            name="password" 
                                            id="inputPassword" 
                                            type="password" 
-                                           placeholder="Masukan password" 
+                                           placeholder="Masukan password"/>
                                 </div>
                                 <!-- Tombol aksi -->
                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
