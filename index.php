@@ -22,40 +22,86 @@ while ($row = mysqli_fetch_assoc($result)) {
             <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
             <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
             <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-            <style>
-                .custom-control-input:checked ~ .custom-control-label::before {
-                    border-color: #28a745;
-                    background-color: #28a745;
-                }
-
-                .custom-switch .custom-control-label::before {
-                    width: 2rem;
-                    height: 1rem;
-                    border-radius: 1rem;
-                }
-
-                .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
-                    transform: translateX(1rem);
-                }
-
-                .custom-switch .custom-control-label::after {
-                    width: calc(1rem - 4px);
-                    height: calc(1rem - 4px);
-                    border-radius: calc(2rem - (1rem)) / 2;
-                }
-
-                /* Animasi untuk transisi status */
-                .custom-switch .custom-control-label {
-                    transition: all 0.3s ease;
-                }
-            </style>
     </head>
-        <body class="sb-nav-fixed">
-            <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-                <a class="navbar-brand" href="index.php" style="color: white;">Daclen</a>
-                <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
-            </nav>
-            <div id="layoutSidenav">
+    <style>
+    /* Apply Poppins font globally */
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Enhanced navbar styling */
+    .navbar-brand {
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    /* Form styling */
+    .form-label {
+        font-weight: 500;
+        color: #2c3e50;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 10px 15px;
+        border: 1px solid #e0e0e0;
+        font-size: 0.9rem;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+    }
+
+    /* Navigation styling */
+    .nav-link {
+        font-size: 0.9rem;
+        padding: 12px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .nav-link.active {
+        background-color: #4a6cf7 !important;
+        color: #fff !important;
+        font-weight: 500;
+        border-radius: 8px;
+    }
+
+    .nav-link:hover {
+        background-color: rgba(74, 108, 247, 0.05);
+        transform: translateX(5px);
+    }
+
+    .nav-link .sb-nav-link-icon {
+        margin-right: 10px;
+    }
+
+    /* Alert styling */
+    .alert {
+        border-radius: 8px;
+        font-weight: 500;
+    }
+
+    /* Footer styling */
+    footer {
+        font-size: 0.85rem;
+    }
+
+    footer a {
+        color: #4a6cf7;
+        text-decoration: none;
+    }
+
+    footer a:hover {
+        color: #2848dc;
+    }
+</style>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand" href="index.php" style="color: white;">Daclen</a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
+    </nav>
+    <div id="layoutSidenav">
         <!-- Sidebar Navigasi -->
         <div id="layoutSidenav_nav">
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">

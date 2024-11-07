@@ -94,9 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"></script>
 </head>
-
-<style>
-    /* Apply Poppins font globally */
+/* Apply Poppins font globally */
     body {
         font-family: 'Poppins', sans-serif;
     }
@@ -105,31 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .navbar-brand {
         font-weight: 600;
         letter-spacing: 0.5px;
-    }
-
-    /* Enhanced card styling */
-    .card {
-        border-radius: 10px;
-        border: none;
-        box-shadow: 0 0 20px rgba(0,0,0,0.05);
-        margin-bottom: 25px;
-    }
-
-    .card-header {
-        background-color: #fff;
-        border-bottom: 1px solid rgba(0,0,0,0.05);
-        padding: 20px 25px;
-    }
-
-    .card-header h4 {
-        margin: 0;
-        font-weight: 600;
-        color: #2c3e50;
-        font-size: 1.1rem;
-    }
-
-    .card-body {
-        padding: 25px;
     }
 
     /* Form styling */
@@ -148,19 +121,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     .form-control:focus {
         box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
-    }
-
-    /* Button styling */
-    .btn-primary {
-        padding: 10px 20px;
-        font-weight: 500;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
     }
 
     /* Navigation styling */
@@ -205,28 +165,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     footer a:hover {
         color: #2848dc;
     }
-
-    /* Main content container */
-    .container-fluid {
-        padding: 25px;
-    }
-
-    /* Page title */
-    h1 {
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 30px;
-        font-size: 1.8rem;
-    }
 </style>
-
 <body class="sb-nav-fixed">
-    <!-- Navbar Atas -->
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <a class="navbar-brand" href="index.php">Daclen</a>
-        <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#">
-            <i class="fas fa-bars"></i>
-        </button>
+        <a class="navbar-brand" href="index.php" style="color: white;">Daclen</a>
+        <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
     </nav>
     <div id="layoutSidenav">
         <!-- Sidebar Navigasi -->
