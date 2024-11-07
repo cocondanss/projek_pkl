@@ -26,51 +26,66 @@ while ($row = mysqli_fetch_assoc($result)) {
     <!-- JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
-    <style>
-        .custom-control-input:checked ~ .custom-control-label::before {
-            border-color: #28a745;
-            background-color: #28a745;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        .custom-switch .custom-control-label::before {
-            width: 2rem;
-            height: 1rem;
-            border-radius: 1rem;
-        }
+<style>
+    /* Global styles */
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
 
-        .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
-            transform: translateX(1rem);
-        }
+    /* Enhanced card styling */
+    .card {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+    }
 
-        .custom-switch .custom-control-label::after {
-            width: calc(1rem - 4px);
-            height: calc(1rem - 4px);
-            border-radius: calc(2rem - (1rem)) / 2;
-        }
+    .card-header {
+        background-color: #fff;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 20px 25px;
+    }
 
-        .custom-switch .custom-control-label {
-            transition: all 0.3s ease;
-        }
+    /* Product list styling */
+    .row.mb-3 {
+        padding: 15px;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
 
-        .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #fff !important;
-            font-weight: 500;
-        }
+    .row.mb-3:hover {
+        background-color: rgba(0,0,0,0.02);
+    }
 
-        .nav-link {
-            transition: background-color 0.2s ease-in-out;
-        }
+    /* Custom switch styling */
+    .custom-switch .custom-control-label {
+        padding-top: 2px;
+    }
 
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.05);
-        }
+    /* Page title */
+    h1 {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+    }
 
-        .nav-link.active .sb-nav-link-icon {
-            color: #fff;
-        }
-    </style>
+    /* Button styling */
+    .btn {
+        padding: 10px 20px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+    }
+</style>
 </head>
 
 <body class="sb-nav-fixed">

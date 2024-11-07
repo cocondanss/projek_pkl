@@ -18,6 +18,71 @@ require 'cek.php';
     <link href="css/style.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
+    // ... existing code ...
+
+<!-- Add this in the <head> section -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    /* Global styles */
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Enhanced table styling */
+    .table {
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    .table thead th {
+        background-color: #f8f9fa;
+        border-bottom: none;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .table td, .table th {
+        padding: 15px;
+        vertical-align: middle;
+    }
+
+    /* Card styling */
+    .card {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        margin-bottom: 25px;
+    }
+
+    .card-header {
+        background-color: #fff;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        padding: 20px 25px;
+    }
+
+    /* Button styling */
+    .btn {
+        padding: 10px 20px;
+        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+    }
+
+    /* Page title */
+    h1 {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 30px;
+        font-size: 1.8rem;
+    }
+</style>
 </head>
 
 <body class="sb-nav-fixed">
