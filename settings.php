@@ -121,15 +121,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     .nav-link.active {
-        background-color: #4a6cf7 !important;
+        background-color: #2c3e50 !important;
         color: #fff !important;
         font-weight: 500;
         border-radius: 8px;
     }
 
     .nav-link:hover {
-        background-color: #2c3e50;
-        transform: translateX(5px);
+        background-color: rgba(74, 108, 247, 0.05);
+        transform: translateX(8px);
     }
 
     .nav-link .sb-nav-link-icon {
