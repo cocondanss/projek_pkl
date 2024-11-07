@@ -23,112 +23,99 @@ require 'cek.php';
 <!-- Add this in the <head> section -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+</head>
 <style>
-    /* Global styles */
+    /* Apply Poppins font globally */
     body {
         font-family: 'Poppins', sans-serif;
     }
 
-    /* Enhanced table styling */
-    .table {
-        border-radius: 8px;
-        overflow: hidden;
-    }
-
-    .table thead th {
-        background-color: #f8f9fa;
-        border-bottom: none;
+    /* Enhanced navbar styling */
+    .navbar-brand {
         font-weight: 600;
-        color: #2c3e50;
+        letter-spacing: 0.5px;
     }
 
-    .table td, .table th {
-        padding: 15px;
-        vertical-align: middle;
-    }
-
-    /* Card styling */
-    .card {
-        border-radius: 10px;
-        border: none;
-        box-shadow: 0 0 20px rgba(0,0,0,0.05);
-        margin-bottom: 25px;
-    }
-
-    .card-header {
-        background-color: #fff;
-        border-bottom: 1px solid rgba(0,0,0,0.05);
-        padding: 20px 25px;
-    }
-
-    /* Button styling */
-    .btn {
-        padding: 10px 20px;
-        font-weight: 500;
-        border-radius: 8px;
+    /* Navigation styling */
+    .nav-link {
+        font-size: 0.9rem;
+        padding: 12px 20px;
         transition: all 0.3s ease;
     }
 
-    .btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+    .nav-link.active {
+        background-color: #4a6cf7 !important;
+        color: #fff !important;
+        font-weight: 500;
+        border-radius: 8px;
     }
 
-    /* Page title */
-    h1 {
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 30px;
-        font-size: 1.8rem;
+    .nav-link:hover {
+        background-color: rgba(74, 108, 247, 0.05);
+        transform: translateX(5px);
+    }
+
+    .nav-link .sb-nav-link-icon {
+        margin-right: 10px;
+    }
+
+    /* Sidebar menu container */
+    .sb-sidenav-menu {
+        padding: 1rem;
+    }
+
+    .sb-sidenav-menu .nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    /* Remove existing conflicting styles */
+    .nav-link.active {
+        background-color: #4a6cf7 !important;
+        color: #fff !important;
+    }
+
+    .nav-link:hover {
+        background-color: rgba(74, 108, 247, 0.05);
+    }
+
+    .nav-link.active .sb-nav-link-icon {
+        color: #fff !important;
     }
 </style>
-</head>
 
-<body class="sb-nav-fixed">
-    <!-- Header Navigasi -->
-    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-        <a class="navbar-brand" href="index.php" style="color: white;">Daclen</a>
-        <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#">
-            <i class="fas fa-bars"></i>
-        </button>
-    </nav>
+<!-- Replace the existing sidebar navigation section in all three files with: -->
+<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <?php
+                $current_page = basename($_SERVER['PHP_SELF']);
+                
+                $menu_items = [
+                    'produk' => ['file' => 'index.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Produk'],
+                    'transaksi' => ['file' => 'transaksi.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Transaksi'],
+                    'voucher' => ['file' => 'voucher.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Voucher'],
+                    'settings' => ['file' => 'settings.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Settings'],
+                    'logout' => ['file' => 'logout.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Logout']
+                ];
 
-    <div id="layoutSidenav">
-        <!-- Sidebar Navigasi -->
-        <div id="layoutSidenav_nav">
-            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                <div class="sb-sidenav-menu">
-                    <div class="nav">
-                        <?php
-                        // Mendapatkan nama halaman saat ini
-                        $current_page = basename($_SERVER['PHP_SELF']);
-                        
-                        // Konfigurasi menu sidebar
-                        $menu_items = [
-                            'produk' => ['file' => 'index.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Produk'],
-                            'transaksi' => ['file' => 'transaksi.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Transaksi'],
-                            'voucher' => ['file' => 'voucher.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Voucher'],
-                            'settings' => ['file' => 'settings.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Settings'],
-                            'logout' => ['file' => 'logout.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Logout']
-                        ];
-
-                        // Membuat menu items secara dinamis
-                        foreach ($menu_items as $key => $item) {
-                            $isActive = ($current_page === $item['file']) || 
-                                    ($current_page === 'index.php' && $key === 'produk');
-                            $activeClass = $isActive ? 'active' : '';
-                            
-                            echo '<a class="nav-link ' . $activeClass . '" href="' . $item['file'] . '">
-                                    <div class="sb-nav-link-icon"><i class="' . $item['icon'] . '"></i></div>
-                                    ' . $item['text'] . '
-                                </a>';
-                        }
-                        ?>
-                    </div>
-                </div>
-            </nav>
+                foreach ($menu_items as $key => $item) {
+                    $isActive = ($current_page === $item['file']) || 
+                              ($current_page === 'index.php' && $key === 'produk');
+                    $activeClass = $isActive ? 'active' : '';
+                    
+                    echo '<a class="nav-link ' . $activeClass . '" href="' . $item['file'] . '">
+                            <div class="sb-nav-link-icon"><i class="' . $item['icon'] . '"></i></div>
+                            ' . $item['text'] . '
+                        </a>';
+                }
+                ?>
+            </div>
         </div>
+    </nav>
+</div>
 
         <!-- Konten Utama -->
         <div id="layoutSidenav_content">
