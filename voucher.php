@@ -148,19 +148,18 @@ if (isset($_POST['TambahVoucherManual'])) {
                         <h1 class="mt-4">Voucher</h1>
                         <div class="card mb-4">
                             <div class="card-header">
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#voucherModal">
+                                <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#voucherModal">
                                     Tambah Voucher otomatis
                                 </button>
-                                <button type="button" class="btn btn-info" id="eksporVoucher">
-                                    Ekspor Voucher
-                                </button>
-                                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#manualVoucherModal">
+                                <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#manualVoucherModal">
                                     Tambah Voucher Manual
                                 </button>
-                                <button type="submit" name="hapusvoucher" id="hapusvoucher" class="btn btn-danger">
+                                <button type="submit" name="hapusvoucher" id="hapusvoucher" class="btn btn-dark mr-2">
                                     Hapus Voucher Terpilih
                                 </button>
-                                <p></p>
+                                <button type="button" class="btn btn-info mr-2" id="eksporVoucher">
+                                    Ekspor Voucher
+                                </button>
                                 <!-- <form method="POST" action="voucher.php">
                                     <button type="submit" name="hapusVoucherYangSudahDigunakan" class="btn btn-danger" id="btnHapusVoucher" onclick="return confirm('Apakah Anda yakin ingin menghapus semua voucher yang sudah digunakan?');">
                                         Hapus Voucher Digunakan
