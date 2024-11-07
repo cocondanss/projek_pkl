@@ -1,20 +1,31 @@
 <?php
+/**
+ * File: voucher.php
+ * Deskripsi: Halaman manajemen voucher untuk sistem
+ */
+
 require_once 'function.php';
 require 'cek.php';
 
+/**
+ * Fungsi untuk menghapus voucher yang sudah digunakan
+ */
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
-    // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
-    $sql = "DELETE FROM vouchers2 WHERE used_at IS NOT NULL AND one_time_use = 1"; // Hanya hapus voucher yang sudah digunakan dan sekali pakai
-
+    $sql = "DELETE FROM vouchers2 WHERE used_at IS NOT NULL AND one_time_use = 1";
+    
     if ($conn->query($sql) === TRUE) {
         echo "Voucher yang sudah digunakan dan sekali pakai berhasil dihapus.";
     } else {
-        echo "Error: " . $conn->error; // Tampilkan kesalahan jika ada
-        // Tambahkan log untuk debugging
+        echo "Error: " . $conn->error;
         error_log("Query failed: " . $sql);
     }
 }
 
+/**
+ * Fungsi untuk menghasilkan kode voucher acak
+ * @param int $length Panjang kode voucher yang diinginkan
+ * @return string Kode voucher yang dihasilkan
+ */
 function generateVoucherCode($length = 8) {
     $characters = '0123456789';
     $charactersLength = strlen($characters);
@@ -25,8 +36,12 @@ function generateVoucherCode($length = 8) {
     return $randomString;
 }
 
-$voucherCode = generateVoucherCode(); // Buat kode voucher otomatis setiap kali halaman dibuka
+// Inisialisasi kode voucher otomatis
+$voucherCode = generateVoucherCode();
 
+/**
+ * Handler untuk menambah voucher otomatis
+ */
 if (isset($_POST['TambahVoucherOtomatis'])) {
     $voucherCode = $_POST['code_prefix'];
     $voucherCount = $_POST['voucher_count'];
@@ -34,30 +49,26 @@ if (isset($_POST['TambahVoucherOtomatis'])) {
     $nominalVoucher = $_POST['nominalVoucher'];
     $diskonVoucher = $_POST['diskonVoucher'];
 
-    if ($voucherType == 'rupiah') {
-        $discountAmount = $nominalVoucher;
-    } elseif ($voucherType == 'diskon') {
-        $discountAmount = $diskonVoucher;
+    // Menentukan jumlah diskon berdasarkan tipe voucher
+    $discountAmount = ($voucherType == 'rupiah') ? $nominalVoucher : $diskonVoucher;
+
+    // Reset auto increment
+    mysqli_query($conn, "ALTER TABLE vouchers2 CHANGE id id INT AUTO_INCREMENT;");
+
+    // Generate voucher sesuai jumlah yang diminta
+    for ($i = 0; $i < $voucherCount; $i++) {
+        $voucherCode = generateVoucherCode();
+        mysqli_query($conn, "INSERT INTO vouchers2 (code, discount_amount) VALUES ('$voucherCode', '$discountAmount')");
     }
 
-    $query = "ALTER TABLE vouchers2 CHANGE id id INT AUTO_INCREMENT;";
-mysqli_query($conn, $query);
-
-for ($i = 0; $i < $voucherCount; $i++) {
-    $voucherCode = generateVoucherCode();
-    $query = "INSERT INTO vouchers2 (code, discount_amount) VALUES ('$voucherCode', '$discountAmount')";
-    mysqli_query($conn, $query);
-}
-
-    unset($voucherCode);
-    unset($discountAmount);
-    $voucherCode = $_POST['code_prefix'];
-    // echo "<script>alert('Voucher berhasil ditambahkan');</script>";
     header('Location: voucher.php');
 }
+
+/**
+ * Handler untuk menambah voucher manual
+ */
 if (isset($_POST['TambahVoucherManual'])) {
-    $manualCode = trim($_POST['manual_code']);
-    $manualCode = mysqli_real_escape_string($conn, $manualCode);
+    $manualCode = trim(mysqli_real_escape_string($conn, $_POST['manual_code']));
     $nominal = $_POST['nominal'];
     $isFree = isset($_POST['is_free']) ? 1 : 0;
     $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
@@ -71,16 +82,16 @@ if (isset($_POST['TambahVoucherManual'])) {
     
     if (mysqli_query($conn, $query)) {
         header('Location: voucher.php?status=success&message=Voucher manual berhasil ditambahkan');
-        exit();
     } else {
         header('Location: voucher.php?status=error&message=Gagal menambahkan voucher');
-        exit();
     }
+    exit();
 }
 
-    // echo "<script>alert('Voucher manual berhasil ditambahkan');</script>";
-
- if (isset($_POST['hapusvoucher'])) {
+/**
+ * Handler untuk menghapus voucher terpilih
+ */
+if (isset($_POST['hapusvoucher'])) {
     $id = $_POST['delete'];
     $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
     mysqli_query($conn, $query);
@@ -88,20 +99,20 @@ if (isset($_POST['TambahVoucherManual'])) {
 }
 ?>
 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
     <title>Voucher</title>
+    <!-- CSS imports -->
     <link href="css/style.css" rel="stylesheet" />
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     <style>
         .hidden { display: none; }
-    </style>                    
+    </style>
 </head>
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -333,12 +344,6 @@ if (isset($_POST['TambahVoucherManual'])) {
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
-
             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
             <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
