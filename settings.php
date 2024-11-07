@@ -289,27 +289,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </footer>
         </div>
     </div>
-
-    <style>
-    .nav-link.active {
-        background-color: rgba(255, 255, 255, 0.1);
-        color: #fff !important;
-        font-weight: 500;
-    }
-
-    .nav-link {
-        transition: background-color 0.2s ease-in-out;
-    }
-
-    .nav-link:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-    }
-
-    .nav-link.active .sb-nav-link-icon {
-        color: #fff;
-    }
-    </style>
-
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
