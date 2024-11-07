@@ -68,7 +68,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     }
 
     .nav-link:hover {
-        background-color: rgba(74, 108, 247, 0.05);
+        background-color: #2c3e50;
         transform: translateX(5px);
     }
 
