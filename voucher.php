@@ -115,31 +115,6 @@ if (isset($_POST['TambahVoucherManual'])) {
         letter-spacing: 0.5px;
     }
 
-    /* Enhanced card styling */
-    .card {
-        border-radius: 10px;
-        border: none;
-        box-shadow: 0 0 20px rgba(0,0,0,0.05);
-        margin-bottom: 25px;
-    }
-
-    .card-header {
-        background-color: #fff;
-        border-bottom: 1px solid rgba(0,0,0,0.05);
-        padding: 20px 25px;
-    }
-
-    .card-header h4 {
-        margin: 0;
-        font-weight: 600;
-        color: #2c3e50;
-        font-size: 1.1rem;
-    }
-
-    .card-body {
-        padding: 25px;
-    }
-
     /* Form styling */
     .form-label {
         font-weight: 500;
@@ -156,19 +131,6 @@ if (isset($_POST['TambahVoucherManual'])) {
 
     .form-control:focus {
         box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
-    }
-
-    /* Button styling */
-    .btn-primary {
-        padding: 10px 20px;
-        font-weight: 500;
-        border-radius: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
     }
 
     /* Navigation styling */
@@ -212,19 +174,6 @@ if (isset($_POST['TambahVoucherManual'])) {
 
     footer a:hover {
         color: #2848dc;
-    }
-
-    /* Main content container */
-    .container-fluid {
-        padding: 25px;
-    }
-
-    /* Page title */
-    h1 {
-        font-weight: 600;
-        color: #2c3e50;
-        margin-bottom: 30px;
-        font-size: 1.8rem;
     }
 </style>
 <body class="sb-nav-fixed">
