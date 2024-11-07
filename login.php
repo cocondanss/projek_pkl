@@ -77,7 +77,6 @@ if(isset($_POST['kembali'])){
                                            id="inputEmailAddress" 
                                            type="email" 
                                            placeholder="Masukan email admin" 
-                                           required />
                                 </div>
                                 <!-- Input password -->
                                 <div class="form-group">
@@ -87,7 +86,6 @@ if(isset($_POST['kembali'])){
                                            id="inputPassword" 
                                            type="password" 
                                            placeholder="Masukan password" 
-                                           required />
                                 </div>
                                 <!-- Tombol aksi -->
                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
