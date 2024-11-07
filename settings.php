@@ -1,17 +1,13 @@
 <?php
 require_once 'function.php';
 
-// Memeriksa status login admin
+// Check if user is logged in as admin
 if (!isset($_SESSION['log']) || $_SESSION['log'] !== 'true') {
     header('location:login.php');
     exit;
 }
 
-/**
- * Fungsi untuk mengambil nilai setting dari database
- * @param string $key Kunci setting yang akan diambil
- * @return string|null Nilai setting atau null jika tidak ditemukan
- */
+// Function to get setting value
 function getSetting($key) {
     global $conn;
     $stmt = $conn->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
@@ -24,12 +20,7 @@ function getSetting($key) {
     return null;
 }
 
-/**
- * Fungsi untuk memperbarui nilai setting di database
- * @param string $key Kunci setting yang akan diupdate
- * @param string $value Nilai baru untuk setting
- * @return bool Status keberhasilan update
- */
+// Function to update setting
 function updateSetting($key, $value) {
     global $conn;
     $stmt = $conn->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = ?");
@@ -37,12 +28,12 @@ function updateSetting($key, $value) {
     return $stmt->execute();
 }
 
-// Menangani submit form
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $success = true;
     $message = '';
 
-    // Memperbarui pengaturan Midtrans
+    // Update Midtrans settings
     if (isset($_POST['update_midtrans'])) {
         $server_key = $_POST['midtrans_server_key'];
         $client_key = $_POST['midtrans_client_key'];
@@ -52,10 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   updateSetting('midtrans_client_key', $client_key) &&
                   updateSetting('midtrans_is_production', $is_production);
         
-        $message = $success ? 'Pengaturan Midtrans berhasil diperbarui!' : 'Gagal memperbarui pengaturan Midtrans.';
+        $message = $success ? 'Midtrans settings updated successfully!' : 'Failed to update Midtrans settings.';
     }
 
-    // Memperbarui kredensial admin
+    // Update admin credentials
     if (isset($_POST['update_admin'])) {
         $email = $_POST['admin_email'];
         $password = $_POST['admin_password'];
@@ -63,36 +54,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $success = updateSetting('admin_email', $email) &&
                   updateSetting('admin_password', $password);
         
-        $message = $success ? 'Kredensial admin berhasil diperbarui!' : 'Gagal memperbarui kredensial admin.';
+        $message = $success ? 'Admin credentials updated successfully!' : 'Failed to update admin credentials.';
     }
 
-    // Memperbarui PIN keypad
+    // Update keypad PIN
     if (isset($_POST['update_pin'])) {
         $pin = $_POST['keypad_pin'];
         if (strlen($pin) === 4 && is_numeric($pin)) {
             $success = updateSetting('keypad_pin', $pin);
-            $message = $success ? 'PIN Keypad berhasil diperbarui!' : 'Gagal memperbarui PIN Keypad.';
+            $message = $success ? 'Keypad PIN updated successfully!' : 'Failed to update keypad PIN.';
         } else {
             $success = false;
-            $message = 'PIN harus terdiri dari 4 digit angka.';
+            $message = 'PIN must be exactly 4 digits.';
         }
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Pengaturan Sistem</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- CSS -->
+    <title>Settings</title>
     <link href="css/style.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"></script>
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
 </head>
 <style>
 /* Apply Poppins font globally */
@@ -207,14 +196,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </nav>
         </div>
-
-        <!-- Konten Utama -->
         <div id="layoutSidenav_content">
             <main>
                 <div class="container-fluid">
-                    <h1>Manajemen Pengaturan</h1>
+                    <h1>Settings Management</h1>
                     
-                    <!-- Pesan Alert -->
                     <?php if (isset($message)): ?>
                         <div class="alert alert-<?php echo $success ? 'success' : 'danger'; ?> alert-dismissible fade show">
                             <?php echo $message; ?>
@@ -222,10 +208,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                     <?php endif; ?>
 
-                    <!-- Form Pengaturan Midtrans -->
+                    <!-- Midtrans Settings -->
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h4>Konfigurasi Midtrans</h4>
+                            <h4>Midtrans Configuration</h4>
                         </div>
                         <div class="card-body">
                             <form method="POST">
@@ -242,17 +228,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="mb-3 form-check">
                                     <input type="checkbox" class="form-check-input" name="midtrans_is_production" 
                                            <?php echo getSetting('midtrans_is_production') == '1' ? 'checked' : ''; ?>>
-                                    <label class="form-check-label">Mode Produksi</label>
+                                    <label class="form-check-label">Production Mode</label>
                                 </div>
-                                <button type="submit" name="update_midtrans" class="btn btn-primary">Perbarui Pengaturan Midtrans</button>
+                                <button type="submit" name="update_midtrans" class="btn btn-primary">Update Midtrans Settings</button>
                             </form>
                         </div>
                     </div>
 
-                    <!-- Form Kredensial Admin -->
+                    <!-- Admin Credentials -->
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h4>Kredensial Admin</h4>
+                            <h4>Admin Credentials</h4>
                         </div>
                         <div class="card-body">
                             <form method="POST">
@@ -264,42 +250,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <div class="mb-3">
                                     <label class="form-label">Password</label>
                                     <input type="password" class="form-control" name="admin_password" 
-                                           placeholder="Masukkan password baru" required>
+                                           placeholder="Enter new password" required>
                                 </div>
-                                <button type="submit" name="update_admin" class="btn btn-primary">Perbarui Kredensial Admin</button>
+                                <button type="submit" name="update_admin" class="btn btn-primary">Update Admin Credentials</button>
                             </form>
                         </div>
                     </div>
 
-                    <!-- Form PIN Keypad -->
+                    <!-- Keypad PIN -->
                     <div class="card mb-4">
                         <div class="card-header">
-                            <h4>PIN Keypad</h4>
+                            <h4>Keypad PIN</h4>
                         </div>
                         <div class="card-body">
                             <form method="POST">
                                 <div class="mb-3">
-                                    <label class="form-label">PIN (4 digit)</label>
+                                    <label class="form-label">PIN (4 digits)</label>
                                     <input type="text" class="form-control" name="keypad_pin" pattern="[0-9]{4}" 
                                            value="<?php echo htmlspecialchars(getSetting('keypad_pin')); ?>" 
                                            maxlength="4" required>
                                 </div>
-                                <button type="submit" name="update_pin" class="btn btn-primary">Perbarui PIN</button>
+                                <button type="submit" name="update_pin" class="btn btn-primary">Update PIN</button>
                             </form>
                         </div>
                     </div>
                 </div>
             </main>
-
-            <!-- Footer -->
             <footer class="py-4 bg-light mt-auto">
                 <div class="container-fluid">
                     <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Hak Cipta &copy; Website Anda 2024</div>
+                        <div class="text-muted">Copyright &copy; Your Website 2020</div>
                         <div>
-                            <a href="#">Kebijakan Privasi</a>
+                            <a href="#">Privacy Policy</a>
                             &middot;
-                            <a href="#">Syarat &amp; Ketentuan</a>
+                            <a href="#">Terms &amp; Conditions</a>
                         </div>
                     </div>
                 </div>
@@ -307,7 +291,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
 
-    <!-- CSS Kustom -->
     <style>
     .nav-link.active {
         background-color: rgba(255, 255, 255, 0.1);
@@ -328,9 +311,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     </style>
 
-    <!-- JavaScript -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
 </body>
 </html>
