@@ -207,7 +207,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         .voucher-form button[type="submit"] {
             width: 100%;
             padding: 10px;
-            background-color: #2b2d42;
+            background-color: #282A51;
             color: white;
             border: none;
             border-radius: 5px;
@@ -216,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         }
 
         .voucher-form button[type="submit"]:hover {
-            background-color: #282A51;
+            background-color: #2B3044;
         }
 
         .modal-body {

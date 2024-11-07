@@ -9,19 +9,18 @@ while ($row = mysqli_fetch_assoc($result)) {
     $products[] = $row;
 }
 ?>
-
 <html lang="en">
     <head>
-            <meta charset="utf-8" />
-            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-            <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-            <meta name="description" content="" />
-            <meta name="author" content="" />
-            <title>Produk</title>
-            <link href="css/style.css" rel="stylesheet" />
-            <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
-            <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Transaksi</title>
+        <link href="css/style.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     </head>
     <style>
     /* Apply Poppins font globally */
@@ -61,7 +60,7 @@ while ($row = mysqli_fetch_assoc($result)) {
     }
 
     .nav-link.active {
-        background-color: #2c3e50 !important;
+        background-color: #343A40 !important;
         color: #fff !important;
         font-weight: 500;
         border-radius: 8px;
@@ -136,7 +135,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                 </div>
             </nav>
         </div>
-                <div id="layoutSidenav_content">
+        <div id="layoutSidenav_content">
                 <main>
                     <div class="container-fluid">
                         <h1 class="mt-4">Produk</h1>
@@ -201,8 +200,17 @@ while ($row = mysqli_fetch_assoc($result)) {
                     </footer>
                 </div>
             </div>
-            <script>
-                $(document).ready(function() {
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/chart-area-demo.js"></script>
+        <script src="assets/demo/chart-bar-demo.js"></script>
+        <!-- <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script> -->
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/datatables-demo.js"></script>
+        <script>
+            // Fungsi untuk select/deselect semua checkbox
+            $(document).ready(function() {
                     // Initialize checkbox states
                     $('.product-visibility').each(function() {
                         var checkbox = $(this);
@@ -244,7 +252,6 @@ while ($row = mysqli_fetch_assoc($result)) {
                         });
                     });
                 });
-            </script>
-        </body>
-    </head>
+        </script>
+    </body>
 </html>

@@ -71,20 +71,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Settings</title>
-    <link href="css/style.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Voucher</title>
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>          
 </head>
 <style>
-/* Apply Poppins font globally */
+    /* Apply Poppins font globally */
     body {
         font-family: 'Poppins', sans-serif;
     }
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     .nav-link.active {
-        background-color: #2c3e50 !important;
+        background-color: #343A40 !important;
         color: #fff !important;
         font-weight: 500;
         border-radius: 8px;
@@ -136,10 +136,108 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         margin-right: 10px;
     }
 
+    /* Card styling */
+    .card {
+        /* border: none;
+        box-shadow: 0 0 20px rgba(0,0,0,0.05); */
+        border-radius: 12px;
+        margin-bottom: 2rem;
+    }
+
+    .card-header {
+        /* background-color: #fff; */
+        /* border-bottom: 1px solid rgba(0,0,0,0.05); */
+        padding: 1.25rem;
+        border-radius: 12px 12px 0 0 !important;
+    }
+
+    .card-header h4 {
+        margin: 0;
+        color: #2c3e50;
+        font-weight: 600;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Form controls */
+    .form-control {
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        border: 1px solid #e0e0e0;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #4a6cf7;
+        box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Buttons */
+    .btn-primary {
+        background-color: #4a6cf7;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #2848dc;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(74, 108, 247, 0.15);
+    }
+
     /* Alert styling */
     .alert {
         border-radius: 8px;
-        font-weight: 500;
+        border: none;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-success {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    .alert-danger {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Page header */
+    h1 {
+        color: #2c3e50;
+        /* font-weight: 600; */
+        margin-bottom: 1.5rem;
+        /* font-size: 2rem; */
+    }
+
+    /* Form check */
+    .form-check-input {
+        width: 1.1em;
+        height: 1.1em;
+        margin-top: 0.2em;
+    }
+
+    .form-check-label {
+        color: #4b5563;
+        margin-left: 0.5rem;
+    }
+
+    /* Container spacing */
+    .container-fluid {
+        padding: 2rem;
     }
 
     /* Footer styling */

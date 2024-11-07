@@ -52,7 +52,7 @@ require 'cek.php';
     }
 
     .nav-link.active {
-        background-color: #2c3e50 !important;
+        background-color: #343A40 !important;
         color: #fff !important;
         font-weight: 500;
         border-radius: 8px;
