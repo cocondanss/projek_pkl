@@ -365,7 +365,6 @@ if (isset($_POST['TambahVoucherManual'])) {
                     <div id="diskonInput" class="hidden">
                         <label for="diskonVoucher">Diskon (%):</label>
                         <input type="number" name="diskonVoucher" id="diskonVoucher" class="form-control" min="1" max="100">
-                        <span>%</span><br><br>
                     </div>
                     <button type="submit" class="btn btn-primary" name="TambahVoucherOtomatis">Simpan</button>
                 </div>
@@ -428,12 +427,18 @@ if (isset($_POST['TambahVoucherManual'])) {
                                 }
 
                                 // Jalankan fungsi showInput ketika halaman dimuat pertama kali
-                                showInput();
-
-                                // Tambahkan event listener ke radio button
                                 document.getElementById('rupiahRadio').addEventListener('change', showInput);
                                 document.getElementById('diskonRadio').addEventListener('change', showInput);
 
+                                // Run showInput when modal opens to ensure inputs are hidden
+                                $('#voucherModal').on('show.bs.modal', function () {
+                                    // Reset radio buttons
+                                    document.getElementById('rupiahRadio').checked = false;
+                                    document.getElementById('diskonRadio').checked = false;
+                                    // Hide inputs
+                                    showInput();
+                                });
+                                
                                 // Script untuk ekspor data voucher
                                 $("#eksporVoucher").click(function(event) {
                                 event.preventDefault();
