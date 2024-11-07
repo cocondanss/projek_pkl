@@ -93,7 +93,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js"></script>
 </head>
-
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }  
+</style>
 <body class="sb-nav-fixed">
     <!-- Navbar Atas -->
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
