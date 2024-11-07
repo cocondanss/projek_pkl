@@ -1,18 +1,14 @@
 <?php
 session_start();
 
-// Periksa apakah ada data transaksi dalam session
-if (!isset($_SESSION['successful_transaction'])) {
-    // Jika tidak ada, arahkan kembali ke halaman produk
+if (!isset($_SESSION['cancelled_transaction'])) {
     header('Location: listproduct.php');
-    exit();
+    exit;
 }
 
-$transactionData = $_SESSION['successful_transaction'];
-// Format tanggal ke format Indonesia
-$tanggal = date('d-m-Y H:i:s', strtotime($transactionData['created_at']));
-// Hapus data transaksi dari session setelah digunakan
-unset($_SESSION['successful_transaction']);
+$transactionData = $_SESSION['cancelled_transaction'];
+$tanggal = date('d-m-Y', strtotime($transactionData['created_at']));
+unset($_SESSION['cancelled_transaction']);
 ?>
 
 <!DOCTYPE html>
@@ -20,14 +16,14 @@ unset($_SESSION['successful_transaction']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaksi Berhasil</title>
+    <title>Transaksi Dibatalkan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
-        <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">Transaksi Berhasil!</h4>
-            <p>Terima kasih atas pembelian Anda.</p>
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Transaksi Dibatalkan!</h4>
+            <p>Transaksi Anda telah dibatalkan.</p>
             <hr>
             <p class="mb-0">Detail Transaksi:</p>
             <ul>

@@ -1,7 +1,7 @@
 <?php
 session_start();
 // Koneksi ke database
-$conn = mysqli_connect("localhost", "u529472640_root", "Daclen123", "u529472640_framee");
+$conn = mysqli_connect("localhost", "root", "", "framee");
 
 
 function cek_pin($pin) {

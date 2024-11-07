@@ -113,7 +113,7 @@ if (isset($_POST['TambahVoucherManual'])) {
             <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
                 <div class="sb-sidenav-menu">
                     <div class="nav">
-                        <a class="nav-link" href="index.php">
+                        <a class="nav-link" href="user.php">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             User
                         </a>
@@ -129,13 +129,13 @@ if (isset($_POST['TambahVoucherManual'])) {
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Voucher
                         </a>
-                        <a class="nav-link" href="logout.php">
-                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                            Logout
-                        </a>
                         <a class="nav-link" href="settings.php">
                             <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
                             Settings
+                        </a>
+                        <a class="nav-link" href="logout.php">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Logout
                         </a>
                     </div>
                 </div>
@@ -161,11 +161,11 @@ if (isset($_POST['TambahVoucherManual'])) {
                                     Hapus Voucher Terpilih
                                 </button>
                                 <p></p>
-                                <form method="POST" action="voucher.php">
+                                <!-- <form method="POST" action="voucher.php">
                                     <button type="submit" name="hapusVoucherYangSudahDigunakan" class="btn btn-danger" id="btnHapusVoucher" onclick="return confirm('Apakah Anda yakin ingin menghapus semua voucher yang sudah digunakan?');">
-                                        Hapus Voucher yang Sudah Digunakan
+                                        Hapus Voucher Digunakan
                                     </button>
-                                </form>
+                                </form> -->
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">

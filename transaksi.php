@@ -85,79 +85,49 @@ require 'cek.php';
                         <h1 class="mt-4">Transaksi</h1>
                         </ol>
                         <div class="card mb-4">
-                            <!-- <div class="card-header">
-                            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
-                                    Tambah Transaksi
-                             </button>
-                            </div> -->
+                            <form method="post">
+                            <div class="card-header">
+                                <button type="submit" name="hapustransaksi" class="btn btn-danger">
+                                    Hapus Transaksi Terpilih
+                                </button>
+                            </div>
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                         <thead>
                                             <tr>
                                                 <th>No</th>
+                                                <th>ID Transaksi</th>
                                                 <th>Nama Barang</th>
                                                 <th>Harga</th>
                                                 <th>Tanggal Terima</th>
                                                 <th>Status</th>
-                                                <th>Aksi</th>
+                                                <th><input type="checkbox" id="selectAll"> Pilih Semua</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                         <?php
-                                            $ambilsemuadatatransaksi = mysqli_query($conn, "SELECT * FROM transaksi ORDER BY tanggal DESC");
+                                            $ambilsemuadatatransaksi = mysqli_query($conn, "SELECT * FROM transaksi ORDER BY created_at DESC");
                                             $i = 1;
                                             while($data=mysqli_fetch_array($ambilsemuadatatransaksi)){
+                                                $order_id = $data['order_id'];
                                                 $product_name = $data['product_name'];
                                                 $price = $data['price'];
-                                                $tanggal = $data['tanggal'];
+                                                $tanggal = date('d-m-Y H:i:s', strtotime($data['created_at']));
                                                 $status = $data['status'];
-                                                $idt = $data['product_id'];
-
-
-                                            ?>
+                                        ?>
                                             <tr>
                                                 <td><?=$i++;?></td>
+                                                <td><?=$order_id;?></td>
                                                 <td><?=$product_name;?></td>
-                                                <td>Rp<?=$price;?></td>
+                                                <td>Rp<?=number_format($price, 0, ',', '.');?></td>
                                                 <td><?=$tanggal;?></td>
                                                 <td><?=$status;?></td>
-                                                <td>
-                                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete<?=$idt;?>">
-                                                        Delete
-                                                </button>
-                                                </td>
+                                                <td><input type="checkbox" name="delete[]" value="<?=$order_id;?>"></td>
                                             </tr>
-                                                <!-- Delete Modal -->
-                                            <div class="modal fade" id="delete<?=$idt;?>">
-                                                <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                
-                                                    <!-- Modal Header -->
-                                                    <div class="modal-header">
-                                                    <h4 class="modal-title">Hapus Transaksi?</h4>
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    </div>
-                                                    
-                                                    <!-- Modal body -->
-                                                    <form method="post">
-                                                    <div class="modal-body">
-                                                    Apakah Anda Yakin Ingin Menghapus <?=$product_name;?>?
-                                                    <input type="hidden" name="idt" value="<?=$idt?>">
-                                                    <br>
-                                                    <br>
-                                                    <button type="submit" class="btn btn-danger" name="hapustransaksi">Hapus</button><br>
-                                                    </div>
-                                                    </form>
-
-                                                    </div>
-                                                    </div>
-                                                </div>
-
-                                            <?php
+                                        <?php
                                             };
-
-                                            ?>
+                                        ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -188,5 +158,14 @@ require 'cek.php';
         <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/datatables-demo.js"></script>
+        <script>
+            // Fungsi untuk select/deselect semua checkbox
+            document.getElementById('selectAll').onclick = function() {
+                var checkboxes = document.getElementsByName('delete[]');
+                for(var checkbox of checkboxes) {
+                    checkbox.checked = this.checked;
+                }
+            }
+        </script>
     </body>
 </html>

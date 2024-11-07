@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once 'config.php';
 require_once 'vendor/autoload.php';
 
@@ -16,23 +17,21 @@ try {
         case 'GET':
             get_products();
             break;
-        case 'POST':
-            $data = json_decode(file_get_contents('php://input'), true);
-            if (isset($data['action'])) {
-                if ($data['action'] === 'apply_voucher') {
-                    apply_voucher($data);
-                } elseif ($data['action'] === 'create_transaction') {
-                    create_transaction($data);
-                } elseif ($data['action'] === 'apply_voucher') {
-                    apply_voucher($data);
-                } elseif($data['action'] === 'check_payment_status') {
-                    check_payment_status($data);
+            case 'POST':
+                $data = json_decode(file_get_contents('php://input'), true);
+                if (isset($data['action'])) {
+                    if ($data['action'] === 'create_transaction') {
+                        create_transaction($data);
+                    } elseif($data['action'] === 'check_payment_status') {
+                        check_payment_status($data);
+                    } elseif($data['action'] === 'cancel_transaction') {
+                        cancel_transaction($data);
+                    }
+                } else {
+                    header("HTTP/1.0 400 Bad Request");
+                    echo json_encode(["error" => "Missing action in request"]);
                 }
-            } else {
-                header("HTTP/1.0 400 Bad Request");
-                echo json_encode(["error" => "Missing action in request"]);
-            }
-            break;
+                break;
         default:
             header("HTTP/1.0 405 Method Not Allowed");
             echo json_encode(["error" => "Invalid request method"]);
@@ -42,6 +41,7 @@ try {
     http_response_code(500);
     echo json_encode(["error" => $e->getMessage()]);
 }
+
 function get_products() {
     global $db;
     try {
@@ -50,59 +50,6 @@ function get_products() {
         $statement->execute();
         $products = $statement->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode($products);
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(["error" => $e->getMessage()]);
-    }
-}
-
-function apply_voucher($data) {
-    global $db;
-
-    if (!isset($data['product_id']) || !isset($data['voucher_code']) || !isset($data['product_price'])) {
-        header("HTTP/1.0 400 Bad Request");
-        echo json_encode(["error" => "Missing required fields"]);
-        return;
-    }
-
-    $product_id = $data['product_id'];
-    $voucher_code = $data['voucher_code'];
-    $product_price = $data['product_price'];
-
-    try {
-        $stmt = $db->prepare("SELECT id, discount_amount, is_used FROM vouchers WHERE code = ?");
-        $stmt->execute([$voucher_code]);
-        $voucher = $stmt->fetch();
-
-        if ($voucher) {
-            if ($voucher['is_used'] == 0) {
-                $discount = intval($voucher['discount_amount']);
-                $discounted_price = $product_price - $discount;
-                $voucher_message = "Voucher berhasil diterapkan!";
-                
-                date_default_timezone_set('Asia/Jakarta');
-                $currentTime = date("Y-m-d H:i:s");
-                $stmt = $db->prepare("UPDATE vouchers SET is_used = 1, used_at = ? WHERE id = ?");
-                $stmt->execute([$currentTime, $voucher['id']]);
-
-                echo json_encode([
-                    'success' => true,
-                    'discount' => $discount,
-                    'discounted_price' => $discounted_price,
-                    'message' => $voucher_message
-                ]);
-            } else {
-                echo json_encode([
-                    'success' => false,
-                    'message' => "Kode voucher sudah digunakan!"
-                ]);
-            }
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => "Kode voucher tidak valid!"
-            ]);
-        }
     } catch (Exception $e) {
         http_response_code(500);
         echo json_encode(["error" => $e->getMessage()]);
@@ -118,33 +65,43 @@ function create_transaction($data) {
         return;
     }
 
-    $order_id = 'TRX-' . time() . '-' . uniqid();
-    $product_id = $data['product_id'];
-    $product_name = $data['product_name'];
-    $product_price = intval($data['product_price']); // This will now be the discounted price if a discount was applied
-
-    $transaction_details = array(
-        'order_id' => $order_id,
-        'gross_amount' => $product_price, // Using the potentially discounted price
-    );
-
-    $item_details = array(
-        array(
-            'id' => $product_id,
-            'price' => $product_price, // Using the potentially discounted price
-            'quantity' => 1,
-            'name' => $product_name
-        )
-    );
-
-    $customer_details = array(
-        'first_name' => "Pembeli",
-        'last_name' => "Satu",
-        'email' => "pembeli@example.com",
-        'phone' => "081234567890",
-    );
-
     try {
+        $order_id = 'TRX-' . time() . '-' . uniqid();
+        $product_id = $data['product_id'];
+        $product_name = $data['product_name'];
+        $product_price = intval($data['product_price']);
+        $discount = isset($data['discount']) ? intval($data['discount']) : 0;
+        $total_price = $product_price - $discount;
+        $status = 'pending';
+
+        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$order_id, $product_id, $product_name, $total_price, $status]);
+
+        if ($total_price < 0) {
+            $total_price = 0;
+        }
+
+        $transaction_details = array(
+            'order_id' => $order_id,
+            'gross_amount' => $total_price
+        );
+
+        $item_details = array(
+            array(
+                'id' => $product_id,
+                'price' => $total_price,
+                'quantity' => 1,
+                'name' => $product_name
+            )
+        );
+
+        $customer_details = array(
+            'first_name' => "Pembeli",
+            'last_name' => "Satu",
+            'email' => "pembeli@example.com",
+            'phone' => "081234567890",
+        );
+
         $params = array(
             'payment_type' => 'qris',
             'transaction_details' => $transaction_details,
@@ -167,15 +124,13 @@ function create_transaction($data) {
             throw new Exception("QR code URL not found in the response");
         }
 
-        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, tanggal, status, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$order_id, $product_id, $product_name, $product_price, date("Y-m-d"), 'pending']);
-
         echo json_encode([
             'success' => true,
             'qr_code_url' => $qr_code_url,
             'order_id' => $order_id
         ]);
-    } catch (\Exception $e) {
+
+    } catch (Exception $e) {
         echo json_encode([
             'success' => false,
             'message' => $e->getMessage()
@@ -191,12 +146,9 @@ function check_payment_status($data) {
         return;
     }
 
-    $transaction_id = $data['transaction_id'];
-
     try {
-        $status = \Midtrans\Transaction::status($transaction_id);
+        $status = \Midtrans\Transaction::status($data['transaction_id']);
         
-        // Periksa apakah $status adalah objek atau array
         if (is_object($status)) {
             $transaction_status = $status->transaction_status;
         } elseif (is_array($status)) {
@@ -204,21 +156,36 @@ function check_payment_status($data) {
         } else {
             throw new Exception("Unexpected response type from Midtrans");
         }
-    
-        // Periksa apakah $transaction_status ada
+
         if ($transaction_status === null) {
             throw new Exception("Transaction status not found in Midtrans response");
         }
-    
-        // Update the status in your database
+
         $stmt = $db->prepare("UPDATE transaksi SET status = ? WHERE order_id = ?");
-        $stmt->execute([$transaction_status, $transaction_id]);
-    
+        $stmt->execute([$transaction_status, $data['transaction_id']]);
+
+        // Tambahkan data transaksi ke session jika status settlement
+        if ($transaction_status === 'settlement') {
+            $stmt = $db->prepare("SELECT * FROM transaksi WHERE order_id = ?");
+            $stmt->execute([$data['transaction_id']]);
+            $transaction = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($transaction) {
+                $_SESSION['successful_transaction'] = [
+                    'transaction_id' => $transaction['order_id'],
+                    'product_name' => $transaction['product_name'],
+                    'amount' => $transaction['price'],
+                    'created_at' => $transaction['created_at'] // Tambahkan created_at
+                ];
+            }
+        }
+
         echo json_encode([
             "success" => true,
-            "status" => $transaction_status
+            "status" => $transaction_status,
+            "redirect" => ($transaction_status === 'settlement') ? 'transberhasil.php' : null
         ]);
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         echo json_encode([
             "success" => false,
             "message" => $e->getMessage()
@@ -226,7 +193,45 @@ function check_payment_status($data) {
     }
 }
 
-// Endpoint untuk menerima notifikasi dari Midtrans
+    function cancel_transaction($data) {
+        global $db;
+
+        if (!isset($data['transaction_id'])) {
+            echo json_encode(["success" => false, "message" => "Missing transaction ID"]);
+            return;
+        }
+
+        try {
+            // Update status transaksi menjadi 'cancelled'
+            $stmt = $db->prepare("UPDATE transaksi SET status = 'cancelled' WHERE order_id = ?");
+            $stmt->execute([$data['transaction_id']]);
+
+            // Ambil data transaksi untuk disimpan di session
+            $stmt = $db->prepare("SELECT * FROM transaksi WHERE order_id = ?");
+            $stmt->execute([$data['transaction_id']]);
+            $transaction = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($transaction) {
+                $_SESSION['cancelled_transaction'] = [
+                    'transaction_id' => $transaction['order_id'],
+                    'product_name' => $transaction['product_name'],
+                    'amount' => $transaction['price'],
+                    'created_at' => $transaction['created_at']
+                ];
+            }
+
+            echo json_encode([
+                "success" => true,
+                "message" => "Transaction cancelled successfully"
+            ]);
+        } catch (Exception $e) {
+            echo json_encode([
+                "success" => false,
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
+
 // Endpoint untuk menerima notifikasi dari Midtrans
 function midtrans_notification() {
     global $db;

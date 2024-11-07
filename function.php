@@ -247,16 +247,21 @@ if (isset($_POST['hapusbarang'])) {
 
 //hapus transaksi
 if (isset($_POST['hapustransaksi'])) {
-    $idt = $_POST['idt'];
-
-    $hapust = mysqli_query($conn,"delete from transaksi where product_id='$idt'");
-    if($hapust){
-        header("location:transaksi.php");
-    } else{
-        echo 'Gagal';
+    if(isset($_POST['delete'])) {
+        foreach($_POST['delete'] as $order_id) {
+            $order_id = mysqli_real_escape_string($conn, $order_id);
+            $hapust = mysqli_query($conn,"DELETE FROM transaksi WHERE order_id='$order_id'");
+        }
+        if($hapust){
+            header("location:transaksi.php");
+        } else {
+            echo 'Gagal menghapus transaksi';
+            header('location:transaksi.php');
+        }
+    } else {
+        echo 'Tidak ada transaksi yang dipilih';
         header('location:transaksi.php');
     }
-
 }
 
 // Hapus voucher terpilih

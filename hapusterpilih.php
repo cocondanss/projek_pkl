@@ -8,3 +8,4 @@ if ($hapus_voucher) {
 } else {
     echo "Gagal menghapus voucher";
 }
+?>

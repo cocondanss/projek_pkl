@@ -146,9 +146,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-3">Deskripsi</div>
+                                        <div class="col-3">Id</div>
                                         <div class="col-1">:</div>
-                                        <div class="col-8"><?php echo $product['description']; ?></div>
+                                        <div class="col-8"><?php echo $product['id']; ?></div>
                                     </div>
                                     <div class="row">
                                         <div class="col-3">Harga</div>
@@ -156,9 +156,9 @@ while ($row = mysqli_fetch_assoc($result)) {
                                         <div class="col-8">Rp<?php echo number_format($product['price'], 0, ',', '.'); ?></div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-3">Id</div>
+                                        <div class="col-3">Deskripsi</div>
                                         <div class="col-1">:</div>
-                                        <div class="col-8"><?php echo $product['id']; ?></div>
+                                        <div class="col-8"><?php echo $product['description']; ?></div>
                                     </div>
                                     <hr>
                                 <?php endforeach; ?>
