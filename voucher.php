@@ -2,7 +2,7 @@
 require 'function.php';
 require 'cek.php';
 
-date_default_timezone_set('Asia/Jakarta');
+date_default_timezone_set('Asia/Jakarta');  
 
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
     // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
@@ -355,7 +355,6 @@ if (isset($_POST['TambahVoucherManual'])) {
                                     <input type="radio" name="voucherType" value="rupiah" id="rupiahRadio" class="form-check-input">
                                     <label class="form-check-label" for="rupiahRadio">Rupiah</label>
                                 </div>
-                                <p></p>
                                 <div class="form-check">
                                     <input type="radio" name="voucherType" value="diskon" id="diskonRadio" class="form-check-input">
                                     <label class="form-check-label" for="diskonRadio">Diskon</label>
@@ -380,6 +379,38 @@ if (isset($_POST['TambahVoucherManual'])) {
                             </div>
 
                             <button type="submit" class="btn btn-primary" name="TambahVoucherOtomatis">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    <!-- Input Tambah Vocher Manual -->
+    <div class="modal fade" id="manualVoucherModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Tambah Voucher Manual</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                    <form method="post" id="voucherForm">
+                        <div class="modal-body">
+                            <!-- Input Voucher Code -->
+                            <input type="text" name="manual_code" placeholder="Kode Voucher" class="form-control" required><br>
+
+                            <!-- Nominal (Rp) Input -->
+                            <input type="number" name="nominal" placeholder="Nominal (Rp)" class="form-control" required><br>
+
+                            <!-- Checkbox for Free Option -->
+                            <input type="checkbox" name="is_free" id="isFree" onchange="toggleNominal()"> 
+                            <label for="isFree">Gratis</label><br><br>
+
+                            <!-- Checkbox for One-Time Use -->
+                            <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
+                            <label for="oneTimeUse">Sekali Pakai</label><br><br>
+
+                                        <!-- Button to Create Voucher -->
+                            <button type="submit" class="btn btn-primary" name="TambahVoucherManual">Tambah Voucher Manual</button>
                         </div>
                     </form>
                 </div>
@@ -490,39 +521,7 @@ if (isset($_POST['TambahVoucherManual'])) {
     // Ketika modal dibuka, set checkbox 'Sekali Pakai' untuk tercentang
     $('#manualVoucherModal').on('show.bs.modal', function () {
         document.getElementById('oneTimeUse').checked = true; // Set checkbox menjadi tercentang
-        });
+    });
         </script>
-
-    <!-- Input Tambah Vocher Manual -->
-    <div class="modal fade" id="manualVoucherModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Tambah Voucher Manual</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                    <form method="post" id="voucherForm">
-                        <div class="modal-body">
-                            <!-- Input Voucher Code -->
-                            <input type="text" name="manual_code" placeholder="Kode Voucher" class="form-control" required><br>
-
-                            <!-- Nominal (Rp) Input -->
-                            <input type="number" name="nominal" placeholder="Nominal (Rp)" class="form-control" required><br>
-
-                            <!-- Checkbox for Free Option -->
-                            <input type="checkbox" name="is_free" id="isFree" onchange="toggleNominal()"> 
-                            <label for="isFree">Gratis</label><br><br>
-
-                            <!-- Checkbox for One-Time Use -->
-                            <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
-                            <label for="oneTimeUse">Sekali Pakai</label><br><br>
-
-                                        <!-- Button to Create Voucher -->
-                            <button type="submit" class="btn btn-primary" name="TambahVoucherManual">Tambah Voucher Manual</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
     </body>
 </html>
