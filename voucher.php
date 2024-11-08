@@ -324,6 +324,63 @@ if (isset($_POST['TambahVoucherManual'])) {
                 </footer>
             </div>
         </div>
+        <div class="modal fade" id="voucherModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Tambah Voucher otomatis</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <form method="post">
+                        <div class="modal-body">
+                            <!-- Kode Voucher -->
+                            <div class="form-group">
+                                <label for="code_prefix">Kode Voucher:</label>
+                                <input type="text" name="code_prefix" class="form-control" value="<?= $voucherCode; ?>" readonly>
+                            </div>
+                            
+                            <!-- Jumlah Voucher -->
+                            <div class="form-group">
+                                <label>Jumlah Voucher:</label>
+                                <input type="number" name="voucher_count" placeholder="Jumlah Voucher" class="form-control" min="1" required>
+                            </div>
+
+                            <!-- Radio Buttons -->
+                            <div class="form-group">
+                                <label>Jenis Voucher:</label>
+                                <div class="form-check">
+                                    <input type="radio" name="voucherType" value="rupiah" id="rupiahRadio" class="form-check-input">
+                                    <label class="form-check-label" for="rupiahRadio">Rupiah</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" name="voucherType" value="diskon" id="diskonRadio" class="form-check-input">
+                                    <label class="form-check-label" for="diskonRadio">Diskon</label>
+                                </div>
+                            </div>
+
+                            <!-- Input Nominal (initially hidden) -->
+                            <div id="nominalInput" style="display: none;" class="form-group">
+                                <label for="nominalVoucher">Nominal Voucher (Rupiah):</label>
+                                <input type="number" name="nominalVoucher" id="nominalVoucher" class="form-control" min="0" step="1000">
+                            </div>
+
+                            <!-- Input Diskon (initially hidden) -->
+                            <div id="diskonInput" style="display: none;" class="form-group">
+                                <label for="diskonVoucher">Diskon (%):</label>
+                                <div class="input-group">
+                                    <input type="number" name="diskonVoucher" id="diskonVoucher" class="form-control" min="1" max="100">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" name="TambahVoucherOtomatis">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
@@ -335,33 +392,43 @@ if (isset($_POST['TambahVoucherManual'])) {
         <script src="assets/demo/datatables-demo.js"></script>
         <script>
             // Fungsi untuk menampilkan input berdasarkan pilihan radio
-            document.querySelectorAll('input[name="voucherType"]').forEach(radio => {
-            radio.addEventListener('change', function() {
+            function handleVoucherTypeChange() {
+                const rupiahRadio = document.getElementById('rupiahRadio');
                 const nominalInput = document.getElementById('nominalInput');
                 const diskonInput = document.getElementById('diskonInput');
                 
-                if (this.value === 'rupiah') {
-                    nominalInput.style.display = 'block';
+                // Tambahkan event listener untuk setiap radio button
+                document.getElementById('rupiahRadio').addEventListener('change', function() {
+                    nominalInput.style.display = this.checked ? 'block' : 'none';
                     diskonInput.style.display = 'none';
-                    document.getElementById('diskonVoucher').value = '';
-                } else {
-                    nominalInput.style.display = 'none';
-                    diskonInput.style.display = 'block';
-                    document.getElementById('nominalVoucher').value = '';
-                }
-            });
-        });
+                    if (this.checked) {
+                        document.getElementById('diskonVoucher').value = '';
+                    }
+                });
 
-        // Clear inputs when modal is closed
-        $('#voucherModal').on('hidden.bs.modal', function () {
-            document.getElementById('nominalVoucher').value = '';
-            document.getElementById('diskonVoucher').value = '';
-            document.querySelectorAll('input[name="voucherType"]').forEach(radio => {
-                radio.checked = false;
+                document.getElementById('diskonRadio').addEventListener('change', function() {
+                    diskonInput.style.display = this.checked ? 'block' : 'none';
+                    nominalInput.style.display = 'none';
+                    if (this.checked) {
+                        document.getElementById('nominalVoucher').value = '';
+                    }
+                });
+            }
+
+            // Panggil fungsi saat dokumen dimuat
+            document.addEventListener('DOMContentLoaded', function() {
+                handleVoucherTypeChange();
             });
-            document.getElementById('nominalInput').style.display = 'none';
-            document.getElementById('diskonInput').style.display = 'none';
-        });
+
+            // Reset form saat modal ditutup
+            $('#voucherModal').on('hidden.bs.modal', function () {
+                document.getElementById('nominalVoucher').value = '';
+                document.getElementById('diskonVoucher').value = '';
+                document.getElementById('rupiahRadio').checked = false;
+                document.getElementById('diskonRadio').checked = false;
+                document.getElementById('nominalInput').style.display = 'none';
+                document.getElementById('diskonInput').style.display = 'none';
+            });
 
         $("#eksporVoucher").click(function(event) {
             event.preventDefault();
@@ -419,60 +486,8 @@ if (isset($_POST['TambahVoucherManual'])) {
     // Ketika modal dibuka, set checkbox 'Sekali Pakai' untuk tercentang
     $('#manualVoucherModal').on('show.bs.modal', function () {
         document.getElementById('oneTimeUse').checked = true; // Set checkbox menjadi tercentang
-    });
+        });
         </script>
-        <div class="modal fade" id="voucherModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Tambah Voucher otomatis</h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <form method="post">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="code_prefix">Kode Voucher:</label>
-                        <input type="text" name="code_prefix" class="form-control" value="<?= $voucherCode; ?>" readonly>
-                    </div>
-                    
-                    <div class="form-group">
-                        <input type="number" name="voucher_count" placeholder="Jumlah Voucher" class="form-control" min="1" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Jenis Voucher:</label>
-                        <div class="custom-control custom-radio">
-                            <input type="radio" name="voucherType" value="rupiah" id="rupiahRadio" class="custom-control-input" required>
-                            <label class="custom-control-label" for="rupiahRadio">Rupiah</label>
-                        </div>
-                        <p></p>
-                        <div class="custom-control custom-radio">
-                            <input type="radio" name="voucherType" value="diskon" id="diskonRadio" class="custom-control-input" required>
-                            <label class="custom-control-label" for="diskonRadio">Diskon</label>
-                        </div>
-                    </div>
-
-                    <div id="nominalInput" style="display: none;" class="form-group">
-                        <label for="nominalVoucher">Nominal Voucher (Rupiah):</label>
-                        <input type="number" name="nominalVoucher" id="nominalVoucher" class="form-control" step="1000">
-                    </div>
-
-                    <div id="diskonInput" style="display: none;" class="form-group">
-                        <label for="diskonVoucher">Diskon (%):</label>
-                        <div class="input-group">
-                            <input type="number" name="diskonVoucher" id="diskonVoucher" class="form-control" min="1" max="100">
-                            <div class="input-group-append">
-                                <span class="input-group-text">%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" name="TambahVoucherOtomatis">Simpan</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
 
     <!-- Input Tambah Vocher Manual -->
     <div class="modal fade" id="manualVoucherModal">
