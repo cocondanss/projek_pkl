@@ -1,7 +1,6 @@
 <?php
-require_once 'function.php';
+require 'function.php';
 require 'cek.php';
-
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
     // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
     $sql = "DELETE FROM vouchers2 WHERE used_at IS NOT NULL AND one_time_use = 1"; // Hanya hapus voucher yang sudah digunakan dan sekali pakai
@@ -87,21 +86,20 @@ if (isset($_POST['TambahVoucherManual'])) {
     header('Location: voucher.php');
 }
 ?>
-
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Voucher</title>
-    <link href="css/style.css" rel="stylesheet" />
-    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>          
-</head>
-<style>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Voucher</title>
+        <link href="css/style.css" rel="stylesheet" />
+        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>          
+    </head>
+    <style>
     /* Apply Poppins font globally */
     body {
         font-family: 'Poppins', sans-serif;
@@ -312,19 +310,19 @@ if (isset($_POST['TambahVoucherManual'])) {
                         </form>
                     </div>
                 </div>
-            </main>
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; Your Website 2020</div>
-                        <div>
-                            <a href="#">Privacy Policy</a>
-                            &middot;
-                            <a href="#">Terms &amp; Conditions</a>
+                <footer class="py-4 bg-light mt-auto">
+                    <div class="container-fluid">
+                        <div class="d-flex align-items-center justify-content-between small">
+                            <div class="text-muted">Copyright &copy; Your Website 2020</div>
+                            <div>
+                                <a href="#">Privacy Policy</a>
+                                &middot;
+                                <a href="#">Terms &amp; Conditions</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </footer>
+                </footer>
+            </div>
         </div>
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
@@ -332,11 +330,98 @@ if (isset($_POST['TambahVoucherManual'])) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/chart-area-demo.js"></script>
         <script src="assets/demo/chart-bar-demo.js"></script>
-        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <!-- <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script> -->
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/datatables-demo.js"></script>
-    </div>
-    <div class="modal fade" id="voucherModal">
+        <script>
+            // Fungsi untuk menampilkan input berdasarkan pilihan radio
+            document.querySelectorAll('input[name="voucherType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const nominalInput = document.getElementById('nominalInput');
+                const diskonInput = document.getElementById('diskonInput');
+                
+                if (this.value === 'rupiah') {
+                    nominalInput.style.display = 'block';
+                    diskonInput.style.display = 'none';
+                    document.getElementById('diskonVoucher').value = '';
+                } else {
+                    nominalInput.style.display = 'none';
+                    diskonInput.style.display = 'block';
+                    document.getElementById('nominalVoucher').value = '';
+                }
+            });
+        });
+
+        // Clear inputs when modal is closed
+        $('#voucherModal').on('hidden.bs.modal', function () {
+            document.getElementById('nominalVoucher').value = '';
+            document.getElementById('diskonVoucher').value = '';
+            document.querySelectorAll('input[name="voucherType"]').forEach(radio => {
+                radio.checked = false;
+            });
+            document.getElementById('nominalInput').style.display = 'none';
+            document.getElementById('diskonInput').style.display = 'none';
+        });
+
+        $("#eksporVoucher").click(function(event) {
+            event.preventDefault();
+            
+            // Get all rows from the table
+            var rows = document.querySelectorAll('table tbody tr');
+            var fileContent = 'Kode Voucher\n';
+            
+            // Iterate through each row and extract only the voucher code
+            rows.forEach(function(row) {
+                var cells = row.getElementsByTagName('td');
+                if (cells.length > 0) {
+                    var code = cells[1].textContent.trim(); // Kode voucher ada di kolom kedua (index 1)
+                    fileContent += `${code}\n`;
+                }
+            });
+
+            // Create and trigger download
+            var blob = new Blob([fileContent], {type: 'text/plain'});
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'daftar_voucher.txt';
+            link.click();
+        });                               
+
+                function toggleNominal() {
+                    var isFree = document.getElementById('isFree');
+                    var nominalInput = document.getElementById('nominalInput');
+                    
+                    if (isFree.checked) {
+                        nominalInput.value = '0';
+                        nominalInput.disabled = true;
+                    } else {
+                        nominalInput.value = '';
+                        nominalInput.disabled = false;
+                    }
+                }
+                        
+
+            $('#selectAll').click(function() {
+            $('input[type="checkbox"]').prop('checked', this.checked);
+        });
+
+               
+        document.getElementById('oneTimeUse').addEventListener('change', function() {
+        localStorage.setItem('oneTimeUseChecked', this.checked);
+    });
+
+    // Ambil status checkbox dari localStorage saat halaman dimuat
+    window.onload = function() {
+        var isChecked = localStorage.getItem('oneTimeUseChecked') === 'true';
+        document.getElementById('oneTimeUse').checked = isChecked;
+    };
+
+    // Ketika modal dibuka, set checkbox 'Sekali Pakai' untuk tercentang
+    $('#manualVoucherModal').on('show.bs.modal', function () {
+        document.getElementById('oneTimeUse').checked = true; // Set checkbox menjadi tercentang
+    });
+        </script>
+        <div class="modal fade" id="voucherModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -420,124 +505,5 @@ if (isset($_POST['TambahVoucherManual'])) {
                 </div>
             </div>
         </div>
-            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-            <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
-            <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-
-         <script>
-            (function($) {
-                "use strict";
-
-                // Add active state to sidebar nav links
-                var path = window.location.href;
-                $("#layoutSidenav_nav .sb-sidenav a.nav-link").each(function() {
-                    if (this.href === path) {
-                        $(this).addClass("active");
-                    }
-                });
-
-                // Toggle the side navigation
-                $("#sidebarToggle").on("click", function(e) {
-                    e.preventDefault();
-                    $("body").toggleClass("sb-sidenav-toggled");
-                });
-            })(jQuery);
-            // Fungsi untuk menampilkan input berdasarkan pilihan radio
-            document.querySelectorAll('input[name="voucherType"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                const nominalInput = document.getElementById('nominalInput');
-                const diskonInput = document.getElementById('diskonInput');
-                
-                if (this.value === 'rupiah') {
-                    nominalInput.style.display = 'block';
-                    diskonInput.style.display = 'none';
-                    document.getElementById('diskonVoucher').value = '';
-                } else {
-                    nominalInput.style.display = 'none';
-                    diskonInput.style.display = 'block';
-                    document.getElementById('nominalVoucher').value = '';
-                }
-            });
-        });
-
-        // Clear inputs when modal is closed
-        $('#voucherModal').on('hidden.bs.modal', function () {
-            document.getElementById('nominalVoucher').value = '';
-            document.getElementById('diskonVoucher').value = '';
-            document.querySelectorAll('input[name="voucherType"]').forEach(radio => {
-                radio.checked = false;
-            });
-            document.getElementById('nominalInput').style.display = 'none';
-            document.getElementById('diskonInput').style.display = 'none';
-        });
-
-                                // Script untuk ekspor data voucher
-                                $("#eksporVoucher").click(function(event) {
-                                event.preventDefault();
-                                var table = $('#dataTable').DataTable(); // Ubah id tabel menjadi dataTable
-                                var data = table.rows().data();
-
-                                var fileContent = 'Kode Voucher\n';
-                                data.each(function(value, index) {
-                                var code = value
-                                var code = value[1];
-
-                                fileContent += code + '\n';
-                                });
-
-                                var blob = new Blob([fileContent], {type: 'text/plain'});
-                                var link = document.createElement('a');
-                                link.href = URL.createObjectURL(blob);
-                                link.download = 'daftar_voucher.txt';
-                                link.click();
-
-                                $.ajax({
-                                type: 'POST',
-                                url: 'ekspor_voucher.php',
-                                success: function(data) {
-                                    console.log("Data berhasil diunduh");
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error("Terjadi kesalahan: " + error);
-                                    alert("Gagal mengekspor data. Silakan coba lagi.");
-                                }
-                            });
-                        }); 
-                        function toggleNominal() {
-                            var isFree = document.getElementById('isFree');
-                            var nominalInput = document.getElementById('nominalInput');
-                            
-                            if (isFree.checked) {
-                                nominalInput.value = '0';
-                                nominalInput.disabled = true;
-                            } else {
-                                nominalInput.value = '';
-                                nominalInput.disabled = false;
-                            }
-                        }
-                        
-
-                    $('#selectAll').click(function() {
-                    $('input[type="checkbox"]').prop('checked', this.checked);
-                });
-
-               
-                document.getElementById('oneTimeUse').addEventListener('change', function() {
-        localStorage.setItem('oneTimeUseChecked', this.checked);
-    });
-
-    // Ambil status checkbox dari localStorage saat halaman dimuat
-    window.onload = function() {
-        var isChecked = localStorage.getItem('oneTimeUseChecked') === 'true';
-        document.getElementById('oneTimeUse').checked = isChecked;
-    };
-
-    // Ketika modal dibuka, set checkbox 'Sekali Pakai' untuk tercentang
-    $('#manualVoucherModal').on('show.bs.modal', function () {
-        document.getElementById('oneTimeUse').checked = true; // Set checkbox menjadi tercentang
-    });
-
-        </script>
     </body>
 </html>
