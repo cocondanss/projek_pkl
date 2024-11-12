@@ -56,6 +56,7 @@ if (isset($_POST['TambahVoucher'])) {
     $code_prefix = $_POST['code_prefix'];
     $discount_amount = $_POST['discount_amount'];
     $voucher_count = $_POST['voucher_count'];
+    $vouchers = []; // Array untuk menyimpan voucher yang berhasil ditambahkan
 
     for ($i = 0; $i < $voucher_count; $i++) {
         $random_number = mt_rand(1000000000, 9999999999);
@@ -64,15 +65,27 @@ if (isset($_POST['TambahVoucher'])) {
         $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
         $created_at = $date->format('Y-m-d H:i:s');
 
+        // Menyimpan voucher ke database
         $addtotable = mysqli_query($conn, "INSERT INTO vouchers (code, discount_amount, created_at) VALUES ('$unique_code', '$discount_amount', '$created_at')");
+
+        // Cek apakah query berhasil
+        if ($addtotable) {
+            $vouchers[] = array($unique_code, $discount_amount, 'Belum Digunakan', $created_at);
+        } else {
+            // Jika ada yang gagal, beri tahu dan keluar dari loop
+            echo 'Gagal menambahkan voucher: ' . mysqli_error($conn);
+            break; // Keluar dari loop jika ada kesalahan
+        }
     }
 
-    if ($addtotable) {
-        $vouchers[] = array($unique_code, $discount_amount, 'Belum Digunakan', $created_at);
+    // Jika semua voucher berhasil ditambahkan
+    if (count($vouchers) === $voucher_count) {
         header("location:voucher.php");
+        exit();
     } else {
-        echo 'Gagal';
+        // Jika tidak semua voucher berhasil ditambahkan
         header('location:voucher.php');
+        exit();
     }
 }
 // if (isset($_POST['TambahVoucherManual'])) {
