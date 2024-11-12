@@ -63,7 +63,7 @@ if (isset($_POST['TambahVoucher'])) {
         $unique_code = $code_prefix . $random_number;
         $date = new DateTime();
         $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
-        $created_at = $date->format('Y-m-d H:i:s');
+        // $created_at = $date->format('Y-m-d H:i:s');
 
         // Menyimpan voucher ke database
         $addtotable = mysqli_query($conn, "INSERT INTO vouchers (code, discount_amount, created_at) VALUES ('$unique_code', '$discount_amount', '$created_at')");
