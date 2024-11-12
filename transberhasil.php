@@ -37,7 +37,7 @@ unset($_SESSION['successful_transaction']);
                 <li>Tanggal: <?php echo $tanggal; ?></li>
             </ul>
         </div>
-        <a href="listproduct.php" class="btn btn-primary">Kembali ke Daftar Produk</a>
+        <a href="listproduct.php" class="btn btn-dark mr-2">Kembali ke Daftar Produk</a>
     </div>
 </body>
 </html>
