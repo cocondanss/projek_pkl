@@ -407,26 +407,26 @@ if (isset($_POST['TambahVoucherManual'])) {
                             });
                         }); 
                         function toggleNominal() {
-                        var isFree = document.getElementById('isFree');
-                        var nominalInput = document.getElementById('nominalVoucher');
-                        var nominalContainer = document.getElementById('nominalContainer');
-                        
-                        if (isFree.checked) {
-                            nominalInput.value = 0; // Set nilai nominal menjadi 0
-                            nominalInput.style.display = 'none'; // Sembunyikan input nominal
-                        } else {
-                            nominalInput.style.display = 'block'; // Tampilkan kembali input nominal
-                        }
-                    }
+        var isFree = document.getElementById('isFree');
+        var nominalInput = document.getElementById('nominalVoucher');
+        var nominalContainer = document.getElementById('nominalContainer');
+        
+        if (isFree.checked) {
+            nominalInput.value = 0; // Set nilai nominal menjadi 0
+            nominalContainer.style.display = 'none'; // Sembunyikan input nominal
+        } else {
+            nominalContainer.style.display = 'block'; // Tampilkan kembali input nominal
+            nominalInput.value = ''; // Kosongkan input nominal saat ditampilkan
+        }
+    }
 
-                    // Tambahkan event listener untuk checkbox isFree
-                    document.getElementById('isFree').addEventListener('change', toggleNominal);
+    // Tambahkan event listener untuk checkbox isFree
+    document.getElementById('isFree').addEventListener('change', toggleNominal);
 
-                    // Inisialisasi tampilan input nominal saat modal dibuka
-                    document.addEventListener('DOMContentLoaded', function() {
-                        toggleNominal(); // Panggil fungsi untuk menyesuaikan tampilan
-                    });
-
+    // Inisialisasi tampilan input nominal saat modal dibuka
+    document.addEventListener('DOMContentLoaded', function() {
+        toggleNominal(); // Panggil fungsi untuk menyesuaikan tampilan
+    });
                
                 document.getElementById('oneTimeUse').addEventListener('change', function() {
         localStorage.setItem('oneTimeUseChecked', this.checked);
