@@ -4,7 +4,7 @@ date_default_timezone_set('Asia/Jakarta');
 
 // Konfigurasi koneksi database
 $conn = mysqli_connect("localhost", "u529472640_root", "Daclen123", "u529472640_framee");
-$conn =mysqli_connect("framee");
+
 
 // Konfigurasi Midtrans
 define('MIDTRANS_SERVER_KEY', 'SB-Mid-server-BiPEZ8YxMZheywHq49sAQthl');
