@@ -327,6 +327,7 @@ if (isset($_POST['TambahVoucherManual'])) {
                 </footer>
             </div>
         </div>
+        
         <div class="modal fade" id="voucherModal">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -385,37 +386,38 @@ if (isset($_POST['TambahVoucherManual'])) {
             </div>
         </div>
 
-    <!-- Input Tambah Vocher Manual -->
-    <div class="modal fade" id="manualVoucherModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Tambah Voucher Manual</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                    <form method="post" id="voucherForm">
-                        <div class="modal-body">
-                            <!-- Input Voucher Code -->
-                            <input type="text" name="manual_code" placeholder="Kode Voucher" class="form-control" required><br>
-
-                            <!-- Nominal (Rp) Input -->
-                            <input type="number" name="nominal" placeholder="Nominal (Rp)" class="form-control" required><br>
-
-                            <!-- Checkbox for Free Option -->
-                            <input type="checkbox" name="is_free" id="isFree" onchange="toggleNominal()"> 
-                            <label for="isFree">Gratis</label><br><br>
-
-                            <!-- Checkbox for One-Time Use -->
-                            <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
-                            <label for="oneTimeUse">Sekali Pakai</label><br><br>
-
-                                        <!-- Button to Create Voucher -->
-                            <button type="submit" class="btn btn-primary" name="TambahVoucherManual">Tambah Voucher Manual</button>
-                        </div>
-                    </form>
-                </div>
+ <!-- Input Tambah Voucher Manual -->
+ <div class="modal fade" id="manualVoucherModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Tambah Voucher Manual</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
+            <form method="post" id="voucherForm">
+                <div class="modal-body">
+                    <!-- Input Voucher Code -->
+                    <input type="text" name="manual_code" placeholder="Kode Voucher" class="form-control" required><br>
+
+                    <!-- Nominal (Rp) Input -->
+                    <input type="number" name="nominal" placeholder="Nominal (Rp)" class="form-control" required><br>
+
+                    <!-- Checkbox for Free Option -->
+                    <input type="checkbox" name="is_free" id="isFree" onchange="toggleNominal()"> 
+                    <label for="isFree">Gratis</label><br><br>
+
+                    <!-- Checkbox for One-Time Use -->
+                    <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
+                    <label for="oneTimeUse">Sekali Pakai</label><br><br>
+
+                    <!-- Button to Create Voucher -->
+                    <button type="submit" class="btn btn-primary" name="TambahVoucherManual">Tambah Voucher Manual</button>
+                </div>
+            </form>
         </div>
+    </div>
+</div>
+
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
         <script src="js/scripts.js"></script>
@@ -489,19 +491,33 @@ if (isset($_POST['TambahVoucherManual'])) {
             link.click();
         });                               
 
-                function toggleNominal() {
-                    var isFree = document.getElementById('isFree');
-                    var nominalInput = document.getElementById('nominalInput');
-                    
-                    if (isFree.checked) {
-                        nominalInput.value = '0';
-                        nominalInput.disabled = true;
-                    } else {
-                        nominalInput.value = '';
-                        nominalInput.disabled = false;
-                    }
-                }
-                        
+        function toggleNominal() {
+        var isFree = document.getElementById('isFree');
+        var nominalInput = document.getElementsByName('nominal')[0]; // Mengambil input nominal dengan nama
+        if (isFree.checked) {
+            nominalInput.value = '0'; // Mengisi nominal dengan 0
+            nominalInput.disabled = true; // Menonaktifkan input nominal
+        } else {
+            nominalInput.value = ''; // Mengosongkan nilai nominal
+            nominalInput.disabled = false; // Mengaktifkan kembali input nominal
+        }
+    }
+
+    // Menambahkan event listener untuk validasi form
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('voucherForm').addEventListener('submit', function(event) {
+            const nominalInput = document.getElementsByName('nominal')[0];
+            const isFree = document.getElementById('isFree');
+
+            if (!isFree.checked && nominalInput.value.trim() === '') {
+                alert('Silakan isi nominal atau centang gratis.');
+                event.preventDefault(); // Mencegah form disubmit
+            }
+        });
+    });                     
+
+
+
 
             $('#selectAll').click(function() {
             $('input[type="checkbox"]').prop('checked', this.checked);
