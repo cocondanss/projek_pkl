@@ -150,7 +150,7 @@ require 'cek.php';
                                                 <th>Harga</th>
                                                 <th>Tanggal Terima</th>
                                                 <th>Status</th>
-                                                <th><input type="checkbox" id="selectAll"> Pilih Semua</th>
+                                                <th> Pilih Semua <input type="checkbox" id="selectAll"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
