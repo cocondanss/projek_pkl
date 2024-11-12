@@ -419,9 +419,6 @@ if (isset($_POST['TambahVoucherManual'])) {
                     document.addEventListener('DOMContentLoaded', function() {
                         toggleNominal(); // Panggil fungsi untuk menyesuaikan tampilan
                     });
-                    $('#selectAll').click(function() {
-                    $('input[type="checkbox"]').prop('checked', this.checked);
-                });
 
                
                 document.getElementById('oneTimeUse').addEventListener('change', function() {
