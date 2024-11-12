@@ -98,7 +98,7 @@ function create_transaction($data) {
         $product_name = $data['product_name'];
         $product_price = intval($data['product_price']);
         $discount = isset($data['discount']) ? intval($data['discount']) : 0;
-        $total_price = max(0, $product_price - $discount);
+        $total_price = max(0.01, $product_price - $discount);
 
         // Simpan transaksi ke database
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
