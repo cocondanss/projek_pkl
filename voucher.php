@@ -222,16 +222,16 @@ if (isset($_POST['TambahVoucherManual'])) {
                         <h1 class="mt-4">Voucher</h1>
                         <div class="card mb-4">
                             <div class="card-header">
-                                <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#voucherModal">
+                                <button type="button" class="btn btn-dark mr-2" data-toggle="modal" data-target="#voucherModal">
                                     Tambah Voucher otomatis
                                 </button>
-                                <button type="button" class="btn btn-success mr-2" data-toggle="modal" data-target="#manualVoucherModal">
+                                <button type="button" class="btn btn-dark mr-2" data-toggle="modal" data-target="#manualVoucherModal">
                                     Tambah Voucher Manual
                                 </button>
                                 <button type="submit" name="hapusvoucher" id="hapusvoucher" class="btn btn-dark mr-2">
                                     Hapus Voucher Terpilih
                                 </button>
-                                <button type="button" class="btn btn-info mr-2" id="eksporVoucher">
+                                <button type="button" class="btn btn-dark mr-2" id="eksporVoucher">
                                     Ekspor Voucher
                                 </button>
                                 <!-- <form method="POST" action="voucher.php">
