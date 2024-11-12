@@ -413,7 +413,7 @@ if (isset($_POST['TambahVoucherManual'])) {
                     <label for="isFree">Gratis</label><br><br>
 
                     <!-- Checkbox for One-Time Use -->
-                    <input type="checkbox" name="one_time_use" id="oneTimeUse"class="btn btn-dark mr-2"> 
+                    <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
                     <label for="oneTimeUse">Sekali Pakai</label><br><br>
 
                     <!-- Button to Create Voucher -->
