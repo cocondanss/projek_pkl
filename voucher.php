@@ -1,7 +1,7 @@
 <?php
 require_once 'function.php';
 require 'cek.php';
-
+date_default_timezone_set('Asia/Jakarta');
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
     // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
     $sql = "DELETE FROM vouchers2 WHERE used_at IS NOT NULL AND one_time_use = 1"; // Hanya hapus voucher yang sudah digunakan dan sekali pakai
