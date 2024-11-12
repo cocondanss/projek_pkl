@@ -317,28 +317,16 @@ if (isset($_POST['TambahVoucherManual'])) {
                 <h4 class="modal-title">Tambah Voucher Manual</h4>
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
-            <form method="post" id="voucherForm">
-                <div class="modal-body">
-                    <!-- Input Voucher Code -->
-                    <input type="text" name="manual_code" placeholder="Kode Voucher" class="form-control" required><br>
+            <form id="voucherForm">
+    <label for="voucherNominal">Nominal Voucher:</label>
+    <input type="text" id="voucherNominal" name="voucherNominal" value="0" />
 
-                    <!-- Nominal (Rp) Input -->
-                    <div id="nominalContainer">
-                        <input type="number" name="nominal" id="nominalVoucher" placeholder="Nominal (Rp)" class="form-control" required><br>
-                    </div>
+    <label for="gratisCheckbox">
+        <input type="checkbox" id="gratisCheckbox" name="gratisCheckbox" onclick="toggleNominal()" /> Gratis
+    </label>
 
-                    <!-- Checkbox for Free Option -->
-                    <input type="checkbox" name="is_free" id="isFree"> 
-                    <label for="isFree">Gratis</label><br><br>
-
-                    <!-- Checkbox for One-Time Use -->
-                    <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
-                    <label for="oneTimeUse">Sekali Pakai</label><br><br>
-
-                    <!-- Button to Create Voucher -->
-                    <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherManual">Simpan</button>
-                </div>
-            </form>
+    <button type="submit">Buat Voucher</button>
+</form>
         </div>
     </div>
 </div>
