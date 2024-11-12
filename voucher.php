@@ -493,13 +493,15 @@ if (isset($_POST['TambahVoucherManual'])) {
 
         function toggleNominal() {
         var isFree = document.getElementById('isFree');
+        var nominalContainer = document.getElementById('nominalContainer'); // Container untuk input nominal
         var nominalInput = document.getElementsByName('nominal')[0]; // Mengambil input nominal dengan nama
+
         if (isFree.checked) {
-            nominalInput.value = '0'; // Mengisi nominal dengan 0
-            nominalInput.disabled = true; // Menonaktifkan input nominal
+            nominalContainer.style.display = 'none'; // Sembunyikan input nominal
+            nominalInput.value = '0'; // Mengatur nilai nominal menjadi 0
         } else {
-            nominalInput.value = ''; // Mengosongkan nilai nominal
-            nominalInput.disabled = false; // Mengaktifkan kembali input nominal
+            nominalContainer.style.display = 'block'; // Tampilkan kembali input nominal
+            nominalInput.value = ''; // Kosongkan nilai nominal
         }
     }
 
@@ -514,7 +516,7 @@ if (isset($_POST['TambahVoucherManual'])) {
                 event.preventDefault(); // Mencegah form disubmit
             }
         });
-    });                     
+    });           
 
 
 
