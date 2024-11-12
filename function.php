@@ -65,6 +65,9 @@ if (isset($_POST['TambahVoucher'])) {
         $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
         $created_at = $date->format('Y-m-d H:i:s');
 
+        // Debugging output
+        echo "Kode Voucher: $unique_code, Waktu dibuat: $created_at<br>"; // Debugging
+
         // Menyimpan voucher ke database
         $addtotable = mysqli_query($conn, "INSERT INTO vouchers (code, discount_amount, created_at) VALUES ('$unique_code', '$discount_amount', '$created_at')");
 
