@@ -111,12 +111,12 @@ function create_transaction($data) {
             'payment_type' => 'qris',
             'transaction_details' => [
                 'order_id' => $order_id,
-                'gross_amount' => 0, // Atur ke 0.01 untuk transaksi gratis
-                'currency' => 'IDR' // Pastikan untuk menyertakan mata uang
+                'gross_amount' => intval($total_price), // Pastikan ini adalah integer
+                'currency' => 'IDR' // Pastikan Anda menyertakan mata uang
             ],
             'item_details' => [[
                 'id' => $product_id,
-                'price' => 0, // Atur harga item ke 0.01
+                'price' => intval($total_price), // Pastikan ini adalah integer
                 'quantity' => 1,
                 'name' => $product_name
             ]],
