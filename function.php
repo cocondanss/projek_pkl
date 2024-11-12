@@ -63,21 +63,15 @@ if (isset($_POST['TambahVoucher'])) {
         $unique_code = $code_prefix . $random_number;
         $date = new DateTime();
         $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
-        $created_at = $date->format('Y-m-d H:i:s');
-
-        // Debugging output
-        echo "Kode Voucher: $unique_code, Waktu dibuat: $created_at<br>"; // Debugging
-
-        // Menyimpan voucher ke database
-        $addtotable = mysqli_query($conn, "INSERT INTO vouchers (code, discount_amount, created_at) VALUES ('$unique_code', '$discount_amount', '$created_at')");
-
-        // Cek apakah query berhasil
-        if ($addtotable) {
-            $vouchers[] = array($unique_code, $discount_amount, 'Belum Digunakan', $created_at);
+        $claimed_at = $date->format('Y-m-d H:i:s');
+    
+        // Update status voucher menjadi digunakan dan simpan waktu klaim
+        $update_query = "UPDATE vouchers SET status = 'Digunakan', claimed_at = '$claimed_at' WHERE code = '$voucher_code'";
+    
+        if (mysqli_query($conn, $update_query)) {
+            echo "Voucher berhasil diklaim pada: " . $claimed_at; // Tampilkan waktu klaim
         } else {
-            // Jika ada yang gagal, beri tahu dan keluar dari loop
-            echo 'Gagal menambahkan voucher: ' . mysqli_error($conn);
-            break; // Keluar dari loop jika ada kesalahan
+            echo "Gagal mengklaim voucher: " . mysqli_error($conn);
         }
     }
 
