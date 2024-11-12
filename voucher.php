@@ -27,7 +27,7 @@ function generateVoucherCode($length = 8) {
 }
 
 $voucherCode = generateVoucherCode(); // Buat kode voucher otomatis setiap kali halaman dibuka
-
+//otomatis
 if (isset($_POST['TambahVoucherOtomatis'])) {
     $voucherCode = $_POST['code_prefix'];
     $voucherCount = $_POST['voucher_count'];
@@ -56,6 +56,7 @@ for ($i = 0; $i < $voucherCount; $i++) {
     // echo "<script>alert('Voucher berhasil ditambahkan');</script>";
     header('Location: voucher.php');
 }
+//manual
 if (isset($_POST['TambahVoucherManual'])) {
     $manualCode = trim($_POST['manual_code']);
     $manualCode = mysqli_real_escape_string($conn, $manualCode);
@@ -64,7 +65,7 @@ if (isset($_POST['TambahVoucherManual'])) {
     $isFree = isset($_POST['is_free']) ? 1 : 0;
     
     // Jika gratis, set nominal menjadi 0
-    $nominal = $isFree ? 0 : $_POST['nominal']; // Jika gratis, nominal diatur ke 0
+    $nominal = $isFree ? 0 : (int)$_POST['nominal']; // Pastikan nominal diambil dengan benar
 
     $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
 
@@ -79,7 +80,7 @@ if (isset($_POST['TambahVoucherManual'])) {
         header('Location: voucher.php?status=success&message=Voucher manual berhasil ditambahkan');
         exit();
     } else {
-        header('Location: voucher.php?status=error&message=Gagal menambahkan voucher');
+        header('Location: voucher.php?status=error&message=Gagal menambahkan voucher: ' . mysqli_error($conn));
         exit();
     }
 }
