@@ -23,6 +23,31 @@ while ($row = mysqli_fetch_assoc($result)) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     </head>
     <style>
+        .custom-control-input:checked ~ .custom-control-label::before {
+                    border-color: #282A51;
+                    background-color: #282A51;
+                }
+
+                .custom-switch .custom-control-label::before {
+                    width: 2rem;
+                    height: 1rem;
+                    border-radius: 1rem;
+                }
+
+                .custom-switch .custom-control-input:checked ~ .custom-control-label::after {
+                    transform: translateX(1rem);
+                }
+
+                .custom-switch .custom-control-label::after {
+                    width: calc(1rem - 4px);
+                    height: calc(1rem - 4px);
+                    border-radius: calc(2rem - (1rem)) / 2;
+                }
+
+                /* Animasi untuk transisi status */
+                .custom-switch .custom-control-label {
+                    transition: all 0.3s ease;
+                }
     /* Apply Poppins font globally */
     body {
         font-family: 'Poppins', sans-serif;
