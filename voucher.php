@@ -1,7 +1,6 @@
 <?php
 require 'function.php';
 require 'cek.php';
-require 'phpinfo.php';
 
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
     // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
