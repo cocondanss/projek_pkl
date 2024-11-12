@@ -413,27 +413,31 @@ if (isset($_POST['TambahVoucherManual'])) {
                                 }
                             });
                         }); 
-                        function toggleNominal() {
-        var isFree = document.getElementById('isFree');
-        var nominalInput = document.getElementById('nominalVoucher');
-        var nominalContainer = document.getElementById('nominalContainer');
-        
-        if (isFree.checked) {
-            nominalInput.value = 0; // Set nilai nominal menjadi 0
-            nominalContainer.style.display = 'none'; // Sembunyikan input nominal
-        } else {
-            nominalContainer.style.display = 'block'; // Tampilkan kembali input nominal
-            nominalInput.value = ''; // Kosongkan input nominal saat ditampilkan
-        }
+                        unction toggleNominal() {
+    const checkbox = document.getElementById('gratisCheckbox');
+    const nominalInput = document.getElementById('nominal');
+
+    if (checkbox.checked) {
+        // Set nominal otomatis
+        nominalInput.value = '0'; // Atau nilai yang sesuai
+        nominalInput.style.display = 'none'; // Sembunyikan input nominal jika perlu
+    } else {
+        nominalInput.style.display = 'block'; // Tampilkan kembali jika tidak dicentang
+        nominalInput.value = ''; // Kosongkan input nominal
     }
+}
 
-    // Tambahkan event listener untuk checkbox isFree
-    document.getElementById('isFree').addEventListener('change', toggleNominal);
+// Validasi saat form disubmit
+document.getElementById('voucherForm').onsubmit = function() {
+    const nominalInput = document.getElementById('nominal');
+    const checkbox = document.getElementById('gratisCheckbox');
 
-    // Inisialisasi tampilan input nominal saat modal dibuka
-    document.addEventListener('DOMContentLoaded', function() {
-        toggleNominal(); // Panggil fungsi untuk menyesuaikan tampilan
-    });
+    if (!checkbox.checked && nominalInput.value.trim() === '') {
+        alert('Silakan isi nominal atau centang gratis.');
+        return false; // Mencegah form disubmit
+    }
+    return true; // Melanjutkan submit jika valid
+};
                
                 document.getElementById('oneTimeUse').addEventListener('change', function() {
         localStorage.setItem('oneTimeUseChecked', this.checked);
