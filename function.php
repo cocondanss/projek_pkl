@@ -1,6 +1,6 @@
 <?php
 session_start();
-date_default_timezone_set('Asia/Jakarta');
+// date_default_timezone_set('Asia/Jakarta');
 
 // Konfigurasi koneksi database
 $conn = mysqli_connect("localhost", "u529472640_root", "Daclen123", "u529472640_framee");
@@ -74,6 +74,54 @@ if (isset($_POST['TambahVoucher'])) {
         echo 'Gagal';
         header('location:voucher.php');
     }
+}
+if (isset($_POST['TambahVoucherManual'])) {
+    $manual_code = trim($_POST['manual_code']);
+    $is_free = isset($_POST['is_free']) ? 1 : 0; // Cek apakah voucher gratis
+    $nominal = $is_free ? 0 : (int)$_POST['nominal']; // Jika gratis, nominal harus 0
+
+    // Validasi input
+    if ($is_free == 0 && empty($_POST['nominal'])) {
+        $_SESSION['error'] = 'Nominal harus diisi jika voucher tidak gratis.';
+        header('location:voucher.php');
+        exit();
+    }
+
+    // Cek apakah kode voucher sudah ada
+    $checkQuery = mysqli_query($conn, "SELECT * FROM vouchers WHERE code = '$manual_code'");
+    if (mysqli_num_rows($checkQuery) > 0) {
+        $_SESSION['error'] = 'Kode voucher sudah ada. Silakan gunakan kode yang lain.';
+        header('location:voucher.php');
+        exit();
+    }
+
+    $date = new DateTime();
+    $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
+    $created_at = $date->format('Y-m-d H:i:s');
+
+    // Menyimpan voucher ke database
+    $addtotable = mysqli_query($conn, "INSERT INTO vouchers (code, discount_amount, created_at, is_free) VALUES ('$manual_code', '$nominal', '$created_at', '$is_free')");
+
+    if ($addtotable) {
+        $_SESSION['message'] = 'Voucher berhasil ditambahkan!';
+        header("location:voucher.php");
+        exit();
+    } else {
+        $_SESSION['error'] = 'Gagal menambahkan voucher: ' . mysqli_error($conn);
+        header('location:voucher.php');
+        exit();
+    }
+}
+
+// Menampilkan pesan sukses atau error di halaman voucher.php
+if (isset($_SESSION['message'])) {
+    echo '<div class="alert alert-success">' . htmlspecialchars($_SESSION['message']) . '</div>';
+    unset($_SESSION['message']); // Hapus pesan setelah ditampilkan
+}
+
+if (isset($_SESSION['error'])) {
+    echo '<div class="alert alert-danger">' . htmlspecialchars($_SESSION['error']) . '</div>';
+    unset($_SESSION['error']); // Hapus pesan setelah ditampilkan
 }
 
 // Fungsi untuk menambah dan mengekspor voucher
