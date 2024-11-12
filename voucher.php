@@ -400,7 +400,9 @@ if (isset($_POST['TambahVoucherManual'])) {
                     <input type="text" name="manual_code" placeholder="Kode Voucher" class="form-control" required><br>
 
                     <!-- Nominal (Rp) Input -->
-                    <input type="number" name="nominal" placeholder="Nominal (Rp)" class="form-control" required><br>
+                    <div id="nominalContainer">
+                        <input type="number" name="nominal" placeholder="Nominal (Rp)" class="form-control" required><br>
+                    </div>
 
                     <!-- Checkbox for Free Option -->
                     <input type="checkbox" name="is_free" id="isFree" onchange="toggleNominal()"> 
