@@ -2,8 +2,8 @@
 require 'function.php';
 require 'cek.php';
 
-echo date_default_timezone_get(); // Menampilkan timezone yang saat ini digunakan
-echo date('Y-m-d H:i:s'); // Menampilkan waktu sekarang dalam format yang dipilih
+date_default_timezone_set('Asia/Jakarta');
+
 
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
     // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
