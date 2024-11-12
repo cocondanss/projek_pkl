@@ -303,8 +303,8 @@ if (isset($_POST['TambahVoucherManual'])) {
                                                         <td><?= htmlspecialchars($status_used); ?></td> <!-- Menampilkan status -->
                                                         <td><?= htmlspecialchars($isFreeDisplay); ?></td>
                                                         <td><?= htmlspecialchars($oneTimeUse); ?></td>
-                                                        <td><?= htmlspecialchars($created_at); ?></td>
-                                                        <td><?= !empty($used_at) ? htmlspecialchars($used_at) : '-'; ?></td>
+                                                        <td><?= htmlspecialchars(date('d-m-Y H:i:s', strtotime($created_at))); ?></td>
+                                                        <td><?= !empty($used_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($used_at))) : '-'; ?></td>
                                                         <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
                                                     </tr>
                                                 <?php
