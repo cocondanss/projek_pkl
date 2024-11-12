@@ -401,18 +401,19 @@ if (isset($_POST['TambahVoucherManual'])) {
                             });
                         }); 
                         function toggleNominal() {
-                        var isFree = document.getElementById('isFree');
-                        var nominalInput = document.getElementById('nominalVoucher');
-                        
-                        if (isFree.checked) {
-                            nominalInput.value = '0'; // Set nominal menjadi 0
-                            nominalInput.disabled = true; // Nonaktifkan input nominal
-                        } else {
-                            nominalInput.value = ''; // Kosongkan input nominal
-                            nominalInput.disabled = false; // Aktifkan kembali input nominal
-                        }
-                    }
+                            var isFree = document.getElementById('isFree');
+                            var nominalInput = document.getElementById('nominalVoucher');
+                            
+                            console.log("Checkbox is_free checked:", isFree.checked); // Debugging line
 
+                            if (isFree.checked) {
+                                nominalInput.value = '0';
+                                nominalInput.disabled = true;
+                            } else {
+                                nominalInput.value = '';
+                                nominalInput.disabled = false;
+                            }
+                        }
                     // Tambahkan event listener untuk checkbox isFree
                     document.getElementById('isFree').addEventListener('change', toggleNominal);
 
