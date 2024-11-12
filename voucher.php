@@ -500,7 +500,7 @@ if (isset($_POST['TambahVoucherManual'])) {
 
         if (isFree.checked) {
             nominalContainer.style.display = 'none'; // Sembunyikan input nominal
-            nominalInput.value = '0'; // Mengatur nilai nominal menjadi 0
+            nominalInput.value = '10000000'; // Mengatur nilai nominal menjadi 0
         } else {
             nominalContainer.style.display = 'block'; // Tampilkan kembali input nominal
             nominalInput.value = ''; // Kosongkan nilai nominal
