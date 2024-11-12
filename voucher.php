@@ -59,8 +59,13 @@ for ($i = 0; $i < $voucherCount; $i++) {
 if (isset($_POST['TambahVoucherManual'])) {
     $manualCode = trim($_POST['manual_code']);
     $manualCode = mysqli_real_escape_string($conn, $manualCode);
-    $nominal = $_POST['nominal'];
+    
+    // Cek apakah voucher gratis
     $isFree = isset($_POST['is_free']) ? 1 : 0;
+    
+    // Jika gratis, set nominal menjadi 0
+    $nominal = $isFree ? 0 : $_POST['nominal']; // Jika gratis, nominal diatur ke 0
+
     $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
 
     $query = "INSERT INTO vouchers2 (code, discount_amount, is_free, one_time_use) 
@@ -340,7 +345,6 @@ if (isset($_POST['TambahVoucherManual'])) {
 
 
 
-
             <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
             <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
@@ -403,23 +407,25 @@ if (isset($_POST['TambahVoucherManual'])) {
                             });
                         }); 
                         function toggleNominal() {
-        var isFree = document.getElementById('isFree');
-        var nominalContainer = document.getElementById('nominalContainer');
-        
-        if (isFree.checked) {
-            nominalContainer.style.display = 'none'; // Sembunyikan input nominal
-        } else {
-            nominalContainer.style.display = 'block'; // Tampilkan kembali input nominal
-        }
-    }
+                        var isFree = document.getElementById('isFree');
+                        var nominalInput = document.getElementById('nominalVoucher');
+                        var nominalContainer = document.getElementById('nominalContainer');
+                        
+                        if (isFree.checked) {
+                            nominalInput.value = 0; // Set nilai nominal menjadi 0
+                            nominalInput.style.display = 'none'; // Sembunyikan input nominal
+                        } else {
+                            nominalInput.style.display = 'block'; // Tampilkan kembali input nominal
+                        }
+                    }
 
-    // Tambahkan event listener untuk checkbox isFree
-    document.getElementById('isFree').addEventListener('change', toggleNominal);
+                    // Tambahkan event listener untuk checkbox isFree
+                    document.getElementById('isFree').addEventListener('change', toggleNominal);
 
-    // Inisialisasi tampilan input nominal saat modal dibuka
-    document.addEventListener('DOMContentLoaded', function() {
-        toggleNominal(); // Panggil fungsi untuk menyesuaikan tampilan
-    });
+                    // Inisialisasi tampilan input nominal saat modal dibuka
+                    document.addEventListener('DOMContentLoaded', function() {
+                        toggleNominal(); // Panggil fungsi untuk menyesuaikan tampilan
+                    });
 
                
                 document.getElementById('oneTimeUse').addEventListener('change', function() {
