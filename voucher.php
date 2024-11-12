@@ -63,9 +63,15 @@ if (isset($_POST['TambahVoucherManual'])) {
     
     // Cek apakah voucher gratis
     $isFree = isset($_POST['is_free']) ? 1 : 0;
-    
+
     // Jika gratis, set nominal menjadi 0
     $nominal = $isFree ? 0 : (int)$_POST['nominal']; // Pastikan nominal diambil dengan benar
+
+    // Validasi untuk nominal jika tidak gratis
+    if (!$isFree && empty($_POST['nominal'])) {
+        header('Location: voucher.php?status=error&message=Nominal tidak boleh kosong jika voucher tidak gratis');
+        exit();
+    }
 
     $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
 
