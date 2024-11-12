@@ -2,7 +2,7 @@
 require 'function.php';
 require 'cek.php';
 
-date_default_timezone_set('Asia/Jakarta');  
+date_default_timezone_set('Asia/Jakarta');
 
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
     // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
