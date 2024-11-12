@@ -328,7 +328,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                            <?php echo getSetting('midtrans_is_production') == '1' ? 'checked' : ''; ?>>
                                     <label class="form-check-label">Production Mode</label>
                                 </div>
-                                <button type="submit" name="update_midtrans" class="btn btn-primary">Update Midtrans Settings</button>
+                                <button type="submit" name="update_midtrans" class="btn btn-dark mr-2">Update Midtrans Settings</button>
                             </form>
                         </div>
                     </div>
@@ -350,7 +350,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <input type="password" class="form-control" name="admin_password" 
                                            placeholder="Enter new password" required>
                                 </div>
-                                <button type="submit" name="update_admin" class="btn btn-primary">Update Admin Credentials</button>
+                                <button type="submit" name="update_admin" class="btn btn-dark mr-2">Update Admin Credentials</button>
                             </form>
                         </div>
                     </div>
@@ -368,7 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                            value="<?php echo htmlspecialchars(getSetting('keypad_pin')); ?>" 
                                            maxlength="4" required>
                                 </div>
-                                <button type="submit" name="update_pin" class="btn btn-primary">Update PIN</button>
+                                <button type="submit" name="update_pin" class="btn btn-dark mr-2">Update PIN</button>
                             </form>
                         </div>
                     </div>
