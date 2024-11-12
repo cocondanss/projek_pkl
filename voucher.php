@@ -305,36 +305,35 @@ if (isset($_POST['TambahVoucherManual'])) {
 
     <!-- Input Tambah Vocher Manual -->
     <div class="modal fade" id="manualVoucherModal">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title">Tambah Voucher Manual</h4>
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    </div>
-                                    <form method="post" id="voucherForm">
-                                    <div class="modal-body">
-                                        <!-- Input Voucher Code -->
-                                        <input type="text" name="manual_code" placeholder="Kode Voucher" class="form-control" required><br>
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Tambah Voucher Manual</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post" id="voucherForm">
+                <div class="modal-body">
+                    <!-- Input Voucher Code -->
+                    <input type="text" name="manual_code" placeholder="Kode Voucher" class="form-control" required><br>
 
-                                        <!-- Nominal (Rp) Input -->
-                                        <input type="number" name="nominal" placeholder="Nominal (Rp)" class="form-control" required><br>
+                    <!-- Nominal (Rp) Input -->
+                    <input type="number" name="nominal" id="nominalVoucher" placeholder="Nominal (Rp)" class="form-control" required><br>
 
-                                        <!-- Checkbox for Free Option -->
-                                        <input type="checkbox" name="is_free" id="isFree"> 
-                                        <label for="isFree">Gratis</label><br><br>
+                    <!-- Checkbox for Free Option -->
+                    <input type="checkbox" name="is_free" id="isFree"> 
+                    <label for="isFree">Gratis</label><br><br>
 
-                                        <!-- Checkbox for One-Time Use -->
-                                        <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
-                                        <label for="oneTimeUse">Sekali Pakai</label><br><br>
+                    <!-- Checkbox for One-Time Use -->
+                    <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
+                    <label for="oneTimeUse">Sekali Pakai</label><br><br>
 
-                                        <!-- Button to Create Voucher -->
-                                        <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherManual">Simpan</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
+                    <!-- Button to Create Voucher -->
+                    <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherManual">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 
