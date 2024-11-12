@@ -98,7 +98,9 @@ function create_transaction($data) {
         $product_name = $data['product_name'];
         $product_price = intval($data['product_price']);
         $discount = isset($data['discount']) ? intval($data['discount']) : 0;
-        $total_price = max(0.01, $product_price - $discount);
+
+        // Hitung total harga
+        $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
         // Simpan transaksi ke database
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
@@ -109,11 +111,11 @@ function create_transaction($data) {
             'payment_type' => 'qris',
             'transaction_details' => [
                 'order_id' => $order_id,
-                'gross_amount' => $total_price
+                'gross_amount' => $total_price // Pastikan ini bisa 0
             ],
             'item_details' => [[
                 'id' => $product_id,
-                'price' => $total_price,
+                'price' => $total_price, // Pastikan ini bisa 0
                 'quantity' => 1,
                 'name' => $product_name
             ]],
