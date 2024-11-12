@@ -1,8 +1,6 @@
 <?php
-require 'function.php';
+require_once 'function.php';
 require 'cek.php';
-
-date_default_timezone_set('Asia/Jakarta');  
 
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
     // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
@@ -89,20 +87,21 @@ if (isset($_POST['TambahVoucherManual'])) {
     header('Location: voucher.php');
 }
 ?>
+
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Voucher</title>
-        <link href="css/style.css" rel="stylesheet" />
-        <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>          
-    </head>
-    <style>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Voucher</title>
+    <link href="css/style.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>          
+</head>
+<style>
     /* Apply Poppins font globally */
     body {
         font-family: 'Poppins', sans-serif;
@@ -313,77 +312,81 @@ if (isset($_POST['TambahVoucherManual'])) {
                         </form>
                     </div>
                 </div>
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2020</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
+            <footer class="py-4 bg-light mt-auto">
+                <div class="container-fluid">
+                    <div class="d-flex align-items-center justify-content-between small">
+                        <div class="text-muted">Copyright &copy; Your Website 2020</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms &amp; Conditions</a>
                         </div>
                     </div>
-                </footer>
-            </div>
-        </div>
-        <div class="modal fade" id="voucherModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Tambah Voucher otomatis</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <form method="post">
-                        <div class="modal-body">
-                            <!-- Kode Voucher -->
-                            <div class="form-group">
-                                <label for="code_prefix">Kode Voucher:</label>
-                                <input type="text" name="code_prefix" class="form-control" value="<?= $voucherCode; ?>" readonly>
-                            </div>
-                            
-                            <!-- Jumlah Voucher -->
-                            <div class="form-group">
-                                <label>Jumlah Voucher:</label>
-                                <input type="number" name="voucher_count" placeholder="Jumlah Voucher" class="form-control" min="1" required>
-                            </div>
-
-                            <!-- Radio Buttons -->
-                            <div class="form-group">
-                                <label>Jenis Voucher:</label>
-                                <div class="form-check">
-                                    <input type="radio" name="voucherType" value="rupiah" id="rupiahRadio" class="form-check-input">
-                                    <label class="form-check-label" for="rupiahRadio">Rupiah</label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="radio" name="voucherType" value="diskon" id="diskonRadio" class="form-check-input">
-                                    <label class="form-check-label" for="diskonRadio">Diskon</label>
-                                </div>
-                            </div>
-
-                            <!-- Input Nominal (initially hidden) -->
-                            <div id="nominalInput" style="display: none;" class="form-group">
-                                <label for="nominalVoucher">Nominal Voucher (Rupiah):</label>
-                                <input type="number" name="nominalVoucher" id="nominalVoucher" class="form-control" min="0" step="1000">
-                            </div>
-
-                            <!-- Input Diskon (initially hidden) -->
-                            <div id="diskonInput" style="display: none;" class="form-group">
-                                <label for="diskonVoucher">Diskon (%):</label>
-                                <div class="input-group">
-                                    <input type="number" name="diskonVoucher" id="diskonVoucher" class="form-control" min="1" max="100">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">%</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary" name="TambahVoucherOtomatis">Simpan</button>
-                        </div>
-                    </form>
                 </div>
-            </div>
+            </footer>
         </div>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+        <script src="js/scripts.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/chart-area-demo.js"></script>
+        <script src="assets/demo/chart-bar-demo.js"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+        <script src="assets/demo/datatables-demo.js"></script>
+    
+    <div class="modal fade" id="voucherModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Tambah Voucher otomatis</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form method="post">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="code_prefix">Kode Voucher:</label>
+                        <input type="text" name="code_prefix" class="form-control" value="<?= $voucherCode; ?>" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="number" name="voucher_count" placeholder="Jumlah Voucher" class="form-control" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Jenis Voucher:</label>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" name="voucherType" value="rupiah" id="rupiahRadio" class="custom-control-input" required>
+                            <label class="custom-control-label" for="rupiahRadio">Rupiah</label>
+                        </div>
+                        <p></p>
+                        <div class="custom-control custom-radio">
+                            <input type="radio" name="voucherType" value="diskon" id="diskonRadio" class="custom-control-input" required>
+                            <label class="custom-control-label" for="diskonRadio">Diskon</label>
+                        </div>
+                    </div>
+
+                    <div id="nominalInput" style="display: none;" class="form-group">
+                        <label for="nominalVoucher">Nominal Voucher (Rupiah):</label>
+                        <input type="number" name="nominalVoucher" id="nominalVoucher" class="form-control" step="1000">
+                    </div>
+
+                    <div id="diskonInput" style="display: none;" class="form-group">
+                        <label for="diskonVoucher">Diskon (%):</label>
+                        <div class="input-group">
+                            <input type="number" name="diskonVoucher" id="diskonVoucher" class="form-control" min="1" max="100">
+                            <div class="input-group-append">
+                                <span class="input-group-text">%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" name="TambahVoucherOtomatis">Simpan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
     <!-- Input Tambah Vocher Manual -->
     <div class="modal fade" id="manualVoucherModal">
@@ -416,99 +419,93 @@ if (isset($_POST['TambahVoucherManual'])) {
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-        <script src="js/scripts.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/chart-area-demo.js"></script>
-        <script src="assets/demo/chart-bar-demo.js"></script>
-        <!-- <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script> -->
-        <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-        <script src="assets/demo/datatables-demo.js"></script>
-        <script>
+            <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+            <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
+            <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
+
+         <script>
             // Fungsi untuk menampilkan input berdasarkan pilihan radio
-            function handleVoucherTypeChange() {
-                const rupiahRadio = document.getElementById('rupiahRadio');
+            document.querySelectorAll('input[name="voucherType"]').forEach(radio => {
+            radio.addEventListener('change', function() {
                 const nominalInput = document.getElementById('nominalInput');
                 const diskonInput = document.getElementById('diskonInput');
                 
-                // Tambahkan event listener untuk setiap radio button
-                document.getElementById('rupiahRadio').addEventListener('change', function() {
-                    nominalInput.style.display = this.checked ? 'block' : 'none';
+                if (this.value === 'rupiah') {
+                    nominalInput.style.display = 'block';
                     diskonInput.style.display = 'none';
-                    if (this.checked) {
-                        document.getElementById('diskonVoucher').value = '';
-                    }
-                });
-
-                document.getElementById('diskonRadio').addEventListener('change', function() {
-                    diskonInput.style.display = this.checked ? 'block' : 'none';
+                    document.getElementById('diskonVoucher').value = '';
+                } else {
                     nominalInput.style.display = 'none';
-                    if (this.checked) {
-                        document.getElementById('nominalVoucher').value = '';
-                    }
-                });
-            }
-
-            // Panggil fungsi saat dokumen dimuat
-            document.addEventListener('DOMContentLoaded', function() {
-                handleVoucherTypeChange();
-            });
-
-            // Reset form saat modal ditutup
-            $('#voucherModal').on('hidden.bs.modal', function () {
-                document.getElementById('nominalVoucher').value = '';
-                document.getElementById('diskonVoucher').value = '';
-                document.getElementById('rupiahRadio').checked = false;
-                document.getElementById('diskonRadio').checked = false;
-                document.getElementById('nominalInput').style.display = 'none';
-                document.getElementById('diskonInput').style.display = 'none';
-            });
-
-        $("#eksporVoucher").click(function(event) {
-            event.preventDefault();
-            
-            // Get all rows from the table
-            var rows = document.querySelectorAll('table tbody tr');
-            var fileContent = 'Kode Voucher\n';
-            
-            // Iterate through each row and extract only the voucher code
-            rows.forEach(function(row) {
-                var cells = row.getElementsByTagName('td');
-                if (cells.length > 0) {
-                    var code = cells[1].textContent.trim(); // Kode voucher ada di kolom kedua (index 1)
-                    fileContent += `${code}\n`;
+                    diskonInput.style.display = 'block';
+                    document.getElementById('nominalVoucher').value = '';
                 }
             });
-
-            // Create and trigger download
-            var blob = new Blob([fileContent], {type: 'text/plain'});
-            var link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = 'daftar_voucher.txt';
-            link.click();
-        });                               
-
-                function toggleNominal() {
-                    var isFree = document.getElementById('isFree');
-                    var nominalInput = document.getElementById('nominalInput');
-                    
-                    if (isFree.checked) {
-                        nominalInput.value = '0';
-                        nominalInput.disabled = true;
-                    } else {
-                        nominalInput.value = '';
-                        nominalInput.disabled = false;
-                    }
-                }
-                        
-
-            $('#selectAll').click(function() {
-            $('input[type="checkbox"]').prop('checked', this.checked);
         });
 
+        // Clear inputs when modal is closed
+        $('#voucherModal').on('hidden.bs.modal', function () {
+            document.getElementById('nominalVoucher').value = '';
+            document.getElementById('diskonVoucher').value = '';
+            document.querySelectorAll('input[name="voucherType"]').forEach(radio => {
+                radio.checked = false;
+            });
+            document.getElementById('nominalInput').style.display = 'none';
+            document.getElementById('diskonInput').style.display = 'none';
+        });
+
+                                // Script untuk ekspor data voucher
+                                $("#eksporVoucher").click(function(event) {
+                                event.preventDefault();
+                                var table = $('#dataTable').DataTable(); // Ubah id tabel menjadi dataTable
+                                var data = table.rows().data();
+
+                                var fileContent = 'Kode Voucher\n';
+                                data.each(function(value, index) {
+                                var code = value
+                                var code = value[1];
+
+                                fileContent += code + '\n';
+                                });
+
+                                var blob = new Blob([fileContent], {type: 'text/plain'});
+                                var link = document.createElement('a');
+                                link.href = URL.createObjectURL(blob);
+                                link.download = 'daftar_voucher.txt';
+                                link.click();
+
+                                $.ajax({
+                                type: 'POST',
+                                url: 'ekspor_voucher.php',
+                                success: function(data) {
+                                    console.log("Data berhasil diunduh");
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error("Terjadi kesalahan: " + error);
+                                    alert("Gagal mengekspor data. Silakan coba lagi.");
+                                }
+                            });
+                        }); 
+                        function toggleNominal() {
+                            var isFree = document.getElementById('isFree');
+                            var nominalInput = document.getElementById('nominalInput');
+                            
+                            if (isFree.checked) {
+                                nominalInput.value = '0';
+                                nominalInput.disabled = true;
+                            } else {
+                                nominalInput.value = '';
+                                nominalInput.disabled = false;
+                            }
+                        }
+                        
+
+                    $('#selectAll').click(function() {
+                    $('input[type="checkbox"]').prop('checked', this.checked);
+                });
+
                
-        document.getElementById('oneTimeUse').addEventListener('change', function() {
+                document.getElementById('oneTimeUse').addEventListener('change', function() {
         localStorage.setItem('oneTimeUseChecked', this.checked);
     });
 
@@ -522,6 +519,7 @@ if (isset($_POST['TambahVoucherManual'])) {
     $('#manualVoucherModal').on('show.bs.modal', function () {
         document.getElementById('oneTimeUse').checked = true; // Set checkbox menjadi tercentang
     });
+
         </script>
     </body>
 </html>

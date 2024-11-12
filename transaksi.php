@@ -135,7 +135,7 @@ require 'cek.php';
                         <div class="card mb-4">
                             <form method="post">
                             <div class="card-header">
-                                <button type="submit" name="hapustransaksi" class="btn btn-dark">
+                                <button type="submit" name="hapustransaksi" class="btn btn-danger">
                                     Hapus Transaksi Terpilih
                                 </button>
                             </div>
