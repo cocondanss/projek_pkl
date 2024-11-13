@@ -303,26 +303,46 @@ if (isset($_POST['TambahVoucherManual'])) {
                                                         <td><?= htmlspecialchars($status_used); ?></td>
                                                         <td><?= htmlspecialchars($isFreeDisplay); ?></td>
                                                         <td><?= htmlspecialchars($oneTimeUse); ?></td>
-                                                        <td><?= !empty($created_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($created_at))) : '-'; ?></td>
                                                         <td>
-                                                            <script>
-                                                                // Mengonversi waktu UTC ke waktu lokal untuk created_at
-                                                                var createdAtUTC = '<?= $created_at; ?>';
-                                                                var createdAtLocal = new Date(createdAtUTC + 'Z').toLocaleString('id-ID', { 
-                                                                    year: 'numeric', 
-                                                                    month: '2-digit', 
-                                                                    day: '2-digit', 
-                                                                    hour: '2-digit', 
-                                                                    minute: '2-digit', 
-                                                                    second: '2-digit', 
-                                                                    hour12: false // untuk format 24 jam
-                                                                });
+    <script>
+        // Mengonversi waktu UTC ke waktu lokal untuk created_at
+        var createdAtUTC = '<?= $created_at; ?>';
+        var createdAtLocal = new Date(createdAtUTC + 'Z').toLocaleString('id-ID', { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit', 
+            hour12: false // untuk format 24 jam
+        });
 
-                                                                // Menghapus bagian zona waktu
-                                                                createdAtLocal = createdAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
-                                                                document.write(createdAtLocal);
-                                                            </script>
-                                                        </td>
+        // Menghapus bagian zona waktu dan mengganti '/' dengan '-'
+        createdAtLocal = createdAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
+        createdAtLocal = createdAtLocal.replace(/\//g, '-'); // Mengganti '/' dengan '-'
+        document.write(createdAtLocal);
+    </script>
+</td>
+<td>
+    <script>
+        // Mengonversi waktu UTC ke waktu lokal untuk used_at
+        var usedAtUTC = '<?= $used_at; ?>';
+        var usedAtLocal = usedAtUTC ? new Date(usedAtUTC + 'Z').toLocaleString('id-ID', { 
+            year: 'numeric', 
+            month: '2-digit', 
+            day: '2-digit', 
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit', 
+            hour12: false 
+        }) : '-';
+
+        // Menghapus bagian zona waktu dan mengganti '/' dengan '-'
+        usedAtLocal = usedAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
+        usedAtLocal = usedAtLocal.replace(/\//g, '-'); // Mengganti '/' dengan '-'
+        document.write(usedAtLocal);
+    </script>
+</td>
                                                         <td><?= !empty($used_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($used_at))) : '-'; ?></td>
                                                         <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
                                                     </tr>
