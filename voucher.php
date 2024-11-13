@@ -132,83 +132,11 @@ function useVoucher($code) {
         <meta name="author" content="" />
         <title>Voucher</title>
         <link href="css/style.css" rel="stylesheet" />
+        <link href="css/styleV.css" rel="stylesheet" />
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>          
     </head>
-    <style>
-    /* Apply Poppins font globally */
-    body {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    /* Enhanced navbar styling */
-    .navbar-brand {
-        font-weight: 600;
-        letter-spacing: 0.5px;
-    }
-
-    /* Form styling */
-    .form-label {
-        font-weight: 500;
-        color: #2c3e50;
-        margin-bottom: 8px;
-    }
-
-    .form-control {
-        border-radius: 8px;
-        padding: 10px 15px;
-        border: 1px solid #e0e0e0;
-        font-size: 0.9rem;
-    }
-
-    .form-control:focus {
-        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
-    }
-
-    /* Navigation styling */
-    .nav-link {
-        font-size: 0.9rem;
-        padding: 12px 20px;
-        transition: all 0.3s ease;
-    }
-
-    .nav-link.active {
-        background-color: #343A40 !important;
-        color: #fff !important;
-        font-weight: 500;
-        border-radius: 8px;
-    }
-
-    .nav-link:hover {
-        background-color: rgba(74, 108, 247, 0.05);
-        transform: translateX(8px);
-    }
-
-    .nav-link .sb-nav-link-icon {
-        margin-right: 10px;
-    }
-
-    /* Alert styling */
-    .alert {
-        border-radius: 8px;
-        font-weight: 500;
-    }
-
-    /* Footer styling */
-    footer {
-        font-size: 0.85rem;
-    }
-
-    footer a {
-        color: #4a6cf7;
-        text-decoration: none;
-    }
-
-    footer a:hover {
-        color: #2848dc;
-    }
-</style>
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
         <a class="navbar-brand" href="index.php" style="color: white;">Daclen</a>
