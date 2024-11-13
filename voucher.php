@@ -320,6 +320,10 @@ while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
                 // Menghapus bagian zona waktu
                 createdAtLocal = createdAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
                 document.write(createdAtLocal);
+            </script>
+        </td>
+        <td>
+            <script>
                 // Mengonversi waktu UTC ke waktu lokal untuk used_at
                 var usedAtUTC = '<?= $used_at; ?>';
                 var usedAtLocal = usedAtUTC ? new Date(usedAtUTC + 'Z').toLocaleString('id-ID', { 
