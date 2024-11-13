@@ -1,14 +1,12 @@
 <?php
 session_start();
 
-// Periksa apakah ada data transaksi dalam session
-if (!isset($_SESSION['successful_transaction'])) {
-    // Jika tidak ada, arahkan kembali ke halaman produk
+if (!isset($_SESSION['cancelled_transaction'])) {
     header('Location: listproduct.php');
-    exit();
+    exit;
 }
 
-$transactionData = $_SESSION['successful_transaction'];
+$transactionData = $_SESSION['cancelled_transaction'];
 
 // Mengonversi waktu dari UTC ke waktu lokal
 $createdAtUTC = $transactionData['created_at'];
@@ -16,8 +14,7 @@ $tanggal = new DateTime($createdAtUTC, new DateTimeZone('UTC')); // Set zona wak
 $tanggal->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke zona waktu lokal
 $formattedDate = $tanggal->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
 
-// Hapus data transaksi dari session setelah digunakan
-unset($_SESSION['successful_transaction']);
+unset($_SESSION['cancelled_transaction']);
 ?>
 
 <!DOCTYPE html>
@@ -25,14 +22,14 @@ unset($_SESSION['successful_transaction']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaksi Berhasil</title>
+    <title>Transaksi Dibatalkan</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
     <div class="container mt-5">
-        <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">Transaksi Berhasil!</h4>
-            <p>Terima kasih atas pembelian Anda.</p>
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Transaksi Dibatalkan!</h4>
+            <p>Transaksi Anda telah dibatalkan.</p>
             <hr>
             <p class="mb-0">Detail Transaksi:</p>
             <ul>
@@ -42,7 +39,7 @@ unset($_SESSION['successful_transaction']);
                 <li>Tanggal: <?php echo $formattedDate; ?></li> <!-- Gunakan tanggal yang sudah diformat -->
             </ul>
         </div>
-        <a href="listproduct.php" class="btn btn-dark mr-2">Kembali ke Daftar Produk</a>
+        <a href="listproduct.php" class="btn btn-primary">Kembali ke Daftar Produk</a>
     </div>
 </body>
 </html>
