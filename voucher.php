@@ -84,15 +84,7 @@ if (isset($_POST['TambahVoucherManual'])) {
               discount_amount = VALUES(discount_amount), 
               is_free = VALUES(is_free), 
               one_time_use = VALUES(one_time_use)";
-    
-    if (mysqli_query($conn, $query)) {
-        header('Location: voucher.php?status=success&message=Voucher manual berhasil ditambahkan');
-        exit();
-    } else {
-        header('Location: voucher.php?status=error&message=Gagal menambahkan voucher');
-        exit();
     }
-}
 
     // echo "<script>alert('Voucher manual berhasil ditambahkan');</script>";
 
