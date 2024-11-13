@@ -7,7 +7,13 @@ if (!isset($_SESSION['cancelled_transaction'])) {
 }
 
 $transactionData = $_SESSION['cancelled_transaction'];
-$tanggal = date('d-m-Y', strtotime($transactionData['created_at']));
+
+// Mengonversi waktu dari UTC ke waktu lokal
+$createdAtUTC = $transactionData['created_at'];
+$tanggal = new DateTime($createdAtUTC, new DateTimeZone('UTC')); // Set zona waktu ke UTC
+$tanggal->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke zona waktu lokal
+$formattedDate = $tanggal->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
+
 unset($_SESSION['cancelled_transaction']);
 ?>
 
@@ -30,10 +36,10 @@ unset($_SESSION['cancelled_transaction']);
                 <li>ID Transaksi: <?php echo htmlspecialchars($transactionData['transaction_id']); ?></li>
                 <li>Produk: <?php echo htmlspecialchars($transactionData['product_name']); ?></li>
                 <li>Harga: Rp <?php echo number_format($transactionData['amount'], 0, ',', '.'); ?></li>
-                <li>Tanggal: <?php echo $tanggal; ?></li>
+                <li>Tanggal: <?php echo $formattedDate; ?></li> <!-- Gunakan tanggal yang sudah diformat -->
             </ul>
         </div>
-        <a href="listproduct.php" class="btn btn-primary">Kembali ke Daftar Produk</a>
+        <a href="listproduct.php" class="btn btn-dark mr-2">Kembali ke Daftar Produk</a>
     </div>
 </body>
 </html>
