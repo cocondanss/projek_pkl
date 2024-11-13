@@ -292,7 +292,7 @@ function useVoucher($code) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php
+                                        <?php
                                                 $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers2");
                                                 $i = 1;
                                                 while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
@@ -301,8 +301,8 @@ function useVoucher($code) {
                                                     $is_free = $data['is_free'];
                                                     $one_time_use = $data['one_time_use'];
                                                     $id = $data['id'];
-                                                    $created_at = $data['created_at'];
-                                                    $used_at = $data['used_at'];
+                                                    $created_at = $data['created_at']; // UTC
+                                                    $used_at = $data['used_at']; // UTC
 
                                                     // Tentukan status berdasarkan used_at
                                                     $status_used = !empty($used_at) ? "Sudah digunakan" : "Belum digunakan";
@@ -330,11 +330,30 @@ function useVoucher($code) {
                                                                 <?= 'Rp ' . number_format($discount_amount, 0, ',', '.') ?>
                                                             <?php endif; ?>
                                                         </td>
-                                                        <td><?= htmlspecialchars($status_used); ?></td> <!-- Menampilkan status -->
+                                                        <td><?= htmlspecialchars($status_used); ?></td>
                                                         <td><?= htmlspecialchars($isFreeDisplay); ?></td>
                                                         <td><?= htmlspecialchars($oneTimeUse); ?></td>
-                                                        <td><?= htmlspecialchars($created_at); ?></td>
-                                                        <td><?= !empty($used_at) ? htmlspecialchars($used_at) : '-'; ?></td>
+                                                        <td>
+                                                            <script>
+                                                                // Mengonversi waktu UTC ke waktu lokal untuk created_at
+                                                                var createdAtUTC = '<?= $created_at; ?>';
+                                                                var createdAtLocal = new Date(createdAtUTC + 'Z').toLocaleString('id-ID', { 
+                                                                    year: 'numeric', 
+                                                                    month: '2-digit', 
+                                                                    day: '2-digit', 
+                                                                    hour: '2-digit', 
+                                                                    minute: '2-digit', 
+                                                                    second: '2-digit', 
+                                                                    hour12: false // untuk format 24 jam
+                                                                });
+
+                                                                // Menghapus bagian zona waktu dan mengganti '/' dengan '-'
+                                                                createdAtLocal = createdAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
+                                                                createdAtLocal = createdAtLocal.replace(/\//g, '-'); // Mengganti '/' dengan '-'
+                                                                document.write(createdAtLocal);
+                                                            </script>
+                                                        </td>
+                                                        <td><?= !empty($used_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($used_at))) : '-'; ?></td>
                                                         <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
                                                     </tr>
                                                 <?php
