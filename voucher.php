@@ -303,7 +303,7 @@ if (isset($_POST['TambahVoucherManual'])) {
                                                         <td><?= htmlspecialchars($status_used); ?></td>
                                                         <td><?= htmlspecialchars($isFreeDisplay); ?></td>
                                                         <td><?= htmlspecialchars($oneTimeUse); ?></td>
-                                                        
+                                                        <td><?= !empty($created_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($created_at))) : '-'; ?></td>
                                                         <td>
                                                             <script>
                                                                 // Mengonversi waktu UTC ke waktu lokal untuk created_at
