@@ -320,6 +320,25 @@ while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
                 // Menghapus bagian zona waktu
                 createdAtLocal = createdAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
                 document.write(createdAtLocal);
+                var usedAtUTC = '<?= $used_at; ?>';
+        
+        // Pastikan used_at memiliki nilai yang benar
+        if (usedAtUTC) {
+            var usedAtLocal = new Date(usedAtUTC + 'Z').toLocaleString('id-ID', { 
+                year: 'numeric', 
+                month: '2-digit', 
+                day: '2-digit', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit', 
+                hour12: false 
+            });
+            // Menghapus bagian zona waktu
+            usedAtLocal = usedAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
+            document.write(usedAtLocal);
+        } else {
+            document.write('-'); // Tampilkan tanda hubung jika tidak ada tanggal
+        }
             </script>
         </td>
         <td>
