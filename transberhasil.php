@@ -18,6 +18,9 @@ $formattedDate = $tanggal->format('d-m-Y H:i:s'); // Format tanggal sesuai kebut
 
 // Hapus data transaksi dari session setelah digunakan
 unset($_SESSION['successful_transaction']);
+
+// Ambil nama produk untuk judul halaman
+$productName = htmlspecialchars($transactionData['product_name']);
 ?>
 
 <!DOCTYPE html>
@@ -37,9 +40,9 @@ unset($_SESSION['successful_transaction']);
             <p class="mb-0">Detail Transaksi:</p>
             <ul>
                 <li>ID Transaksi: <?php echo htmlspecialchars($transactionData['transaction_id']); ?></li>
-                <li>Produk: <?php echo htmlspecialchars($transactionData['product_name']); ?></li>
+                <li>Produk: <?php echo $productName; ?></li> <!-- Menampilkan nama produk -->
                 <li>Harga: Rp <?php echo number_format($transactionData['amount'], 0, ',', '.'); ?></li>
-                <li>Tanggal: <?php echo $formattedDate; ?></li> <!-- Gunakan tanggal yang sudah diformat -->
+                <li>Tanggal: <?php echo $formattedDate; ?></li>
             </ul>
         </div>
         <a href="listproduct.php" class="btn btn-dark mr-2">Kembali ke Daftar Produk</a>
