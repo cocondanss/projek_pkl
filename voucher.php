@@ -68,6 +68,21 @@ if (isset($_POST['TambahVoucherManual'])) {
     $isFree = isset($_POST['is_free']) ? 1 : 0;
     $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
 
+    // Add trigger to automatically delete one-time use vouchers after they're used
+    $createTriggerSQL = "
+        CREATE TRIGGER IF NOT EXISTS delete_used_voucher 
+        AFTER UPDATE ON vouchers2
+        FOR EACH ROW
+        BEGIN
+            IF NEW.used_at IS NOT NULL AND NEW.one_time_use = 1 THEN
+                DELETE FROM vouchers2 WHERE id = NEW.id;
+            END IF;
+        END;
+    ";
+    
+    mysqli_query($conn, "DROP TRIGGER IF EXISTS delete_used_voucher");
+    mysqli_query($conn, $createTriggerSQL);
+
     $query = "INSERT INTO vouchers2 (code, discount_amount, is_free, one_time_use) 
               VALUES ('$manualCode', '$nominal', '$isFree', '$oneTimeUse') 
               ON DUPLICATE KEY UPDATE 
