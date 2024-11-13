@@ -57,6 +57,9 @@ for ($i = 0; $i < $voucherCount; $i++) {
     // echo "<script>alert('Voucher berhasil ditambahkan');</script>";
     header('Location: voucher.php');
 }
+
+mysqli_query($conn, "DELIMITER //");
+
 if (isset($_POST['TambahVoucherManual'])) {
     $manualCode = trim($_POST['manual_code']);
     $manualCode = mysqli_real_escape_string($conn, $manualCode);
@@ -70,14 +73,21 @@ if (isset($_POST['TambahVoucherManual'])) {
         FOR EACH ROW
         BEGIN
             IF NEW.used_at IS NOT NULL AND NEW.one_time_use = 1 THEN
-                DELETE FROM vouchers2 WHERE id = NEW.id;
+                SET @sql = CONCAT('DELETE FROM vouchers2 WHERE id = ', NEW.id);
+                PREPARE stmt FROM @sql;
+                EXECUTE stmt;
+                DEALLOCATE PREPARE stmt;
             END IF;
-        END;
+        END //
     ";
 
-    mysqli_query($conn, "DROP TRIGGER IF EXISTS delete_used_voucher");
-    mysqli_query($conn, $createTriggerSQL);
-
+    try {
+        mysqli_query($conn, "DROP TRIGGER IF EXISTS delete_used_voucher");
+        mysqli_query($conn, $createTriggerSQL);
+    } catch (Exception $e) {
+        error_log("Error creating trigger: " . $e->getMessage());
+    }
+    mysqli_query($conn, "DELIMITER ;");
     $query = "INSERT INTO vouchers2 (code, discount_amount, is_free, one_time_use) 
               VALUES ('$manualCode', '$nominal', '$isFree', '$oneTimeUse') 
               ON DUPLICATE KEY UPDATE 
