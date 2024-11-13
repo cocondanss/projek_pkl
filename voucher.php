@@ -303,7 +303,7 @@ while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
         <td><?= htmlspecialchars($status_used); ?></td>
         <td><?= htmlspecialchars($isFreeDisplay); ?></td>
         <td><?= htmlspecialchars($oneTimeUse); ?></td>
-        <td><?= !empty($used_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($used_at))) : '-'; ?></td>
+        
         <td>
             <script>
                 // Mengonversi waktu UTC ke waktu lokal untuk created_at
@@ -323,6 +323,7 @@ while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
                 document.write(createdAtLocal);
             </script>
         </td>
+        <td><?= !empty($used_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($used_at))) : '-'; ?></td>
         <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
     </tr>
 <?php
