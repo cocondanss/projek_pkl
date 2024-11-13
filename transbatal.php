@@ -15,6 +15,9 @@ $tanggal->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke zona waktu l
 $formattedDate = $tanggal->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
 
 unset($_SESSION['cancelled_transaction']);
+
+// Ambil nama produk untuk judul halaman
+$productName = htmlspecialchars($transactionData['product_name']);
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +25,7 @@ unset($_SESSION['cancelled_transaction']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transaksi Dibatalkan</title>
+    <title><?php echo $productName; ?> Dibatalkan</title> <!-- Judul halaman sesuai produk -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -34,7 +37,7 @@ unset($_SESSION['cancelled_transaction']);
             <p class="mb-0">Detail Transaksi:</p>
             <ul>
                 <li>ID Transaksi: <?php echo htmlspecialchars($transactionData['transaction_id']); ?></li>
-                <li>Produk: <?php echo htmlspecialchars($transactionData['product_name']); ?></li>
+                <li>Produk: <?php echo $productName; ?></li> <!-- Menampilkan nama produk -->
                 <li>Harga: Rp <?php echo number_format($transactionData['amount'], 0, ',', '.'); ?></li>
                 <li>Tanggal: <?php echo $formattedDate; ?></li> <!-- Gunakan tanggal yang sudah diformat -->
             </ul>
