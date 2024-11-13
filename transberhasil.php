@@ -9,8 +9,13 @@ if (!isset($_SESSION['successful_transaction'])) {
 }
 
 $transactionData = $_SESSION['successful_transaction'];
-// Format tanggal ke format Indonesia
-$tanggal = date('d-m-Y H:i:s', strtotime($transactionData['created_at']));
+
+// Mengonversi waktu dari UTC ke waktu lokal
+$createdAtUTC = $transactionData['created_at'];
+$tanggal = new DateTime($createdAtUTC, new DateTimeZone('UTC')); // Set zona waktu ke UTC
+$tanggal->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke zona waktu lokal
+$formattedDate = $tanggal->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
+
 // Hapus data transaksi dari session setelah digunakan
 unset($_SESSION['successful_transaction']);
 ?>
@@ -34,7 +39,7 @@ unset($_SESSION['successful_transaction']);
                 <li>ID Transaksi: <?php echo htmlspecialchars($transactionData['transaction_id']); ?></li>
                 <li>Produk: <?php echo htmlspecialchars($transactionData['product_name']); ?></li>
                 <li>Harga: Rp <?php echo number_format($transactionData['amount'], 0, ',', '.'); ?></li>
-                <li>Tanggal: <?php echo $tanggal; ?></li>
+                <li>Tanggal: <?php echo $formattedDate; ?></li> <!-- Gunakan tanggal yang sudah diformat -->
             </ul>
         </div>
         <a href="listproduct.php" class="btn btn-dark mr-2">Kembali ke Daftar Produk</a>
