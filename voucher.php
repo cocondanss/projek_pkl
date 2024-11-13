@@ -288,7 +288,7 @@ if (isset($_POST['TambahVoucherManual'])) {
                                                     // Tentukan jenis voucher (diskon atau rupiah)
                                                     $voucherType = ($discount_amount > 100) ? 'rupiah' : 'diskon';
                                                 ?>
-                                                    <tr>
+                                                   <tr>
                                                         <td><?= $i++; ?></td>
                                                         <td><?= htmlspecialchars($code); ?></td>
                                                         <td>
@@ -300,11 +300,23 @@ if (isset($_POST['TambahVoucherManual'])) {
                                                                 <?= 'Rp ' . number_format($discount_amount, 0, ',', '.') ?>
                                                             <?php endif; ?>
                                                         </td>
-                                                        <td><?= htmlspecialchars($status_used); ?></td> <!-- Menampilkan status -->
+                                                        <td><?= htmlspecialchars($status_used); ?></td>
                                                         <td><?= htmlspecialchars($isFreeDisplay); ?></td>
                                                         <td><?= htmlspecialchars($oneTimeUse); ?></td>
-                                                        <td><?= htmlspecialchars(date('d-m-Y H:i:s', strtotime($created_at))); ?></td>
-                                                        <td><?= !empty($used_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($used_at))) : '-'; ?></td>
+                                                        <td>
+                                                            <script>
+                                                                var createdAtUTC = '<?= $created_at; ?>';
+                                                                var createdAtLocal = new Date(createdAtUTC).toLocaleString('id-ID');
+                                                                document.write(createdAtLocal);
+                                                            </script>
+                                                        </td>
+                                                        <td>
+                                                            <script>
+                                                                var usedAtUTC = '<?= $used_at; ?>';
+                                                                var usedAtLocal = usedAtUTC ? new Date(usedAtUTC).toLocaleString('id-ID') : '-';
+                                                                document.write(usedAtLocal);
+                                                            </script>
+                                                        </td>
                                                         <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
                                                     </tr>
                                                 <?php
@@ -547,23 +559,7 @@ if (isset($_POST['TambahVoucherManual'])) {
         document.getElementById('oneTimeUse').checked = true; // Set checkbox menjadi tercentang
     });
 
-    // Mendapatkan waktu lokal
-    const localDate = new Date();
-    const options = { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit', 
-        timeZoneName: 'short' 
-    };
-    const formattedDate = localDate.toLocaleString('id-ID', options); // Format sesuai dengan lokal Indonesia
-
-    // Menampilkan waktu di elemen dengan id 'local-time'
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('local-time').textContent = formattedDate;
-    });
+    
         </script>
     </body>
 </html>
