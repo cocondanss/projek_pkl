@@ -155,33 +155,33 @@ require 'cek.php';
                                         </thead>
                                         <tbody>
                                         <?php
-$ambilsemuadatatransaksi = mysqli_query($conn, "SELECT * FROM transaksi ORDER BY created_at DESC");
-$i = 1;
-while($data=mysqli_fetch_array($ambilsemuadatatransaksi)){
-    $order_id = $data['order_id'];
-    $product_name = $data['product_name'];
-    $price = $data['price'];
-    
-    // Mengonversi waktu dari UTC ke waktu lokal
-    $createdAtUTC = $data['created_at'];
-    $tanggal = new DateTime($createdAtUTC, new DateTimeZone('UTC')); // Set zona waktu ke UTC
-    $tanggal->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke zona waktu lokal
-    $formattedDate = $tanggal->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
+                                            $ambilsemuadatatransaksi = mysqli_query($conn, "SELECT * FROM transaksi ORDER BY created_at DESC");
+                                            $i = 1;
+                                            while($data=mysqli_fetch_array($ambilsemuadatatransaksi)){
+                                                $order_id = $data['order_id'];
+                                                $product_name = $data['product_name'];
+                                                $price = $data['price'];
+                                                
+                                                // Mengonversi waktu dari UTC ke waktu lokal
+                                                $createdAtUTC = $data['created_at'];
+                                                $tanggal = new DateTime($createdAtUTC, new DateTimeZone('UTC')); // Set zona waktu ke UTC
+                                                $tanggal->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke zona waktu lokal
+                                                $formattedDate = $tanggal->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
 
-    $status = $data['status'];
-?>
-    <tr>
-        <td><?=$i++;?></td>
-        <td><?=$order_id;?></td>
-        <td><?=$product_name;?></td>
-        <td>Rp<?=number_format($price, 0, ',', '.');?></td>
-        <td><?=$formattedDate;?></td> <!-- Gunakan tanggal yang sudah diformat -->
-        <td><?=$status;?></td>
-        <td><input type="checkbox" name="delete[]" value="<?=$order_id;?>"></td>
-    </tr>
-<?php
-};
-?>
+                                                $status = $data['status'];
+                                            ?>
+                                                <tr>
+                                                    <td><?=$i++;?></td>
+                                                    <td><?=$order_id;?></td>
+                                                    <td><?=$product_name;?></td>
+                                                    <td>Rp<?=number_format($price, 0, ',', '.');?></td>
+                                                    <td><?=$formattedDate;?></td> <!-- Gunakan tanggal yang sudah diformat -->
+                                                    <td><?=$status;?></td>
+                                                    <td><input type="checkbox" name="delete[]" value="<?=$order_id;?>"></td>
+                                                </tr>
+                                            <?php
+                                            };
+                                            ?>
                                         </tbody>
                                     </table>
                                 </div>
