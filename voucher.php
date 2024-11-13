@@ -323,25 +323,6 @@ while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
                 document.write(createdAtLocal);
             </script>
         </td>
-        <td>
-            <script>
-                // Mengonversi waktu UTC ke waktu lokal untuk used_at
-                var usedAtUTC = '<?= $used_at; ?>';
-                var usedAtLocal = usedAtUTC ? new Date(usedAtUTC + 'Z').toLocaleString('id-ID', { 
-                    year: 'numeric', 
-                    month: '2-digit', 
-                    day: '2-digit', 
-                    hour: '2-digit', 
-                    minute: '2-digit', 
-                    second: '2-digit', 
-                    hour12: false 
-                }) : '-';
-
-                // Menghapus bagian zona waktu
-                usedAtLocal = usedAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
-                document.write(usedAtLocal);
-            </script>
-        </td>
         <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
     </tr>
 <?php
