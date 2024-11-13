@@ -546,6 +546,24 @@ if (isset($_POST['TambahVoucherManual'])) {
     $('#manualVoucherModal').on('show.bs.modal', function () {
         document.getElementById('oneTimeUse').checked = true; // Set checkbox menjadi tercentang
     });
+
+    // Mendapatkan waktu lokal
+    const localDate = new Date();
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit', 
+        timeZoneName: 'short' 
+    };
+    const formattedDate = localDate.toLocaleString('id-ID', options); // Format sesuai dengan lokal Indonesia
+
+    // Menampilkan waktu di elemen dengan id 'local-time'
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('local-time').textContent = formattedDate;
+    });
         </script>
     </body>
 </html>
