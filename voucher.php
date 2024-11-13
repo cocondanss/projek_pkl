@@ -88,6 +88,40 @@ if (isset($_POST['TambahVoucherManual'])) {
     mysqli_query($conn, $query);
     header('Location: voucher.php');
 }
+
+function validateVoucher($code) {
+    global $conn;
+    
+    // Cek voucher berdasarkan kode
+    $query = "SELECT * FROM vouchers2 WHERE code = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $code);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $voucher = $result->fetch_assoc();
+    
+    if (!$voucher) {
+        return ["valid" => false, "message" => "Voucher tidak ditemukan"];
+    }
+    
+    // Cek apakah voucher sudah digunakan dan merupakan voucher sekali pakai
+    if ($voucher['one_time_use'] == 1 && $voucher['used_at'] !== null) {
+        return ["valid" => false, "message" => "Voucher sudah digunakan"];
+    }
+    
+    return ["valid" => true, "voucher" => $voucher];
+}
+
+// Saat voucher digunakan, update used_at
+function useVoucher($code) {
+    global $conn;
+    
+    $currentTime = date('Y-m-d H:i:s');
+    $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("ss", $currentTime, $code);
+    return $stmt->execute();
+}
 ?>
 <html lang="en">
     <head>
