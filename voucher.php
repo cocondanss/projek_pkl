@@ -303,7 +303,6 @@ while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
         <td><?= htmlspecialchars($status_used); ?></td>
         <td><?= htmlspecialchars($isFreeDisplay); ?></td>
         <td><?= htmlspecialchars($oneTimeUse); ?></td>
-        <td><?= htmlspecialchars(date('d-m-Y H:i:s', strtotime($created_at))); ?></td>
         <td><?= !empty($used_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($used_at))) : '-'; ?></td>
         <td>
             <script>
