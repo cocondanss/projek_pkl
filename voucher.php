@@ -360,7 +360,7 @@ function useVoucher($code) {
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary" name="TambahVoucherOtomatis">Simpan</button>
+                            <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherOtomatis">Simpan</button>
                         </div>
                     </form>
                 </div>
@@ -394,7 +394,7 @@ function useVoucher($code) {
                     <label for="oneTimeUse">Sekali Pakai</label><br><br>
 
                     <!-- Button to Create Voucher -->
-                    <button type="submit" class="btn btn-primary" name="TambahVoucherManual">Tambah Voucher Manual</button>
+                    <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherManual">Simpan</button>
                 </div>
             </form>
         </div>
