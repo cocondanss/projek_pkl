@@ -2,11 +2,7 @@
 require 'function.php';
 require 'cek.php';
 
-// <<<<<<< HEAD
-
-// =======
-// date_default_timezone_set('Asia/Jakarta');
-// >>>>>>> 4778d475c3192ceabe4f005a5d279cbe2dcccd08
+date_default_timezone_set('Asia/Jakarta');
 
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
     // Query untuk menghapus voucher yang sudah digunakan dan sekali pakai
@@ -61,33 +57,12 @@ for ($i = 0; $i < $voucherCount; $i++) {
     // echo "<script>alert('Voucher berhasil ditambahkan');</script>";
     header('Location: voucher.php');
 }
-
-mysqli_query($conn, "DELIMITER //");
-
 if (isset($_POST['TambahVoucherManual'])) {
     $manualCode = trim($_POST['manual_code']);
     $manualCode = mysqli_real_escape_string($conn, $manualCode);
     $nominal = $_POST['nominal'];
     $isFree = isset($_POST['is_free']) ? 1 : 0;
     $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
-
-    // Add trigger to automatically delete one-time use vouchers after they're used
-    $createTriggerSQL = "
-        CREATE TRIGGER IF NOT EXISTS delete_used_voucher 
-        AFTER UPDATE ON vouchers2
-        FOR EACH ROW
-        BEGIN
-            IF NEW.used_at IS NOT NULL AND NEW.one_time_use = 1 THEN
-                SET @sql = CONCAT('DELETE FROM vouchers2 WHERE id = ', NEW.id);
-                PREPARE stmt FROM @sql;
-                EXECUTE stmt;
-                DEALLOCATE PREPARE stmt;
-            END IF;
-        END //
-    ";
-
-    mysqli_query($conn, "DROP TRIGGER IF EXISTS delete_used_voucher");
-    mysqli_query($conn, $createTriggerSQL);
 
     $query = "INSERT INTO vouchers2 (code, discount_amount, is_free, one_time_use) 
               VALUES ('$manualCode', '$nominal', '$isFree', '$oneTimeUse') 
@@ -283,7 +258,7 @@ if (isset($_POST['TambahVoucherManual'])) {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        <?php
+                                            <?php
                                                 $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers2");
                                                 $i = 1;
                                                 while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
@@ -292,8 +267,8 @@ if (isset($_POST['TambahVoucherManual'])) {
                                                     $is_free = $data['is_free'];
                                                     $one_time_use = $data['one_time_use'];
                                                     $id = $data['id'];
-                                                    $created_at = $data['created_at']; // UTC
-                                                    $used_at = $data['used_at']; // UTC
+                                                    $created_at = $data['created_at'];
+                                                    $used_at = $data['used_at'];
 
                                                     // Tentukan status berdasarkan used_at
                                                     $status_used = !empty($used_at) ? "Sudah digunakan" : "Belum digunakan";
@@ -321,30 +296,11 @@ if (isset($_POST['TambahVoucherManual'])) {
                                                                 <?= 'Rp ' . number_format($discount_amount, 0, ',', '.') ?>
                                                             <?php endif; ?>
                                                         </td>
-                                                        <td><?= htmlspecialchars($status_used); ?></td>
+                                                        <td><?= htmlspecialchars($status_used); ?></td> <!-- Menampilkan status -->
                                                         <td><?= htmlspecialchars($isFreeDisplay); ?></td>
                                                         <td><?= htmlspecialchars($oneTimeUse); ?></td>
-                                                        <td>
-                                                            <script>
-                                                                // Mengonversi waktu UTC ke waktu lokal untuk created_at
-                                                                var createdAtUTC = '<?= $created_at; ?>';
-                                                                var createdAtLocal = new Date(createdAtUTC + 'Z').toLocaleString('id-ID', { 
-                                                                    year: 'numeric', 
-                                                                    month: '2-digit', 
-                                                                    day: '2-digit', 
-                                                                    hour: '2-digit', 
-                                                                    minute: '2-digit', 
-                                                                    second: '2-digit', 
-                                                                    hour12: false // untuk format 24 jam
-                                                                });
-
-                                                                // Menghapus bagian zona waktu dan mengganti '/' dengan '-'
-                                                                createdAtLocal = createdAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
-                                                                createdAtLocal = createdAtLocal.replace(/\//g, '-'); // Mengganti '/' dengan '-'
-                                                                document.write(createdAtLocal);
-                                                            </script>
-                                                        </td>
-                                                        <td><?= !empty($used_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($used_at))) : '-'; ?></td>
+                                                        <td><?= htmlspecialchars($created_at); ?></td>
+                                                        <td><?= !empty($used_at) ? htmlspecialchars($used_at) : '-'; ?></td>
                                                         <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
                                                     </tr>
                                                 <?php
@@ -423,7 +379,7 @@ if (isset($_POST['TambahVoucherManual'])) {
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherOtomatis">Simpan</button>
+                            <button type="submit" class="btn btn-primary" name="TambahVoucherOtomatis">Simpan</button>
                         </div>
                     </form>
                 </div>
@@ -457,7 +413,7 @@ if (isset($_POST['TambahVoucherManual'])) {
                     <label for="oneTimeUse">Sekali Pakai</label><br><br>
 
                     <!-- Button to Create Voucher -->
-                    <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherManual">Simpan</button>
+                    <button type="submit" class="btn btn-primary" name="TambahVoucherManual">Tambah Voucher Manual</button>
                 </div>
             </form>
         </div>
