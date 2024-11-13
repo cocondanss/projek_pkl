@@ -305,7 +305,7 @@ while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
         <td><?= htmlspecialchars($oneTimeUse); ?></td>
         <td>
             <script>
-                // Mengonversi waktu UTC ke waktu lokal
+                // Mengonversi waktu UTC ke waktu lokal untuk created_at
                 var createdAtUTC = '<?= $created_at; ?>';
                 var createdAtLocal = new Date(createdAtUTC + 'Z').toLocaleString('id-ID', { 
                     year: 'numeric', 
@@ -324,6 +324,7 @@ while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
         </td>
         <td>
             <script>
+                // Mengonversi waktu UTC ke waktu lokal untuk used_at
                 var usedAtUTC = '<?= $used_at; ?>';
                 var usedAtLocal = usedAtUTC ? new Date(usedAtUTC + 'Z').toLocaleString('id-ID', { 
                     year: 'numeric', 
