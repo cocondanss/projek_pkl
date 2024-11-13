@@ -319,7 +319,7 @@ if (isset($_POST['TambahVoucherManual'])) {
                                                                 });
 
                                                                 // Menghapus bagian zona waktu
-                                                                createdAtLocal = createdAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
+                                                                createdAtLocal = createdAtLocal.replace(- GMT.*$-, ''); // Menghapus bagian GMT
                                                                 document.write(createdAtLocal);
                                                             </script>
                                                         </td>
