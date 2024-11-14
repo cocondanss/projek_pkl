@@ -127,38 +127,38 @@ function validateVoucher($code) {
     }
 }
 
-function useVoucher($code) {
-    global $conn;
+// function useVoucher($code) {
+//     global $conn;
     
-    try {
-        $currentTime = date('Y-m-d H:i:s');
-        $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ? AND (used_at IS NULL OR one_time_use = 0)";
-        $stmt = $conn->prepare($query);
-        if (!$stmt) {
-            error_log("Error preparing statement: " . $conn->error);
-            return false;
-        }
+//     try {
+//         $currentTime = date('Y-m-d H:i:s');
+//         $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ? AND (used_at IS NULL OR one_time_use = 0)";
+//         $stmt = $conn->prepare($query);
+//         if (!$stmt) {
+//             error_log("Error preparing statement: " . $conn->error);
+//             return false;
+//         }
 
-        $stmt->bind_param("ss", $currentTime, $code);
-        $result = $stmt->execute();
+//         $stmt->bind_param("ss", $currentTime, $code);
+//         $result = $stmt->execute();
         
-        if (!$result) {
-            error_log("Error executing statement: " . $stmt->error);
-            return false;
-        }
+//         if (!$result) {
+//             error_log("Error executing statement: " . $stmt->error);
+//             return false;
+//         }
 
-        // Cek apakah ada baris yang terupdate
-        if ($stmt->affected_rows === 0) {
-            error_log("No rows updated for voucher code: " . $code);
-            return false;
-        }
+//         // Cek apakah ada baris yang terupdate
+//         if ($stmt->affected_rows === 0) {
+//             error_log("No rows updated for voucher code: " . $code);
+//             return false;
+//         }
 
-        return true;
-    } catch (Exception $e) {
-        error_log("Error in useVoucher: " . $e->getMessage());
-        return false;
-    }
-}
+//         return true;
+//     } catch (Exception $e) {
+//         error_log("Error in useVoucher: " . $e->getMessage());
+//         return false;
+//     }
+// }
 ?>
 <html lang="en">
     <head>
