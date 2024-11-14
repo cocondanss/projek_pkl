@@ -69,7 +69,6 @@ border-radius: 8px;
 }
 
 .nav-link:hover {
-background-color: rgba(74, 108, 247, 0.05);
 transform: translateX(8px);
 }
 
