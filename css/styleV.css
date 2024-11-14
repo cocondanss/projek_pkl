@@ -71,3 +71,31 @@ footer a {
 footer a:hover {
     color: #2848dc;
 }
+
+/* Responsive styles for voucher page */
+@media (max-width: 768px) {
+    .voucher-container {
+        padding: 0.5rem;
+    }
+
+    .voucher-form {
+        max-width: 100%;
+    }
+
+    /* Adjust voucher modal */
+    #voucherModal .modal-dialog,
+    #manualVoucherModal .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+
+    /* Stack form elements */
+    .form-row {
+        flex-direction: column;
+    }
+
+    .form-row > div {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}

@@ -169,3 +169,34 @@ footer a {
 footer a:hover {
     color: #2848dc;
 }
+
+/* Responsive styles for settings page */
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 0.5rem;
+    }
+
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    /* Adjust form layouts */
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+
+    .input-group {
+        flex-direction: column;
+    }
+
+    .input-group > * {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Make buttons more touch-friendly */
+    .btn {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+}
