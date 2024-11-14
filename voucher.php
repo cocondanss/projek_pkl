@@ -1,6 +1,5 @@
 <?php
-require 'function.php';
-require 'cek.php';
+
 date_default_timezone_set('Asia/Jakarta');
 
 if (isset($_POST['hapusVoucherYangSudahDigunakan'])) {
