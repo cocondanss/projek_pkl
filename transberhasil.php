@@ -46,7 +46,6 @@ $productName = htmlspecialchars($transactionData['product_name']);
             </ul>
         </div>
         <a href="listproduct.php" class="btn btn-dark mr-2">Kembali ke Daftar Produk</a>
-        <a href="index.php" class="btn btn-primary">Lanjutkan Belanja</a> <!-- Tombol untuk melanjutkan belanja -->
     </div>
 </body>
 </html>
