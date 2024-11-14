@@ -559,7 +559,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         console.error('Error in createTransaction:', error);
         alert('Terjadi kesalahan saat membuat transaksi.');
     });
-    return false;
+
 }
 
 
