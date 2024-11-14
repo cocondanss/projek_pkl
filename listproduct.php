@@ -396,25 +396,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     });
                 });
             });
-
             function showPaymentModal(id, name, price) {
-            if (id && name && price !== undefined) {
-                // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-                if (price === 0) {
-                    window.location.href = 'transberhasil.php'; // Ganti dengan URL halaman transaksi berhasil
-                    return; // Keluar dari fungsi
-                }
-
-                // Jika harga tidak 0, tampilkan modal pembayaran
-                document.getElementById('modal-product-id').value = id;
-                document.getElementById('modal-product-name').value = name;
-                document.getElementById('modal-product-price').value = price;
-                document.getElementById('modal-price').innerText = 'Rp ' + price;
-                $('#paymentModal').modal('show');
-            } else {
-                console.error('Parameter tidak valid');
-            }
+    if (id && name && price !== undefined) {
+        // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
+        if (price === 0) {
+            console.log("Redirecting to transberhasil.php because price is 0");
+            window.location.href = 'transberhasil.php'; // Ganti dengan URL halaman transaksi berhasil
+            return; // Keluar dari fungsi
         }
+
+        // Jika harga tidak 0, tampilkan modal pembayaran
+        document.getElementById('modal-product-id').value = id;
+        document.getElementById('modal-product-name').value = name;
+        document.getElementById('modal-product-price').value = price;
+        document.getElementById('modal-price').innerText = 'Rp ' + price;
+        $('#paymentModal').modal('show');
+    } else {
+        console.error('Parameter tidak valid');
+    }
+}
 
             function appendNumber(number) {
                 if (pinCode.length < 4) {
