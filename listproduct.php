@@ -15,8 +15,6 @@ require 'function.php';
  */
 function applyVoucher($voucherCode, $price) {
     global $conn;
-    
-    $debug_info = "Voucher Code: $voucherCode, Original Price: $price\n";
 
     // Persiapkan query untuk mencari voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
@@ -25,9 +23,13 @@ function applyVoucher($voucherCode, $price) {
     $result = $stmt->get_result();
     
     if ($row = $result->fetch_assoc()) {
-        $debug_info .= "Voucher found: " . print_r($row, true) . "\n";
         $discountAmount = $row['discount_amount'];
-        $debug_info .= "Discount Amount: $discountAmount\n";
+        $isFree = $row['is_free']; // Ambil informasi apakah voucher gratis
+
+        // Jika voucher gratis, set harga menjadi 0
+        if ($isFree == 1) {
+            return 0; // Harga menjadi Rp 0
+        }
 
         // Cek tipe diskon (persentase atau nominal)
         if ($discountAmount <= 100) {
@@ -38,14 +40,13 @@ function applyVoucher($voucherCode, $price) {
             $discountedPrice = $price - $discountAmount;
         }
         
-        $debug_info .= "Calculated Discounted Price: $discountedPrice\n";
         // Pastikan harga tidak negatif
         $finalPrice = max($discountedPrice, 0);
         
         return $finalPrice;
     }
 
-    $debug_info .= "No voucher found\n";
+    // Jika tidak ada voucher yang ditemukan, kembalikan harga asli
     return $price;
 }
 

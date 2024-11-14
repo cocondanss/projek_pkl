@@ -282,3 +282,63 @@ function midtrans_notification() {
         echo json_encode(["error" => $e->getMessage()]);
     }
 }
+
+function apply_voucher($data) {
+    global $db;
+
+    if (!isset($data['product_id']) || !isset($data['voucher_code']) || !isset($data['product_price'])) {
+        header("HTTP/1.0 400 Bad Request");
+        echo json_encode(["error" => "Missing required fields"]);
+        return;
+    }
+
+    $product_id = $data['product_id'];
+    $voucher_code = $data['voucher_code'];
+    $product_price = $data['product_price'];
+
+    try {
+        $stmt = $db->prepare("SELECT id, discount_amount, is_free FROM vouchers2 WHERE code = ?");
+        $stmt->execute([$voucher_code]);
+        $voucher = $stmt->fetch();
+
+        if ($voucher) {
+            $discounted_price = $product_price; // Default to original price
+
+            if ($voucher['is_free'] == 1) {
+                // Jika voucher gratis, set harga menjadi 0
+                $discounted_price = 0;
+                $voucher_message = "Voucher gratis berhasil diterapkan!";
+            } else {
+                // Hitung diskon berdasarkan discount_amount
+                $discountAmount = $voucher['discount_amount'];
+
+                if ($discountAmount <= 100) {
+                    // Diskon persentase
+                    $discounted_price = $product_price - ($product_price * ($discountAmount / 100));
+                } else {
+                    // Diskon nominal langsung
+                    $discounted_price = $product_price - $discountAmount;
+                }
+
+                $voucher_message = "Voucher berhasil diterapkan!";
+            }
+
+            // Pastikan harga tidak negatif
+            $discounted_price = max($discounted_price, 0);
+
+            echo json_encode([
+                'success' => true,
+                'discounted_price' => $discounted_price,
+                'message' => $voucher_message
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => "Kode voucher tidak valid!"
+            ]);
+        }
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo json_encode(["error" => $e->getMessage()]);
+    }
+}
