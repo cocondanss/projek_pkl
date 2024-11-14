@@ -71,31 +71,4 @@ footer a:hover {
     color: #2848dc;
 }
 
-/* Responsive styles for transaction page */
-@media (max-width: 768px) {
-    .transaction-container {
-        padding: 0.5rem;
-    }
-
-    /* Adjust table for mobile */
-    .table td, 
-    .table th {
-        min-width: 120px;
-    }
-
-    /* Hide less important columns on mobile */
-    @media (max-width: 576px) {
-        .table .hide-mobile {
-            display: none;
-        }
-    }
-
-    /* Make status badges more visible */
-    .status-badge {
-        display: inline-block;
-        width: 100%;
-        text-align: center;
-    }
-}
-
 
