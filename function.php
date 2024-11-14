@@ -106,19 +106,21 @@ if (isset($_POST['TambahVoucherManual'])) {
         exit();
     }
 
+    // Mengatur waktu saat voucher ditambahkan
     $date = new DateTime();
     $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
     $created_at = $date->format('Y-m-d H:i:s');
 
     // Menyimpan voucher ke database
-    $addtotable = mysqli_query($conn, "INSERT INTO vouchers2 (code, discount_amount, created_at, is_free) VALUES ('$manual_code', '$nominal', '$created_at', '$is_free')");
+    $stmt = $conn->prepare("INSERT INTO vouchers2 (code, discount_amount, created_at, is_free) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("sisi", $manual_code, $nominal, $created_at, $is_free);
 
-    if ($addtotable) {
+    if ($stmt->execute()) {
         $_SESSION['message'] = 'Voucher berhasil ditambahkan!';
         header("location:voucher.php");
         exit();
     } else {
-        $_SESSION['error'] = 'Gagal menambahkan voucher: ' . mysqli_error($conn);
+        $_SESSION['error'] = 'Gagal menambahkan voucher: ' . $stmt->error;
         header('location:voucher.php');
         exit();
     }
