@@ -106,10 +106,10 @@ if (isset($_POST['TambahVoucherManual'])) {
         exit();
     }
 
-    // Mengatur waktu saat voucher ditambahkan
-    $date = new DateTime();
-    $date->setTimezone(new DateTimeZone('Asia/Jakarta')); // Set zona waktu ke Jakarta
-    $created_at = $date->format('Y-m-d H:i:s'); // Format waktu sesuai kebutuhan
+    $createdAtUTC = $data['created_at'];
+    $tanggal = new DateTime($createdAtUTC, new DateTimeZone('UTC')); // Set zona waktu ke UTC
+    $tanggal->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke zona waktu lokal
+    $formattedDate = $tanggal->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
 
     // Menyimpan voucher ke database
     $stmt = $conn->prepare("INSERT INTO vouchers2 (code, discount_amount, created_at, is_free) VALUES (?, ?, ?, ?)");
