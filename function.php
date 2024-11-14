@@ -4,7 +4,7 @@ session_start();
 
 // Konfigurasi koneksi database
 $conn = mysqli_connect("localhost", "u529472640_root", "Daclen123", "u529472640_framee");
-date_default_timezone_set('Asia/Jakarta'); // Set zona waktu ke Jakarta
+
 
 // Konfigurasi Midtrans
 define('MIDTRANS_SERVER_KEY', 'SB-Mid-server-BiPEZ8YxMZheywHq49sAQthl');
@@ -106,20 +106,19 @@ if (isset($_POST['TambahVoucherManual'])) {
         exit();
     }
 
-    $createdAtUTC = $data['created_at'];
-    $tanggal = new DateTime($createdAtUTC, new DateTimeZone('UTC')); // Set zona waktu ke UTC
-    $formattedDate = $tanggal->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
+    $date = new DateTime();
+    $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
+    $created_at = $date->format('Y-m-d H:i:s');
 
     // Menyimpan voucher ke database
-    $stmt = $conn->prepare("INSERT INTO vouchers2 (code, discount_amount, created_at, is_free) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("sisi", $manual_code, $nominal, $created_at, $is_free); // Mengikat parameter
+    $addtotable = mysqli_query($conn, "INSERT INTO vouchers2 (code, discount_amount, created_at, is_free) VALUES ('$manual_code', '$nominal', '$created_at', '$is_free')");
 
-    if ($stmt->execute()) {
+    if ($addtotable) {
         $_SESSION['message'] = 'Voucher berhasil ditambahkan!';
         header("location:voucher.php");
         exit();
     } else {
-        $_SESSION['error'] = 'Gagal menambahkan voucher: ' . $stmt->error; // Menampilkan error jika gagal
+        $_SESSION['error'] = 'Gagal menambahkan voucher: ' . mysqli_error($conn);
         header('location:voucher.php');
         exit();
     }
