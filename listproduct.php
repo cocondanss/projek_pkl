@@ -15,6 +15,8 @@ require 'function.php';
  */
 function applyVoucher($voucherCode, $price) {
     global $conn;
+    
+    $debug_info = "Voucher Code: $voucherCode, Original Price: $price\n";
 
     // Persiapkan query untuk mencari voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
@@ -23,13 +25,9 @@ function applyVoucher($voucherCode, $price) {
     $result = $stmt->get_result();
     
     if ($row = $result->fetch_assoc()) {
+        $debug_info .= "Voucher found: " . print_r($row, true) . "\n";
         $discountAmount = $row['discount_amount'];
-        $isFree = $row['is_free']; // Ambil informasi apakah voucher gratis
-
-        // Jika voucher gratis, set harga menjadi 0
-        if ($isFree == 1) {
-            return 0; // Harga menjadi Rp 0
-        }
+        $debug_info .= "Discount Amount: $discountAmount\n";
 
         // Cek tipe diskon (persentase atau nominal)
         if ($discountAmount <= 100) {
@@ -40,13 +38,14 @@ function applyVoucher($voucherCode, $price) {
             $discountedPrice = $price - $discountAmount;
         }
         
+        $debug_info .= "Calculated Discounted Price: $discountedPrice\n";
         // Pastikan harga tidak negatif
         $finalPrice = max($discountedPrice, 0);
         
         return $finalPrice;
     }
 
-    // Jika tidak ada voucher yang ditemukan, kembalikan harga asli
+    $debug_info .= "No voucher found\n";
     return $price;
 }
 
@@ -121,20 +120,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             $originalPrice = $item['price'];
                             $discountedPrice = applyVoucher($voucherCode, $originalPrice);
                             ?>
-                                        <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
-                                            <div class="card-body">
-                                                <h2><?php echo htmlspecialchars($item['name']); ?></h2>
-                                                <div class="price-container">
-                                                    <?php if ($discountedPrice < $originalPrice): ?>
-                                                        <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                                                        <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?></span></p>
-                                                    <?php else: ?>
-                                                        <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <p><?php echo htmlspecialchars($item['description']); ?></p>
-                                                <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>                                            </div>
+                            <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
+                                <div class="card-body"> 
+
+                                    <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+                                    <div class="price-container">
+                                        <?php if ($discountedPrice < $originalPrice): ?>
+                                            <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                                            <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?></span></p>
+                                            <?php else: ?>
+                                                <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                                                <?php endif; ?>
+                                            </div>
+                                            <p><?php echo htmlspecialchars($item['description']); ?></p>
+                                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
                                         </div>
+                                    </div>
                                         <?php endforeach; ?>
                                         <div class="voucher-form">
                                             <div id="voucher-message-container">
@@ -395,25 +396,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     });
                 });
             });
-            function showPaymentModal(id, name, price) {
-    if (id && name && price !== undefined) {
-        // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-        if (price === 0) {
-            console.log("Redirecting to transberhasil.php because price is 0");
-            window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
-            return; // Keluar dari fungsi
-        }
 
-        // Jika harga tidak 0, tampilkan modal pembayaran
-        document.getElementById('modal-product-id').value = id;
-        document.getElementById('modal-product-name').value = name;
-        document.getElementById('modal-product-price').value = price;
-        document.getElementById('modal-price').innerText = 'Rp ' + price;
-        $('#paymentModal').modal('show');
-    } else {
-        console.error('Parameter tidak valid');
-    }
-}
+            function showPaymentModal(id, name, price) {
+                if (id && name && price) {
+                    document.getElementById('modal-product-id').value = id;
+                    document.getElementById('modal-product-name').value = name;
+                    document.getElementById('modal-product-price').value = price;
+                    document.getElementById('modal-price').innerText = 'Rp ' + price;
+                    $('#paymentModal').modal('show');
+                } else {
+                    console.error('Parameter tidak valid');
+                }
+            }
+
 
             function appendNumber(number) {
                 if (pinCode.length < 4) {
@@ -468,84 +463,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 display.textContent = '';
             });
             
-            function showPaymentModal(id, name, price, discount = 0) {
-    // Pastikan parameter valid
-    if (!id || !name || price === undefined) {
-        console.error('Parameter tidak valid');
-        return;
-    }
+            function showPaymentModal(id, name, price, discount) {
+                createTransaction(id, name, price, discount).then(response => {
+                    if (response.success) {
+                        // Hapus modal lama jika ada
+                        const existingModal = document.getElementById('qrCodeModal');
+                        if (existingModal) {
+                            existingModal.remove();
+                        }
+                        // Buat elemen modal baru
+                        const modalHTML = `
+                            <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="qr-code-container">
+                                                <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
+                                            </div>
+                                            <div id="countdown"></div>
+                                            <div class="status-message"></div>
+                                            <div class="button-container">
+                                                <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
+                                                    Batal
+                                                </button>
+                                                <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
+                                                    Cek
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        // Tambahkan modal ke body
+                        document.body.insertAdjacentHTML('beforeend', modalHTML);
+                        
+                        // Dapatkan referensi ke modal yang baru dibuat
+                        const qrCodeModal = document.getElementById('qrCodeModal');
+                        const qrCodeImage = qrCodeModal.querySelector('#qrCodeImage');
+                        
+                        // Set QR code image
+                        qrCodeImage.src = response.qr_code_url;
+                        
+                        // Set transaction ID
+                        qrCodeModal.setAttribute('data-transaction-id', response.order_id);
 
-    // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-    if (price === 0) {
-        console.log("Redirecting to transberhasil.php because price is 0");
-        window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
-        return; // Keluar dari fungsi
-    }
+                        // Start the countdown timer
+                        startCountdown(30 * 60); // 30 minutes in seconds
 
-    // Jika harga tidak 0, lanjutkan untuk membuat transaksi
-    createTransaction(id, name, price, discount).then(response => {
-        if (response.success) {
-            // Hapus modal lama jika ada
-            const existingModal = document.getElementById('qrCodeModal');
-            if (existingModal) {
-                existingModal.remove();
+                        // Tampilkan modal
+                        const modalInstance = new bootstrap.Modal(qrCodeModal);
+                        modalInstance.show();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                }).catch(error => {
+                    console.error('Error in createTransaction:', error);
+                    alert('Terjadi kesalahan saat membuat transaksi.');
+                });
             }
-
-            // Buat elemen modal baru
-            const modalHTML = `
-                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="qr-code-container">
-                                    <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
-                                </div>
-                                <div id="countdown"></div>
-                                <div class="status-message"></div>
-                                <div class="button-container">
-                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
-                                        Batal
-                                    </button>
-                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
-                                        Cek
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            // Tambahkan modal ke body
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            
-            // Dapatkan referensi ke modal yang baru dibuat
-            const qrCodeModal = document.getElementById('qrCodeModal');
-            const qrCodeImage = qrCodeModal.querySelector('#qrCodeImage');
-            
-            // Set QR code image
-            qrCodeImage.src = response.qr_code_url;
-            
-            // Set transaction ID
-            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
-
-            // Start the countdown timer
-            startCountdown(30 * 60); // 30 minutes in seconds
-
-            // Tampilkan modal
-            const modalInstance = new bootstrap.Modal(qrCodeModal);
-            modalInstance.show();
-        } else {
-            alert('Error: ' + response.message);
-        }
-    }).catch(error => {
-        console.error('Error in createTransaction:', error);
-        alert('Terjadi kesalahan saat membuat transaksi.');
-    });
-}
 
 
             // Add countdown timer function
