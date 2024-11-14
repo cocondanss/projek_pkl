@@ -86,43 +86,43 @@ if (isset($_POST['TambahVoucher'])) {
         exit();
     }
 }
-// if (isset($_POST['TambahVoucherManual'])) {
-//     $manual_code = trim($_POST['manual_code']);
-//     $is_free = isset($_POST['is_free']) ? 1 : 0; // Cek apakah voucher gratis
-//     $nominal = $is_free ? 0 : (int)$_POST['nominal']; // Jika gratis, nominal harus 0
+if (isset($_POST['TambahVoucherManual'])) {
+    $manual_code = trim($_POST['manual_code']);
+    $is_free = isset($_POST['is_free']) ? 1 : 0; // Cek apakah voucher gratis
+    $nominal = $is_free ? 0 : (int)$_POST['nominal']; // Jika gratis, nominal harus 0
 
-//     // Validasi input
-//     if ($is_free == 0 && empty($_POST['nominal'])) {
-//         $_SESSION['error'] = 'Nominal harus diisi jika voucher tidak gratis.';
-//         header('location:voucher.php');
-//         exit();
-//     }
+    // Validasi input
+    if ($is_free == 0 && empty($_POST['nominal'])) {
+        $_SESSION['error'] = 'Nominal harus diisi jika voucher tidak gratis.';
+        header('location:voucher.php');
+        exit();
+    }
 
-//     // Cek apakah kode voucher sudah ada
-//     $checkQuery = mysqli_query($conn, "SELECT * FROM vouchers WHERE code = '$manual_code'");
-//     if (mysqli_num_rows($checkQuery) > 0) {
-//         $_SESSION['error'] = 'Kode voucher sudah ada. Silakan gunakan kode yang lain.';
-//         header('location:voucher.php');
-//         exit();
-//     }
+    // Cek apakah kode voucher sudah ada
+    $checkQuery = mysqli_query($conn, "SELECT * FROM vouchers2 WHERE code = '$manual_code'");
+    if (mysqli_num_rows($checkQuery) > 0) {
+        $_SESSION['error'] = 'Kode voucher sudah ada. Silakan gunakan kode yang lain.';
+        header('location:voucher.php');
+        exit();
+    }
 
-//     $date = new DateTime();
-//     $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
-//     $created_at = $date->format('Y-m-d H:i:s');
+    $date = new DateTime();
+    $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
+    $created_at = $date->format('Y-m-d H:i:s');
 
-//     // Menyimpan voucher ke database
-//     $addtotable = mysqli_query($conn, "INSERT INTO vouchers (code, discount_amount, created_at, is_free) VALUES ('$manual_code', '$nominal', '$created_at', '$is_free')");
+    // Menyimpan voucher ke database
+    $addtotable = mysqli_query($conn, "INSERT INTO vouchers2 (code, discount_amount, created_at, is_free) VALUES ('$manual_code', '$nominal', '$created_at', '$is_free')");
 
-//     if ($addtotable) {
-//         $_SESSION['message'] = 'Voucher berhasil ditambahkan!';
-//         header("location:voucher.php");
-//         exit();
-//     } else {
-//         $_SESSION['error'] = 'Gagal menambahkan voucher: ' . mysqli_error($conn);
-//         header('location:voucher.php');
-//         exit();
-//     }
-// }
+    if ($addtotable) {
+        $_SESSION['message'] = 'Voucher berhasil ditambahkan!';
+        header("location:voucher.php");
+        exit();
+    } else {
+        $_SESSION['error'] = 'Gagal menambahkan voucher: ' . mysqli_error($conn);
+        header('location:voucher.php');
+        exit();
+    }
+}
 
 // Menampilkan pesan sukses atau error di halaman voucher.php
 if (isset($_SESSION['message'])) {
@@ -137,7 +137,7 @@ if (isset($_SESSION['error'])) {
 
 // Fungsi untuk update tabel voucher
 if (isset($_POST['action']) && $_POST['action'] == 'update_tabel_voucher') {
-    $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
+    $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers2");
     $i = 1;
     $html = '';
     
