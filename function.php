@@ -107,9 +107,9 @@ if (isset($_POST['TambahVoucherManual'])) {
     }
 
     // Mengonversi waktu dari UTC ke waktu lokal untuk created_at
-$date = new DateTime($created_at, new DateTimeZone('UTC')); // Set zona waktu ke UTC
-$date->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke zona waktu lokal
-$createdAtLocal = $date->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
+    // $date = new DateTime($created_at, new DateTimeZone('UTC')); // Set zona waktu ke UTC
+    // $date->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke zona waktu lokal
+    // $createdAtLocal = $date->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
 
     // Menyimpan voucher ke database
     $addtotable = mysqli_query($conn, "INSERT INTO vouchers2 (code, discount_amount, created_at, is_free) VALUES ('$manual_code', '$nominal', '$created_at', '$is_free')");
