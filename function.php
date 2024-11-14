@@ -107,11 +107,9 @@ if (isset($_POST['TambahVoucherManual'])) {
     }
 
     // Ambil zona waktu pengguna dari session
-    $userTimeZone = isset($_SESSION['user_timezone']) ? $_SESSION['user_timezone'] : 'Asia/Jakarta'; // Default ke Jakarta jika tidak ada
-
-    // Mendapatkan waktu saat ini dalam zona waktu pengguna
-    $date = new DateTime('now', new DateTimeZone($userTimeZone)); // Set waktu sekarang sesuai zona waktu pengguna
-    $createdAtLocal = $date->format('Y-m-d H:i:s'); // Format tanggal sesuai kebutuhan untuk disimpan di database
+    $date = new DateTime();
+    $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
+    $claimed_at = $date->format('Y-m-d H:i:s');
 
     // Menyimpan voucher ke database
     $addtotable = mysqli_query($conn, "INSERT INTO vouchers2 (code, discount_amount, created_at, is_free) VALUES ('$manual_code', '$nominal', '$createdAtLocal', '$is_free')");
