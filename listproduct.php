@@ -587,25 +587,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             }
 
             function createTransaction(id, name, price, discount) {
-                return fetch('api.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: 'create_transaction',
-                        product_id: id,
-                        product_name: name,
-                        product_price: price,
-                        discount: discount
-                    })
-                })
-                    .then(response => response.json())
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan saat memproses permintaan.');
-                    });
-            }
+    return fetch('api.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            action: 'create_transaction', // Pastikan action sesuai dengan yang diharapkan di api.php
+            product_id: id,
+            product_name: name,
+            product_price: price,
+            discount: discount
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); // Mengembalikan data JSON
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        throw error; // Pastikan error dilempar untuk ditangani di showPaymentModal
+    });
+}
 
             // Tambahkan fungsi untuk membatalkan transaksi
             function cancelTransaction() {
