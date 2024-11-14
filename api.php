@@ -100,7 +100,7 @@ function create_transaction($data) {
         $discount = isset($data['discount']) ? intval($data['discount']) : 0;
 
         // Hitung total harga
-        $total_price = max(1, $product_price - $discount); // Mengizinkan total_price menjadi 0
+        $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
         // Jika total_price kurang dari Rp 1, anggap transaksi berhasil
         if ($total_price < 1) {
