@@ -7,19 +7,6 @@
 
 require 'function.php';
 
-session_start();
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Fungsi debug helper
-function debug_to_console($data) {
-    $output = $data;
-    if (is_array($output))
-        $output = implode(',', $output);
-
-    echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
-}
-
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
@@ -69,40 +56,29 @@ $voucherCode = '';
 // Proses pengecekan voucher saat ada POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $voucherCode = trim($_POST['voucher_code']);
-    debug_to_console("Processing voucher: " . $voucherCode);
     
-    try {
-        // Validasi voucher
-        $validationResult = validateVoucher($voucherCode);
-        
-        if ($validationResult['valid']) {
-            $voucher = $validationResult['voucher'];
-            $_SESSION['active_voucher'] = $voucher; // Simpan voucher ke session
-            $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan</p>";
+    // Validasi voucher
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
+    $stmt->bind_param("s", $voucherCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($row = $result->fetch_assoc()) {
+        // Cek apakah voucher sudah digunakan (untuk voucher sekali pakai)
+        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher hanya dapat digunakan sekali</p>";
         } else {
-            $voucherMessages[] = "<p class='voucher-message error'>" . $validationResult['message'] . "</p>";
+            // Update status penggunaan voucher
+            date_default_timezone_set('Asia/Jakarta');
+            $currentDateTime = date('Y-m-d H:i:s');
+            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+            $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+            $updateStmt->execute();
+            
+            $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
-    } catch (Exception $e) {
-        error_log("Error processing voucher: " . $e->getMessage());
-        $voucherMessages[] = "<p class='voucher-message error'>Terjadi kesalahan saat memproses voucher</p>";
-    }
-}
-
-// Fungsi untuk menghitung harga setelah voucher
-function calculateDiscountedPrice($originalPrice, $voucher) {
-    if (!$voucher) return $originalPrice;
-    
-    if ($voucher['is_free']) {
-        return 0;
-    }
-    
-    $discountAmount = $voucher['discount_amount'];
-    if ($discountAmount <= 100) {
-        // Diskon persentase
-        return $originalPrice - ($originalPrice * ($discountAmount / 100));
     } else {
-        // Diskon nominal
-        return max(0, $originalPrice - $discountAmount);
+        $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
     }
 }
 
@@ -116,8 +92,6 @@ if (!$produk) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
-
-debug_to_console("Session data: " . json_encode($_SESSION));
 ?>
 <!doctype html>
 <html lang="en">
