@@ -197,6 +197,26 @@ if (isset($_POST['TambahProduk'])) {
     }
 }
 
+// Fungsi untuk hapus voucher terpilih
+if (isset($_POST['hapusvoucher'])) {
+    if (isset($_POST['delete'])) {
+        foreach ($_POST['delete'] as $id) {
+            $id = mysqli_real_escape_string($conn, $id);
+            $hapusv = mysqli_query($conn, "DELETE FROM vouchers2 WHERE id='$id'");
+        }
+        
+        if ($hapusv) {
+            header("location:voucher.php");
+        } else {
+            echo 'Gagal menghapus voucher';
+            header('location:voucher.php');
+        }
+    } else {
+        echo 'Tidak ada voucher yang dipilih';
+        header('location:voucher.php');
+    }
+}
+
 // Fungsi untuk update informasi user
 if (isset($_POST['updateuser'])) {
     $idu = $_POST['idu'];
