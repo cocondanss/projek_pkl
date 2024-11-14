@@ -340,12 +340,6 @@ if (isset($_POST['hapus_voucher_digunakan'])) {
     }
 }
 
-// Mengambil data produk
-$query = "SELECT * FROM products";
-$result = mysqli_query($conn, $query);
-$products = mysqli_fetch_all($result, MYSQLI_ASSOC);
-$products = mysqli_query($conn, "SELECT * FROM products");
-
 function useVoucher($code) {
     global $conn;
     
@@ -417,3 +411,9 @@ function useVoucher($code) {
         return false;
     }
 }
+
+// Mengambil data produk
+$query = "SELECT * FROM products";
+$result = mysqli_query($conn, $query);
+$products = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$products = mysqli_query($conn, "SELECT * FROM products");
