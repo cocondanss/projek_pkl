@@ -487,6 +487,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
     // Jika harga tidak 0, lanjutkan untuk membuat transaksi
     createTransaction(id, name, price, discount).then(response => {
+        // Cek apakah respons berhasil
         if (response.success) {
             // Hapus modal lama jika ada
             const existingModal = document.getElementById('qrCodeModal');
@@ -505,7 +506,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             </div>
                             <div class="modal-body">
                                 <div class="qr-code-container">
-                                    <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
+                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
                                 </div>
                                 <div id="countdown"></div>
                                 <div class="status-message"></div>
