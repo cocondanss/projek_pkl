@@ -102,56 +102,28 @@ function create_transaction($data) {
         // Hitung total harga
         $total_price = max(1, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
-        // Simpan transaksi ke database
+        // Jika total_price kurang dari Rp 1, anggap transaksi berhasil
+        if ($total_price < 1) {
+            // Simpan transaksi ke database dengan status 'settlement'
+            $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'settlement')");
+            $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
+
+            // Kembalikan respons sukses
+            echo json_encode([
+                'success' => true,
+                'status' => 'settlement',
+                'order_id' => $order_id,
+                'redirect' => 'transberhasil.php' // Redirect ke halaman transaksi berhasil
+            ]);
+            return; // Keluar dari fungsi
+        }
+
+        // Simpan transaksi ke database dengan status 'pending' jika harga lebih dari Rp 1
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
-        // Siapkan parameter Midtrans
-        $transaction_params = [
-            'payment_type' => 'qris',
-            'transaction_details' => [
-                'order_id' => $order_id,
-                'gross_amount' => intval($total_price), // Pastikan ini adalah integer
-                'currency' => 'IDR' // Pastikan Anda menyertakan mata uang
-            ],
-            'item_details' => [[
-                'id' => $product_id,
-                'price' => intval($total_price), // Pastikan ini adalah integer
-                'quantity' => 1,
-                'name' => $product_name
-            ]],
-            'customer_details' => [
-                'first_name' => "Pembeli",
-                'last_name' => "Satu",
-                'email' => "pembeli@example.com",
-                'phone' => "081234567890"
-            ]
-        ];
-
-        // Proses pembayaran dengan Midtrans
-        $qris_response = \Midtrans\CoreApi::charge($transaction_params);
-        
-        // Ambil URL QR Code
-        $qr_code_url = null;
-        if (isset($qris_response->actions)) {
-            foreach ($qris_response->actions as $action) {
-                if ($action->name == 'generate-qr-code') {
-                    $qr_code_url = $action->url;
-                    break;
-                }
-            }
-        }
-
-        if (!$qr_code_url) {
-            throw new Exception("URL QR Code tidak ditemukan");
-        }
-
-        echo json_encode([
-            'success' => true,
-            'qr_code_url' => $qr_code_url,
-            'order_id' => $order_id
-        ]);
-
+        // Siapkan parameter Midtrans (untuk QR code)
+        // ...
     } catch (Exception $e) {
         echo json_encode([
             'success' => false,
