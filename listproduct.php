@@ -471,20 +471,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 display.textContent = '';
             });
             
-            function showPaymentModal(id, name, price, discount) {
+            function showPaymentModal(id, name, price, discount = 0) {
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
     if (price === 0) {
-        // Simulasi pembuatan transaksi untuk harga Rp 0
-        const orderId = 'TRX-' + Date.now(); // Ganti dengan logika pembuatan ID yang sesuai
-        // Simpan data transaksi ke session (jika perlu)
+        const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
         sessionStorage.setItem('successful_transaction', JSON.stringify({
             transaction_id: orderId,
             product_name: name,
             amount: price,
             created_at: new Date().toISOString()
         }));
-        // Redirect ke halaman transaksi berhasil
-        window.location.href = 'transberhasil.php'; // Ganti dengan URL halaman transaksi berhasil
+        window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
         return; // Keluar dari fungsi
     }
 
@@ -492,13 +489,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     createTransaction(id, name, price, discount).then(response => {
         if (response.success) {
             // Hapus modal lama jika ada
-            const existingModal = document.getElementById('qrCodeModal');
+            const existingModal = document.querySelector('.qr-modal'); // Menggunakan class untuk menghapus modal
             if (existingModal) {
                 existingModal.remove();
             }
-            // Buat elemen modal baru
+
+            // Buat elemen modal baru dengan ID unik
             const modalHTML = `
-                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                <div class="modal fade qr-modal" id="qrCodeModal_${Date.now()}" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -507,7 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             </div>
                             <div class="modal-body">
                                 <div class="qr-code-container">
-                                    <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
+                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
                                 </div>
                                 <div id="countdown"></div>
                                 <div class="status-message"></div>
@@ -528,7 +526,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             document.body.insertAdjacentHTML('beforeend', modalHTML);
             
             // Dapatkan referensi ke modal yang baru dibuat
-            const qrCodeModal = document.getElementById('qrCodeModal');
+            const qrCodeModal = document.querySelector(`.qr-modal:last-child`); // Ambil modal terakhir yang ditambahkan
             const qrCodeImage = qrCodeModal.querySelector('#qrCodeImage');
             
             // Set QR code image
