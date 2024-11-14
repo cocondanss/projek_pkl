@@ -105,7 +105,6 @@ if (isset($_POST['TambahVoucherManual'])) {
         header('location:voucher.php');
         exit();
     }
-
     $date = new DateTime();
     $date->setTimezone(new DateTimeZone('Asia/Jakarta'));
     $created_at = $date->format('Y-m-d H:i:s');
