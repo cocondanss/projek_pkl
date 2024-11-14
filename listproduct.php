@@ -59,23 +59,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $voucherCode = trim($_POST['voucher_code']);
     
     // Validasi voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? ");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
     if ($row = $result->fetch_assoc()) {
-        // Cek apakah voucher sudah digunakan (untuk voucher sekali pakai)
+        // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             $voucherMessages[] = "<p class='voucher-message error'>Voucher hanya dapat digunakan sekali</p>";
         } else {
             // Update status penggunaan voucher
             date_default_timezone_set('Asia/Jakarta');
             $currentDateTime = date('Y-m-d H:i:s');
-            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ? ");
             $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
             $updateStmt->execute();
-            
+
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
