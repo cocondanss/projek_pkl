@@ -470,6 +470,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 pinCode = '';
                 display.textContent = '';
             });
+
             function showPaymentModal(id, name, price, discount = 0) {
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
     if (price === 0) {

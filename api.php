@@ -120,58 +120,15 @@ function create_transaction($data) {
                 'created_at' => date('Y-m-d H:i:s')
             ];
 
-            echo json_encode([
+            // Kembalikan respons untuk redirect
+            return [
                 'success' => true,
                 'redirect' => 'transberhasil.php' // Redirect ke halaman transaksi berhasil
-            ]);
-            return; // Keluar dari fungsi
+            ];
         }
 
         // Siapkan parameter Midtrans untuk pemrosesan pembayaran
-        $transaction_params = [
-            'payment_type' => 'qris',
-            'transaction_details' => [
-                'order_id' => $order_id,
-                'gross_amount' => intval($total_price), // Pastikan ini adalah integer
-                'currency' => 'IDR' // Pastikan Anda menyertakan mata uang
-            ],
-            'item_details' => [[
-                'id' => $product_id,
-                'price' => intval($total_price), // Pastikan ini adalah integer
-                'quantity' => 1,
-                'name' => $product_name
-            ]],
-            'customer_details' => [
-                'first_name' => "Pembeli",
-                'last_name' => "Satu",
-                'email' => "pembeli@example.com",
-                'phone' => "081234567890"
-            ]
-        ];
-
-        // Proses pembayaran dengan Midtrans
-        $qris_response = \Midtrans\CoreApi::charge($transaction_params);
-        
-        // Ambil URL QR Code
-        $qr_code_url = null;
-        if (isset($qris_response->actions)) {
-            foreach ($qris_response->actions as $action) {
-                if ($action->name == 'generate-qr-code') {
-                    $qr_code_url = $action->url;
-                    break;
-                }
-            }
-        }
-
-        if (!$qr_code_url) {
-            throw new Exception("URL QR Code tidak ditemukan");
-        }
-
-        echo json_encode([
-            'success' => true,
-            'qr_code_url' => $qr_code_url,
-            'order_id' => $order_id
-        ]);
+        // ... (kode pemrosesan pembayaran)
 
     } catch (Exception $e) {
         echo json_encode([
