@@ -427,8 +427,10 @@ function useVoucher($code) {
                     <label for="isFree">Gratis</label><br><br>
 
                     <!-- Checkbox for One-Time Use -->
-                    <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
-                    <label for="oneTimeUse">Sekali Pakai</label><br><br>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="oneTimeUse" name="one_time_use">
+                        <label class="form-check-label" for="oneTimeUse">Sekali Pakai</label>
+                    </div>
 
                     <!-- Button to Create Voucher -->
                     <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherManual">Simpan</button>
@@ -559,6 +561,15 @@ function useVoucher($code) {
     // Ketika modal dibuka, set checkbox 'Sekali Pakai' untuk tercentang
     $('#manualVoucherModal').on('show.bs.modal', function () {
         document.getElementById('oneTimeUse').checked = true; // Set checkbox menjadi tercentang
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const oneTimeUseCheckbox = document.getElementById('oneTimeUse');
+        if (oneTimeUseCheckbox) {
+            oneTimeUseCheckbox.addEventListener('change', function() {
+                console.log('Checkbox status changed:', this.checked);
+            });
+        }
     });
         </script>
     </body>
