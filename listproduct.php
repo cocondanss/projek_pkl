@@ -133,8 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                     <?php endif; ?>
                                                 </div>
                                                 <p><?php echo htmlspecialchars($item['description']); ?></p>
-                                                <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
-                                            </div>
+                                                <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>                                            </div>
                                         </div>
                                         <?php endforeach; ?>
                                         <div class="voucher-form">
@@ -396,25 +395,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     });
                 });
             });
-            function showPaymentModal(id, name, price) {
-            if (id && name && price !== undefined) {
-                // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-                if (price === 0) {
-                    console.log("Redirecting to transberhasil.php because price is 0");
-                    window.location.href = 'transberhasil.php'; // Ganti dengan URL halaman transaksi berhasil
-                    return; // Keluar dari fungsi
-                }
-
-                // Jika harga tidak 0, tampilkan modal pembayaran
-                document.getElementById('modal-product-id').value = id;
-                document.getElementById('modal-product-name').value = name;
-                document.getElementById('modal-product-price').value = price;
-                document.getElementById('modal-price').innerText = 'Rp ' + price;
-                $('#paymentModal').modal('show');
-            } else {
-                console.error('Parameter tidak valid');
-            }
-        }
 
             function appendNumber(number) {
                 if (pinCode.length < 4) {
@@ -469,6 +449,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 display.textContent = '';
             });
             
+            function showPaymentModal(id, name, price) {
+            if (id && name && price !== undefined) {
+                // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
+                if (price === 0) {
+                    console.log("Redirecting to transberhasil.php because price is 0");
+                    window.location.href = 'transberhasil.php'; // Ganti dengan URL halaman transaksi berhasil
+                    return; // Keluar dari fungsi
+                }
+
+                // Jika harga tidak 0, tampilkan modal pembayaran
+                document.getElementById('modal-product-id').value = id;
+                document.getElementById('modal-product-name').value = name;
+                document.getElementById('modal-product-price').value = price;
+                document.getElementById('modal-price').innerText = 'Rp ' + price;
+                $('#paymentModal').modal('show');
+            } else {
+                console.error('Parameter tidak valid');
+            }
+        }
+
             function showPaymentModal(id, name, price, discount) {
             // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
             if (price === 0) {
