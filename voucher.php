@@ -92,10 +92,15 @@ if (isset($_POST['TambahVoucherManual'])) {
 function validateVoucher($code) {
     global $conn;
     
-    // Tambahkan error handling dan logging
     try {
-        // Cek voucher berdasarkan kode
-        $query = "SELECT * FROM vouchers2 WHERE code = ?";
+        // Tambahkan logging untuk debug
+        error_log("Validating voucher code: " . $code);
+        
+        // Perbaiki query untuk mencakup semua field yang diperlukan
+        $query = "SELECT id, code, discount_amount, is_free, one_time_use, used_at 
+                 FROM vouchers2 
+                 WHERE code = ?";
+                 
         $stmt = $conn->prepare($query);
         if (!$stmt) {
             error_log("Error preparing statement: " . $conn->error);
@@ -112,15 +117,28 @@ function validateVoucher($code) {
         $voucher = $result->fetch_assoc();
         
         if (!$voucher) {
+            error_log("Voucher not found: " . $code);
             return ["valid" => false, "message" => "Voucher tidak ditemukan"];
         }
         
         // Cek apakah voucher sudah digunakan dan merupakan voucher sekali pakai
         if ($voucher['one_time_use'] == 1 && $voucher['used_at'] !== null) {
+            error_log("Voucher already used: " . $code);
             return ["valid" => false, "message" => "Voucher sudah digunakan"];
         }
         
-        return ["valid" => true, "voucher" => $voucher];
+        // Tambahkan informasi lengkap voucher ke response
+        return [
+            "valid" => true, 
+            "voucher" => [
+                "id" => $voucher['id'],
+                "code" => $voucher['code'],
+                "discount_amount" => $voucher['discount_amount'],
+                "is_free" => $voucher['is_free'],
+                "one_time_use" => $voucher['one_time_use']
+            ]
+        ];
+        
     } catch (Exception $e) {
         error_log("Error in validateVoucher: " . $e->getMessage());
         return ["valid" => false, "message" => "Terjadi kesalahan sistem"];
