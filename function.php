@@ -135,39 +135,6 @@ if (isset($_SESSION['error'])) {
     unset($_SESSION['error']); // Hapus pesan setelah ditampilkan
 }
 
-// Fungsi untuk menambah dan mengekspor voucher
-if (isset($_POST['simpanEksporVoucher'])) {
-    $code_prefix = $_POST['code_prefix'];
-    $discount_amount = $_POST['discount_amount'];
-    $voucher_count = $_POST['voucher_count'];
-    
-    $vouchers = array();
-    
-    for ($i = 0; $i < $voucher_count; $i++) {
-        $random_number = mt_rand(1000000000, 9999999999);
-        $unique_code = $code_prefix . $random_number;
-        $addtotable = mysqli_query($conn, "INSERT INTO vouchers (code, discount_amount, is_used) VALUES ('$unique_code', '$discount_amount', 0)");
-        
-        if ($addtotable) {
-            $vouchers[] = array($unique_code, $discount_amount, 'Belum Digunakan');
-        }
-    }
-
-    if (count($vouchers) > 0) {
-        $txt_data = "Kode,Jumlah Diskon,Status,Tanggal Dibuat,Tanggal Digunakan\n";
-        foreach ($vouchers as $voucher) {
-            $txt_data .= implode(',', $voucher) . "\n";
-        }
-
-        header('Content-Type: text');
-        header('Content-Disposition: attachment; filename="daftar_voucher.txt"');
-        echo $txt_data;
-        exit;
-    } else {
-        echo json_encode(['status' => 'error', 'message' => 'Gagal menambahkan voucher']);
-    }
-}
-
 // Fungsi untuk update tabel voucher
 if (isset($_POST['action']) && $_POST['action'] == 'update_tabel_voucher') {
     $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers");
@@ -310,26 +277,6 @@ if (isset($_POST['hapustransaksi'])) {
     } else {
         echo 'Tidak ada transaksi yang dipilih';
         header('location:transaksi.php');
-    }
-}
-
-// Fungsi untuk hapus voucher terpilih
-if (isset($_POST['hapusvoucher'])) {
-    if (isset($_POST['delete'])) {
-        foreach ($_POST['delete'] as $id) {
-            $id = mysqli_real_escape_string($conn, $id);
-            $hapusv = mysqli_query($conn, "DELETE FROM vouchers2 WHERE id='$id'");
-        }
-        
-        if ($hapusv) {
-            header("location:voucher.php");
-        } else {
-            echo 'Gagal menghapus voucher';
-            header('location:voucher.php');
-        }
-    } else {
-        echo 'Tidak ada voucher yang dipilih';
-        header('location:voucher.php');
     }
 }
 
