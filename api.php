@@ -100,13 +100,34 @@ function create_transaction($data) {
         $discount = isset($data['discount']) ? intval($data['discount']) : 0;
 
         // Hitung total harga
-        $total_price = max(1, $product_price - $discount); // Mengizinkan total_price menjadi 0
+        $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
         // Simpan transaksi ke database
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
-        // Siapkan parameter Midtrans
+        // Jika total harga adalah 0, langsung set status menjadi 'settlement'
+        if ($total_price == 0) {
+            // Update status transaksi menjadi 'settlement' di database
+            $stmt = $db->prepare("UPDATE transaksi SET status = 'settlement' WHERE order_id = ?");
+            $stmt->execute([$order_id]);
+
+            // Simpan data transaksi ke session
+            $_SESSION['successful_transaction'] = [
+                'transaction_id' => $order_id,
+                'product_name' => $product_name,
+                'amount' => $total_price,
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+
+            echo json_encode([
+                'success' => true,
+                'redirect' => 'transberhasil.php' // Redirect ke halaman transaksi berhasil
+            ]);
+            return; // Keluar dari fungsi
+        }
+
+        // Siapkan parameter Midtrans untuk pemrosesan pembayaran
         $transaction_params = [
             'payment_type' => 'qris',
             'transaction_details' => [
