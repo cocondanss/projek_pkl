@@ -131,70 +131,31 @@ function useVoucher($code) {
     global $conn;
     
     try {
-        // Begin transaction    
-        $conn->begin_transaction();
-        
         $currentTime = date('Y-m-d H:i:s');
-        
-        // First, get the voucher details
-        $query = "SELECT * FROM vouchers2 WHERE code = ?";
+        $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ? AND (used_at IS NULL OR one_time_use = 0)";
         $stmt = $conn->prepare($query);
         if (!$stmt) {
-            error_log("Error preparing select statement: " . $conn->error);
+            error_log("Error preparing statement: " . $conn->error);
             return false;
         }
+
+        $stmt->bind_param("ss", $currentTime, $code);
+        $result = $stmt->execute();
         
-        $stmt->bind_param("s", $code);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $voucher = $result->fetch_assoc();
-        
-        if (!$voucher) {
-            $conn->rollback();
+        if (!$result) {
+            error_log("Error executing statement: " . $stmt->error);
             return false;
         }
-        
-        if ($voucher['one_time_use'] == 1) {
-            // For one-time-use vouchers, delete them immediately after use
-            $delete_query = "DELETE FROM vouchers2 WHERE code = ?";
-            $delete_stmt = $conn->prepare($delete_query);
-            if (!$delete_stmt) {
-                error_log("Error preparing delete statement: " . $conn->error);
-                $conn->rollback();
-                return false;
-            }
-            
-            $delete_stmt->bind_param("s", $code);
-            if (!$delete_stmt->execute()) {
-                error_log("Error executing delete statement: " . $delete_stmt->error);
-                $conn->rollback();
-                return false;
-            }
-        } else {
-            // For regular vouchers, just update the used_at timestamp
-            $update_query = "UPDATE vouchers2 SET used_at = ? WHERE code = ? AND used_at IS NULL";
-            $update_stmt = $conn->prepare($update_query);
-            if (!$update_stmt) {
-                error_log("Error preparing update statement: " . $conn->error);
-                $conn->rollback();
-                return false;
-            }
-            
-            $update_stmt->bind_param("ss", $currentTime, $code);
-            if (!$update_stmt->execute()) {
-                error_log("Error executing update statement: " . $update_stmt->error);
-                $conn->rollback();
-                return false;
-            }
+
+        // Cek apakah ada baris yang terupdate
+        if ($stmt->affected_rows === 0) {
+            error_log("No rows updated for voucher code: " . $code);
+            return false;
         }
-        
-        // Commit transaction
-        $conn->commit();
+
         return true;
-        
     } catch (Exception $e) {
         error_log("Error in useVoucher: " . $e->getMessage());
-        $conn->rollback();
         return false;
     }
 }
