@@ -64,6 +64,9 @@ if (isset($_POST['TambahVoucherManual'])) {
     $isFree = isset($_POST['is_free']) ? 1 : 0;
     $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
 
+    // Debug untuk memeriksa nilai
+    error_log("One Time Use Value: " . $oneTimeUse);
+
     $query = "INSERT INTO vouchers2 (code, discount_amount, is_free, one_time_use) 
               VALUES ('$manualCode', '$nominal', '$isFree', '$oneTimeUse') 
               ON DUPLICATE KEY UPDATE 
@@ -71,10 +74,14 @@ if (isset($_POST['TambahVoucherManual'])) {
               is_free = VALUES(is_free), 
               one_time_use = VALUES(one_time_use)";
     
+    // Tambahkan log untuk query
+    error_log("Query: " . $query);
+    
     if (mysqli_query($conn, $query)) {
         header('Location: voucher.php?status=success&message=Voucher manual berhasil ditambahkan');
         exit();
     } else {
+        error_log("MySQL Error: " . mysqli_error($conn));
         header('Location: voucher.php?status=error&message=Gagal menambahkan voucher');
         exit();
     }
@@ -583,22 +590,29 @@ function useVoucher($code) {
             $('#selectAll').click(function() {
             $('input[type="checkbox"]').prop('checked', this.checked);
         });
+            // Ketika modal dibuka, set checkbox 'Sekali Pakai' untuk tercentang
+            $('#manualVoucherModal').on('show.bs.modal', function () {
+                document.getElementById('voucherForm').reset();
+                document.getElementById('oneTimeUse').checked = true; // Set default ke checked
+                toggleNominal(); // Reset tampilan nominal jika diperlukan
+            });
 
-               
-        document.getElementById('oneTimeUse').addEventListener('change', function() {
-        localStorage.setItem('oneTimeUseChecked', this.checked);
-    });
+            // Tambahkan validasi form
+            document.getElementById('voucherForm').addEventListener('submit', function(event) {
+                const nominalInput = document.getElementsByName('nominal')[0];
+                const isFree = document.getElementById('isFree');
+                const oneTimeUse = document.getElementById('oneTimeUse');
 
-    // Ambil status checkbox dari localStorage saat halaman dimuat
-    window.onload = function() {
-        var isChecked = localStorage.getItem('oneTimeUseChecked') === 'true';
-        document.getElementById('oneTimeUse').checked = isChecked;
-    };
+                // Log nilai untuk debugging
+                console.log('One Time Use:', oneTimeUse.checked);
+                console.log('Is Free:', isFree.checked);
+                console.log('Nominal:', nominalInput.value);
 
-    // Ketika modal dibuka, set checkbox 'Sekali Pakai' untuk tercentang
-    $('#manualVoucherModal').on('show.bs.modal', function () {
-        document.getElementById('oneTimeUse').checked = true; // Set checkbox menjadi tercentang
-    });
+                if (!isFree.checked && nominalInput.value.trim() === '') {
+                    alert('Silakan isi nominal atau centang gratis.');
+                    event.preventDefault();
+                }
+            });
         </script>
     </body>
 </html>
