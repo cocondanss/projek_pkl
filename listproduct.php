@@ -479,7 +479,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
     if (price === 0) {
         console.log("Redirecting to transberhasil.php because price is 0");
-        window.location.href = 'transberhasil.php'; // Ganti dengan URL halaman transaksi berhasil
+        window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
         return; // Keluar dari fungsi
     }
 
