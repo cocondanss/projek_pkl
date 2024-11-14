@@ -122,21 +122,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             $discountedPrice = applyVoucher($voucherCode, $originalPrice);
                             ?>
                             <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
-                                <div class="card-body"> 
-
-                                    <h2><?php echo htmlspecialchars($item['name']); ?></h2>
-                                    <div class="price-container">
-                                        <?php if ($discountedPrice < $originalPrice): ?>
-                                            <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                                            <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?></span></p>
-                                            <?php else: ?>
-                                                <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                                                <?php endif; ?>
+                                            <div class="card-body">
+                                                <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+                                                <div class="price-container">
+                                                    <?php if ($discountedPrice < $originalPrice): ?>
+                                                        <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                                                        <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?></span></p>
+                                                    <?php else: ?>
+                                                        <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <p><?php echo htmlspecialchars($item['description']); ?></p>
+                                                <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
                                             </div>
-                                            <p><?php echo htmlspecialchars($item['description']); ?></p>
-                                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
                                         </div>
-                                    </div>
                                         <?php endforeach; ?>
                                         <div class="voucher-form">
                                             <div id="voucher-message-container">
@@ -403,7 +402,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
                 if (price === 0) {
                     window.location.href = 'transberhasil.php'; // Ganti dengan URL halaman transaksi berhasil
-                    return;
+                    return; // Keluar dari fungsi
                 }
 
                 // Jika harga tidak 0, tampilkan modal pembayaran
