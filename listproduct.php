@@ -471,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 display.textContent = '';
             });
             
-            function showPaymentModal(id, name, price, discount = 0) {
+           function showPaymentModal(id, name, price, discount = 0) {
     // Pastikan parameter valid
     if (!id || !name || price === undefined) {
         console.error('Parameter tidak valid');
@@ -487,7 +487,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
     // Jika harga tidak 0, lanjutkan untuk membuat transaksi
     createTransaction(id, name, price, discount).then(response => {
-        // Cek apakah respons berhasil
         if (response.success) {
             // Hapus modal lama jika ada
             const existingModal = document.getElementById('qrCodeModal');
@@ -506,7 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             </div>
                             <div class="modal-body">
                                 <div class="qr-code-container">
-                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
+                                    <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
                                 </div>
                                 <div id="countdown"></div>
                                 <div class="status-message"></div>
@@ -587,30 +586,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             }
 
             function createTransaction(id, name, price, discount) {
-    return fetch('api.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            action: 'create_transaction', // Pastikan action sesuai dengan yang diharapkan di api.php
-            product_id: id,
-            product_name: name,
-            product_price: price,
-            discount: discount
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json(); // Mengembalikan data JSON
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        throw error; // Pastikan error dilempar untuk ditangani di showPaymentModal
-    });
-}
+                return fetch('api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'create_transaction',
+                        product_id: id,
+                        product_name: name,
+                        product_price: price,
+                        discount: discount
+                    })
+                })
+                    .then(response => response.json())
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat memproses permintaan.');
+                    });
+            }
 
             // Tambahkan fungsi untuk membatalkan transaksi
             function cancelTransaction() {
