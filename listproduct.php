@@ -6,7 +6,6 @@
  */
 
 require 'function.php';
-require 'cek.php';
 
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
