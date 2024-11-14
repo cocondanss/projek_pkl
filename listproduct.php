@@ -741,6 +741,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 return transactionId;
             }
 
+            document.addEventListener('DOMContentLoaded', function() {
+                const voucherForm = document.getElementById('voucher-form');
+                if (voucherForm) {
+                    voucherForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        // Disable form selama proses
+                        const submitButton = this.querySelector('button[type="submit"]');
+                        const originalButtonText = submitButton.innerHTML;
+                        submitButton.disabled = true;
+                        submitButton.innerHTML = 'Memproses...';
+                        
+                        fetch('voucher.php', {
+                            method: 'POST',
+                            body: new FormData(this),
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            // Update konten halaman
+                            document.documentElement.innerHTML = html;
+                            
+                            // Tampilkan pesan status
+                            const messageContainer = document.getElementById('voucher-message-container');
+                            if (messageContainer) {
+                                messageContainer.style.display = 'block';
+                                setTimeout(() => {
+                                    messageContainer.style.display = 'none';
+                                }, 3000);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Terjadi kesalahan saat memproses voucher');
+                        })
+                        .finally(() => {
+                            // Re-enable form
+                            submitButton.disabled = false;
+                            submitButton.innerHTML = originalButtonText;
+                        });
+                    });
+                }
+            });
+
         </script>
 </body>
 </html>
