@@ -563,32 +563,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             }
 
             function createTransaction(id, name, price, discount) {
-    fetch('api.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            action: 'create_transaction',
-            product_id: id,
-            product_name: name,
-            product_price: price,
-            discount: discount
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Jika berhasil, redirect ke halaman transaksi berhasil
-            window.location.href = data.redirect; // Halaman transberhasil.php
-        } else {
-            alert('Error: ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
+                return fetch('api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'create_transaction',
+                        product_id: id,
+                        product_name: name,
+                        product_price: price,
+                        discount: discount
+                    })
+                })
+                    .then(response => response.json())
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat memproses permintaan.');
+                    });
+            }
 
             // Tambahkan fungsi untuk membatalkan transaksi
             function cancelTransaction() {
@@ -748,11 +741,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 return transactionId;
             }
 
-            function handleSubmit(event, discount, id, name, price) {
-            event.preventDefault();
-            // Panggil fungsi createTransaction dengan parameter yang sesuai
-            createTransaction(id, name, price, discount);
-        }
         </script>
 </body>
 </html>
