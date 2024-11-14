@@ -105,12 +105,16 @@ if (isset($_POST['TambahVoucherManual'])) {
         header('location:voucher.php');
         exit();
     }
-    $date = new DateTime($created_at, new DateTimeZone('UTC')); // Set zona waktu ke UTC
-$date->setTimezone(new DateTimeZone($userTimeZone)); // Ubah ke zona waktu pengguna
-$createdAtLocal = $date->format('d-m-Y H:i:s');
+
+    // Ambil zona waktu pengguna dari session
+    $userTimeZone = isset($_SESSION['user_timezone']) ? $_SESSION['user_timezone'] : 'Asia/Jakarta'; // Default ke Jakarta jika tidak ada
+
+    // Mendapatkan waktu saat ini dalam zona waktu pengguna
+    $date = new DateTime('now', new DateTimeZone($userTimeZone)); // Set waktu sekarang sesuai zona waktu pengguna
+    $createdAtLocal = $date->format('Y-m-d H:i:s'); // Format tanggal sesuai kebutuhan untuk disimpan di database
 
     // Menyimpan voucher ke database
-    $addtotable = mysqli_query($conn, "INSERT INTO vouchers2 (code, discount_amount, created_at, is_free) VALUES ('$manual_code', '$nominal', '$created_at', '$is_free')");
+    $addtotable = mysqli_query($conn, "INSERT INTO vouchers2 (code, discount_amount, created_at, is_free) VALUES ('$manual_code', '$nominal', '$createdAtLocal', '$is_free')");
 
     if ($addtotable) {
         $_SESSION['message'] = 'Voucher berhasil ditambahkan!';
