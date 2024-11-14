@@ -108,7 +108,6 @@ if (isset($_POST['TambahVoucherManual'])) {
 
     $createdAtUTC = $data['created_at'];
     $tanggal = new DateTime($createdAtUTC, new DateTimeZone('UTC')); // Set zona waktu ke UTC
-    $tanggal->setTimezone(new DateTimeZone('Asia/Jakarta')); // Ubah ke zona waktu lokal
     $formattedDate = $tanggal->format('d-m-Y H:i:s'); // Format tanggal sesuai kebutuhan
 
     // Menyimpan voucher ke database
