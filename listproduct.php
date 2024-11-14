@@ -470,7 +470,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 pinCode = '';
                 display.textContent = '';
             });
-            
             function showPaymentModal(id, name, price, discount = 0) {
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
     if (price === 0) {
@@ -489,14 +488,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     createTransaction(id, name, price, discount).then(response => {
         if (response.success) {
             // Hapus modal lama jika ada
-            const existingModal = document.querySelector('.qr-modal'); // Menggunakan class untuk menghapus modal
+            const existingModal = document.getElementById('qrCodeModal');
             if (existingModal) {
                 existingModal.remove();
             }
 
-            // Buat elemen modal baru dengan ID unik
+            // Buat elemen modal baru
             const modalHTML = `
-                <div class="modal fade qr-modal" id="qrCodeModal_${Date.now()}" tabindex="-1">
+                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -526,12 +525,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             document.body.insertAdjacentHTML('beforeend', modalHTML);
             
             // Dapatkan referensi ke modal yang baru dibuat
-            const qrCodeModal = document.querySelector(`.qr-modal:last-child`); // Ambil modal terakhir yang ditambahkan
-            const qrCodeImage = qrCodeModal.querySelector('#qrCodeImage');
-            
-            // Set QR code image
-            qrCodeImage.src = response.qr_code_url;
-            
+            const qrCodeModal = document.getElementById('qrCodeModal');
+
             // Set transaction ID
             qrCodeModal.setAttribute('data-transaction-id', response.order_id);
 
