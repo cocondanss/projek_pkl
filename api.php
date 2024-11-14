@@ -106,6 +106,16 @@ function create_transaction($data) {
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
+        // Jika total_price adalah 0, langsung arahkan ke halaman sukses
+        if ($total_price == 0) {
+            echo json_encode([
+                'success' => true,
+                'message' => 'Transaksi berhasil, tidak ada pembayaran yang diperlukan.',
+                'order_id' => $order_id
+            ]);
+            return; // Keluar dari fungsi
+        }
+
         // Siapkan parameter Midtrans
         $transaction_params = [
             'payment_type' => 'qris',
