@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 
 // Konfigurasi koneksi database
@@ -378,3 +380,91 @@ $query = "SELECT * FROM products";
 $result = mysqli_query($conn, $query);
 $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
 $products = mysqli_query($conn, "SELECT * FROM products");
+
+function validateVoucher($code) {
+    global $conn;
+    
+    try {
+        error_log("Validating voucher: " . $code);
+        
+        // Basic validation
+        if (empty($code)) {
+            return ["valid" => false, "message" => "Kode voucher tidak boleh kosong"];
+        }
+        
+        // Prepare statement
+        $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
+        if (!$stmt) {
+            error_log("Prepare failed: " . $conn->error);
+            return ["valid" => false, "message" => "Database error (prepare)"];
+        }
+        
+        // Bind parameter
+        if (!$stmt->bind_param("s", $code)) {
+            error_log("Binding parameters failed: " . $stmt->error);
+            return ["valid" => false, "message" => "Database error (bind)"];
+        }
+        
+        // Execute statement
+        if (!$stmt->execute()) {
+            error_log("Execute failed: " . $stmt->error);
+            return ["valid" => false, "message" => "Database error (execute)"];
+        }
+        
+        $result = $stmt->get_result();
+        $voucher = $result->fetch_assoc();
+        
+        if (!$voucher) {
+            error_log("No voucher found for code: " . $code);
+            return ["valid" => false, "message" => "Voucher tidak ditemukan"];
+        }
+        
+        // Check if voucher has been used (for one-time use vouchers)
+        if ($voucher['one_time_use'] && $voucher['used_at'] !== null) {
+            error_log("Voucher already used: " . $code);
+            return ["valid" => false, "message" => "Voucher sudah digunakan"];
+        }
+        
+        // If we get here, voucher is valid
+        error_log("Voucher validated successfully: " . $code);
+        return [
+            "valid" => true,
+            "voucher" => [
+                "id" => $voucher['id'],
+                "code" => $voucher['code'],
+                "discount_amount" => $voucher['discount_amount'],
+                "is_free" => $voucher['is_free'],
+                "one_time_use" => $voucher['one_time_use']
+            ]
+        ];
+        
+    } catch (Exception $e) {
+        error_log("Exception in validateVoucher: " . $e->getMessage());
+        return ["valid" => false, "message" => "Terjadi kesalahan sistem"];
+    }
+}
+
+function calculateDiscountedPrice($originalPrice, $voucher) {
+    if (!$voucher) {
+        return $originalPrice;
+    }
+    
+    error_log("Calculating discount for price: " . $originalPrice . " with voucher: " . json_encode($voucher));
+    
+    if ($voucher['is_free']) {
+        return 0;
+    }
+    
+    $discountAmount = floatval($voucher['discount_amount']);
+    
+    if ($discountAmount <= 100) {
+        // Percentage discount
+        $discountedPrice = $originalPrice - ($originalPrice * ($discountAmount / 100));
+    } else {
+        // Fixed amount discount
+        $discountedPrice = $originalPrice - $discountAmount;
+    }
+    
+    // Ensure price doesn't go below 0
+    return max(0, $discountedPrice);
+}

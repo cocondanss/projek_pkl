@@ -7,6 +7,19 @@
 
 require 'function.php';
 
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// Fungsi debug helper
+function debug_to_console($data) {
+    $output = $data;
+    if (is_array($output))
+        $output = implode(',', $output);
+
+    echo "<script>console.log('Debug Objects: " . $output . "' );</script>";
+}
+
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
@@ -56,39 +69,26 @@ $voucherCode = '';
 // Proses pengecekan voucher saat ada POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $voucherCode = trim($_POST['voucher_code']);
+    debug_to_console("Processing voucher: " . $voucherCode);
     
     try {
         // Validasi voucher
         $validationResult = validateVoucher($voucherCode);
+        debug_to_console("Validation result: " . json_encode($validationResult));
         
         if ($validationResult['valid']) {
             $voucher = $validationResult['voucher'];
-            $_SESSION['active_voucher'] = $voucher; // Simpan voucher ke session
+            $_SESSION['active_voucher'] = $voucher;
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan</p>";
+            debug_to_console("Voucher applied successfully");
         } else {
             $voucherMessages[] = "<p class='voucher-message error'>" . $validationResult['message'] . "</p>";
+            debug_to_console("Voucher validation failed: " . $validationResult['message']);
         }
     } catch (Exception $e) {
         error_log("Error processing voucher: " . $e->getMessage());
         $voucherMessages[] = "<p class='voucher-message error'>Terjadi kesalahan saat memproses voucher</p>";
-    }
-}
-
-// Fungsi untuk menghitung harga setelah voucher
-function calculateDiscountedPrice($originalPrice, $voucher) {
-    if (!$voucher) return $originalPrice;
-    
-    if ($voucher['is_free']) {
-        return 0;
-    }
-    
-    $discountAmount = $voucher['discount_amount'];
-    if ($discountAmount <= 100) {
-        // Diskon persentase
-        return $originalPrice - ($originalPrice * ($discountAmount / 100));
-    } else {
-        // Diskon nominal
-        return max(0, $originalPrice - $discountAmount);
+        debug_to_console("Error: " . $e->getMessage());
     }
 }
 
@@ -102,6 +102,8 @@ if (!$produk) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
+
+debug_to_console("Session data: " . json_encode($_SESSION));
 ?>
 <!doctype html>
 <html lang="en">
@@ -128,12 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     <div class="product-list" style="background: none;" id="product-list">
                         <?php foreach ($produk as $item): 
                             $originalPrice = $item['price'];
-                            $discountedPrice = $originalPrice;
-                            
-                            // Cek apakah ada voucher aktif
-                            if (isset($_SESSION['active_voucher'])) {
-                                $discountedPrice = calculateDiscountedPrice($originalPrice, $_SESSION['active_voucher']);
-                            }
+                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
                             ?>
                             <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                                 <div class="card-body"> 
@@ -413,15 +410,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
 
             function showPaymentModal(id, name, price) {
-                if (id && name && price !== undefined) {
-                    // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-                    if (price === 0) {
-                        console.log("Redirecting to transberhasil.php because price is 0");
-                        window.location.href = 'transberhasil.php'; // Ganti dengan URL halaman transaksi berhasil
-                        return; // Keluar dari fungsi
-                    }
-
-                    // Jika harga tidak 0, tampilkan modal pembayaran
+                if (id && name && price) {
                     document.getElementById('modal-product-id').value = id;
                     document.getElementById('modal-product-name').value = name;
                     document.getElementById('modal-product-price').value = price;
@@ -486,80 +475,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 display.textContent = '';
             });
             
-            function showPaymentModal(id, name, price, discount = 0) {
-    // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-    if (price === 0) {
-        const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
-        sessionStorage.setItem('successful_transaction', JSON.stringify({
-            transaction_id: orderId,
-            product_name: name,
-            amount: price,
-            created_at: new Date().toISOString()
-        }));
-        window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
-        return; // Keluar dari fungsi
-    }
+            function showPaymentModal(id, name, price, discount) {
+                createTransaction(id, name, price, discount).then(response => {
+                    if (response.success) {
+                        // Hapus modal lama jika ada
+                        const existingModal = document.getElementById('qrCodeModal');
+                        if (existingModal) {
+                            existingModal.remove();
+                        }
+                        // Buat elemen modal baru
+                        const modalHTML = `
+                            <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="qr-code-container">
+                                                <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
+                                            </div>
+                                            <div id="countdown"></div>
+                                            <div class="status-message"></div>
+                                            <div class="button-container">
+                                                <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
+                                                    Batal
+                                                </button>
+                                                <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
+                                                    Cek
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        // Tambahkan modal ke body
+                        document.body.insertAdjacentHTML('beforeend', modalHTML);
+                        
+                        // Dapatkan referensi ke modal yang baru dibuat
+                        const qrCodeModal = document.getElementById('qrCodeModal');
+                        const qrCodeImage = qrCodeModal.querySelector('#qrCodeImage');
+                        
+                        // Set QR code image
+                        qrCodeImage.src = response.qr_code_url;
+                        
+                        // Set transaction ID
+                        qrCodeModal.setAttribute('data-transaction-id', response.order_id);
 
-    // Jika harga lebih dari Rp 0, lakukan panggilan ke createTransaction
-    createTransaction(id, name, price, discount).then(response => {
-        if (response.success) {
-            // Hapus modal lama jika ada
-            const existingModal = document.getElementById('qrCodeModal');
-            if (existingModal) {
-                existingModal.remove();
+                        // Start the countdown timer
+                        startCountdown(30 * 60); // 30 minutes in seconds
+
+                        // Tampilkan modal
+                        const modalInstance = new bootstrap.Modal(qrCodeModal);
+                        modalInstance.show();
+                    } else {
+                        alert('Error: ' + response.message);
+                    }
+                }).catch(error => {
+                    console.error('Error in createTransaction:', error);
+                    alert('Terjadi kesalahan saat membuat transaksi.');
+                });
             }
-
-            // Buat elemen modal baru
-            const modalHTML = `
-                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="qr-code-container">
-                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
-                                </div>
-                                <div id="countdown"></div>
-                                <div class="status-message"></div>
-                                <div class="button-container">
-                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
-                                        Batal
-                                    </button>
-                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
-                                        Cek
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            // Tambahkan modal ke body
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            
-            // Dapatkan referensi ke modal yang baru dibuat
-            const qrCodeModal = document.getElementById('qrCodeModal');
-
-            // Set transaction ID
-            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
-
-            // Start the countdown timer
-            startCountdown(30 * 60); // 30 minutes in seconds
-
-            // Tampilkan modal
-            const modalInstance = new bootstrap.Modal(qrCodeModal);
-            modalInstance.show();
-        } else {
-            alert('Error: ' + response.message);
-        }
-    }).catch(error => {
-        console.error('Error in createTransaction:', error);
-        alert('Terjadi kesalahan saat membuat transaksi.');
-    });
-}
 
 
             // Add countdown timer function
@@ -774,6 +752,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 return modal.getAttribute('data-transaction-id');
                 return transactionId;
             }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const voucherForm = document.getElementById('voucher-form');
+                if (voucherForm) {
+                    voucherForm.addEventListener('submit', function(e) {
+                        e.preventDefault();
+                        
+                        // Disable form selama proses
+                        const submitButton = this.querySelector('button[type="submit"]');
+                        const originalButtonText = submitButton.innerHTML;
+                        submitButton.disabled = true;
+                        submitButton.innerHTML = 'Memproses...';
+                        
+                        fetch('voucher.php', {
+                            method: 'POST',
+                            body: new FormData(this),
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            // Update konten halaman
+                            document.documentElement.innerHTML = html;
+                            
+                            // Tampilkan pesan status
+                            const messageContainer = document.getElementById('voucher-message-container');
+                            if (messageContainer) {
+                                messageContainer.style.display = 'block';
+                                setTimeout(() => {
+                                    messageContainer.style.display = 'none';
+                                }, 3000);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Terjadi kesalahan saat memproses voucher');
+                        })
+                        .finally(() => {
+                            // Re-enable form
+                            submitButton.disabled = false;
+                            submitButton.innerHTML = originalButtonText;
+                        });
+                    });
+                }
+            });
 
         </script>
 </body>
