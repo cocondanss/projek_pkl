@@ -74,21 +74,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     try {
         // Validasi voucher
         $validationResult = validateVoucher($voucherCode);
-        debug_to_console("Validation result: " . json_encode($validationResult));
         
         if ($validationResult['valid']) {
             $voucher = $validationResult['voucher'];
-            $_SESSION['active_voucher'] = $voucher;
+            $_SESSION['active_voucher'] = $voucher; // Simpan voucher ke session
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan</p>";
-            debug_to_console("Voucher applied successfully");
         } else {
             $voucherMessages[] = "<p class='voucher-message error'>" . $validationResult['message'] . "</p>";
-            debug_to_console("Voucher validation failed: " . $validationResult['message']);
         }
     } catch (Exception $e) {
         error_log("Error processing voucher: " . $e->getMessage());
         $voucherMessages[] = "<p class='voucher-message error'>Terjadi kesalahan saat memproses voucher</p>";
-        debug_to_console("Error: " . $e->getMessage());
+    }
+}
+
+// Fungsi untuk menghitung harga setelah voucher
+function calculateDiscountedPrice($originalPrice, $voucher) {
+    if (!$voucher) return $originalPrice;
+    
+    if ($voucher['is_free']) {
+        return 0;
+    }
+    
+    $discountAmount = $voucher['discount_amount'];
+    if ($discountAmount <= 100) {
+        // Diskon persentase
+        return $originalPrice - ($originalPrice * ($discountAmount / 100));
+    } else {
+        // Diskon nominal
+        return max(0, $originalPrice - $discountAmount);
     }
 }
 
