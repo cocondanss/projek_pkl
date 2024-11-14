@@ -192,7 +192,7 @@ function check_payment_status($data) {
         $stmt->execute([$transaction_status, $data['transaction_id']]);
 
         // Simpan ke session jika pembayaran berhasil
-        if ($transaction_status === 'settlement') {
+        if ($transaction_status === 'success') {
             $stmt = $db->prepare("SELECT * FROM transaksi WHERE order_id = ?");
             $stmt->execute([$data['transaction_id']]);
             $transaction = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -210,7 +210,7 @@ function check_payment_status($data) {
         echo json_encode([
             "success" => true,
             "status" => $transaction_status,
-            "redirect" => ($transaction_status === 'settlement') ? 'transberhasil.php' : null
+            "redirect" => ($transaction_status === 'success') ? 'transberhasil.php' : null
         ]);
     } catch (Exception $e) {
         echo json_encode([
