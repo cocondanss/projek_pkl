@@ -411,10 +411,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
 
             // Di dalam showPaymentModal
-function showPaymentModal(id, name, price) {
+            function showPaymentModal(id, name, price) {
     console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
     if (id && name && price !== undefined) {
+        // Jika harga adalah Rp 0, arahkan ke halaman transaksi berhasil
         if (price === 0) {
             const orderId = 'TRX-' + Date.now();
             sessionStorage.setItem('successful_transaction', JSON.stringify({
@@ -423,11 +424,11 @@ function showPaymentModal(id, name, price) {
                 amount: price,
                 created_at: new Date().toISOString()
             }));
-            window.location.href = 'transberhasil.php';
-            return;
+            window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
+            return; // Keluar dari fungsi
         }
 
-        // Tampilkan modal pembayaran
+        // Jika harga lebih dari Rp 0, tampilkan modal pembayaran
         document.getElementById('modal-product-id').value = id;
         document.getElementById('modal-product-name').value = name;
         document.getElementById('modal-product-price').value = price;
