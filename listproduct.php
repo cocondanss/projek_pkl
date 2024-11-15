@@ -7,23 +7,6 @@
 
 require 'function.php';
 
-$discountedPrice = $originalPrice;
-if (isset($_POST['voucher_code']) && !empty($_POST['voucher_code'])) {
-    $voucherCode = trim($_POST['voucher_code']);
-    $validationResult = validateVoucher($voucherCode);
-    
-    if ($validationResult['valid']) {
-        $voucher = $validationResult['voucher'];
-        // Jika voucher valid, terapkan diskon
-        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-        
-        // Jika voucher sekali pakai, update status penggunaan
-        if ($voucher['one_time_use'] == 1) {
-            useVoucher($voucherCode);
-        }
-    }
-}
-
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
@@ -116,6 +99,23 @@ if (!$produk) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
+
+$discountedPrice = $originalPrice;
+if (isset($_POST['voucher_code']) && !empty($_POST['voucher_code'])) {
+    $voucherCode = trim($_POST['voucher_code']);
+    $validationResult = validateVoucher($voucherCode);
+    
+    if ($validationResult['valid']) {
+        $voucher = $validationResult['voucher'];
+        // Jika voucher valid, terapkan diskon
+        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+        
+        // Jika voucher sekali pakai, update status penggunaan
+        if ($voucher['one_time_use'] == 1) {
+            useVoucher($voucherCode);
+        }
+    }
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -142,20 +142,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     <div class="product-list" style="background: none;" id="product-list">
                         <?php foreach ($produk as $item): 
                             $originalPrice = $item['price'];
-                            $discountedPrice = isset($_POST['voucher_code']) ? 
-                                applyVoucher($_POST['voucher_code'], $originalPrice) : 
-                                $originalPrice;
+                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
                             ?>
-                            <div class="product" data-product-id="<?php echo $item['id']; ?>">
+                            <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                                 <div class="card-body"> 
 
                                     <h2><?php echo htmlspecialchars($item['name']); ?></h2>
                                     <div class="price-container">
                                         <?php if ($discountedPrice < $originalPrice): ?>
-                                            <p class="original-price">Rp <?php echo number_format($originalPrice, 0, ',', '.'); ?></p>
-                                            <p class="discounted-price">Rp <?php echo number_format($discountedPrice, 0, ',', '.'); ?></p>
+                                            <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                                            <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?></span></p>
                                             <?php else: ?>
-                                                <p>Rp <?php echo number_format($originalPrice, 0, ',', '.'); ?></p>
+                                                <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
                                                 <?php endif; ?>
                                             </div>
                                             <p><?php echo htmlspecialchars($item['description']); ?></p>
@@ -505,6 +503,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
             
             function showPaymentModal(id, name, price, discount = 0) {
+    // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
+    if (price === 0) {
+        const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
+        sessionStorage.setItem('successful_transaction', JSON.stringify({
+            transaction_id: orderId,
+            product_name: name,
+            amount: price,
+            created_at: new Date().toISOString()
+        }));
+        window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
+        return; // Keluar dari fungsi
+    }
+
     createTransaction(id, name, price, discount).then(response => {
         console.log(response); // Debugging: lihat respon dari API
         if (response.success) {
