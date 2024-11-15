@@ -99,23 +99,6 @@ if (!$produk) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
-
-$discountedPrice = $originalPrice;
-if (isset($_POST['voucher_code']) && !empty($_POST['voucher_code'])) {
-    $voucherCode = trim($_POST['voucher_code']);
-    $validationResult = validateVoucher($voucherCode);
-    
-    if ($validationResult['valid']) {
-        $voucher = $validationResult['voucher'];
-        // Jika voucher valid, terapkan diskon
-        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-        
-        // Jika voucher sekali pakai, update status penggunaan
-        if ($voucher['one_time_use'] == 1) {
-            useVoucher($voucherCode);
-        }
-    }
-}
 ?>
 <!doctype html>
 <html lang="en">
