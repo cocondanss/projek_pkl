@@ -248,8 +248,8 @@ function useVoucher($code) {
                                                 <th>Code</th>
                                                 <th>Diskon</th>
                                                 <th>Status</th>
-                                                <th>gratis</th>
-                                                <th>sekali pakai</th>
+                                                <th>Gratis</th>
+                                                <th>Sekali Pakai</th>
                                                 <th>Tanggal Dibuat</th>
                                                 <th>Tanggal Digunakan</th>
                                                 <th>Pilih</th>
