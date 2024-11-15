@@ -486,19 +486,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
             
             function showPaymentModal(id, name, price, discount = 0) {
-    // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-    if (price === 0) {
-        const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
-        sessionStorage.setItem('successful_transaction', JSON.stringify({
-            transaction_id: orderId,
-            product_name: name,
-            amount: price,
-            created_at: new Date().toISOString()
-        }));
-        window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
-        return; // Keluar dari fungsi
-    }
-
     createTransaction(id, name, price, discount).then(response => {
         console.log(response); // Debugging: lihat respon dari API
         if (response.success) {
