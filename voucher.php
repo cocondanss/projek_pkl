@@ -91,7 +91,7 @@ if (isset($_POST['TambahVoucherManual'])) {
 
 function validateVoucher($code) {
     global $conn;
-    
+
     // Tambahkan error handling dan logging
     try {
         // Cek voucher berdasarkan kode
@@ -110,16 +110,21 @@ function validateVoucher($code) {
 
         $result = $stmt->get_result();
         $voucher = $result->fetch_assoc();
-        
+
         if (!$voucher) {
             return ["valid" => false, "message" => "Voucher tidak ditemukan"];
         }
-        
+
         // Cek apakah voucher sudah digunakan dan merupakan voucher sekali pakai
         if ($voucher['one_time_use'] == 1 && $voucher['used_at'] !== null) {
-            return ["valid" => false, "message" => "Voucher sudah digunakan"];
+            // Hapus voucher dari database jika sudah digunakan dan sekali pakai
+            $deleteQuery = "DELETE FROM vouchers2 WHERE code = ?";
+            $deleteStmt = $conn->prepare($deleteQuery);
+            $deleteStmt->bind_param("s", $code);
+            $deleteStmt->execute();
+            return ["valid" => false, "message" => "Voucher sudah digunakan dan telah dihapus"];
         }
-        
+
         return ["valid" => true, "voucher" => $voucher];
     } catch (Exception $e) {
         error_log("Error in validateVoucher: " . $e->getMessage());
