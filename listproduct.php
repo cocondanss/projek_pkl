@@ -553,7 +553,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // Start the countdown timer
             startCountdown(30 * 60); // 30 minutes in seconds
 
-            sdf// Tampilkan modal
+            sdfwf// Tampilkan modal
             const modalInstance = new bootstrap.Modal(qrCodeModal);
             modalInstance.show();
 
