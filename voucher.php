@@ -89,42 +89,42 @@ if (isset($_POST['TambahVoucherManual'])) {
     header('Location: voucher.php');
 }
 
-function applyVoucher($voucherCode, $price) {
+function validateVoucher($code) {
     global $conn;
-
-    // Persiapkan query untuk mencari voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
-    $stmt->bind_param("s", $voucherCode);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($row = $result->fetch_assoc()) {
-        $discountAmount = $row['discount_amount'];
-
-        // Cek tipe diskon (persentase atau nominal)
-        if ($discountAmount <= 100) {
-            // Diskon persentase
-            $discountedPrice = $price - ($price * ($discountAmount / 100));
-        } else {
-            // Diskon nominal langsung
-            $discountedPrice = $price - $discountAmount;
+    
+    // Tambahkan error handling dan logging
+    try {
+        // Cek voucher berdasarkan kode
+        $query = "SELECT * FROM vouchers2 WHERE code = ?";
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            error_log("Error preparing statement: " . $conn->error);
+            return ["valid" => false, "message" => "Database error"];
         }
 
-        // Pastikan harga tidak negatif
-        $finalPrice = max($discountedPrice, 0);
-
-        // Update status voucher menjadi digunakan jika voucher sekali pakai
-        if ($row['one_time_use'] == 1) {
-            // Hapus voucher dari database
-            $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-            $deleteStmt->bind_param("s", $voucherCode);
-            $deleteStmt->execute();
+        $stmt->bind_param("s", $code);
+        if (!$stmt->execute()) {
+            error_log("Error executing statement: " . $stmt->error);
+            return ["valid" => false, "message" => "Database error"];
         }
 
-        return $finalPrice;
+        $result = $stmt->get_result();
+        $voucher = $result->fetch_assoc();
+        
+        if (!$voucher) {
+            return ["valid" => false, "message" => "Voucher tidak ditemukan"];
+        }
+        
+        // Cek apakah voucher sudah digunakan dan merupakan voucher sekali pakai
+        if ($voucher['one_time_use'] == 1 && $voucher['used_at'] !== null) {
+            return ["valid" => false, "message" => "Voucher sudah digunakan"];
+        }
+        
+        return ["valid" => true, "voucher" => $voucher];
+    } catch (Exception $e) {
+        error_log("Error in validateVoucher: " . $e->getMessage());
+        return ["valid" => false, "message" => "Terjadi kesalahan sistem"];
     }
-
-    return $price;
 }
 
 function useVoucher($code) {
