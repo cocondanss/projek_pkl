@@ -16,7 +16,9 @@ require 'function.php';
 function applyVoucher($voucherCode, $price) {
     global $conn;
     
-    $debug_info = "Voucher Code: $voucherCode, Original Price: $price\n";
+    if (empty($voucherCode)) {
+        return $price;
+    }
 
     // Persiapkan query untuk mencari voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
@@ -25,9 +27,17 @@ function applyVoucher($voucherCode, $price) {
     $result = $stmt->get_result();
     
     if ($row = $result->fetch_assoc()) {
-        $debug_info .= "Voucher found: " . print_r($row, true) . "\n";
+        // Cek apakah voucher sudah digunakan (untuk voucher sekali pakai)
+        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
+            return $price; // Kembalikan harga asli jika voucher sudah digunakan
+        }
+
+        // Jika voucher gratis
+        if ($row['is_free'] == 1) {
+            return 0;
+        }
+
         $discountAmount = $row['discount_amount'];
-        $debug_info .= "Discount Amount: $discountAmount\n";
 
         // Cek tipe diskon (persentase atau nominal)
         if ($discountAmount <= 100) {
@@ -38,14 +48,10 @@ function applyVoucher($voucherCode, $price) {
             $discountedPrice = $price - $discountAmount;
         }
         
-        $debug_info .= "Calculated Discounted Price: $discountedPrice\n";
         // Pastikan harga tidak negatif
-        $finalPrice = max($discountedPrice, 0);
-        
-        return $finalPrice;
+        return max($discountedPrice, 0);
     }
 
-    $debug_info .= "No voucher found\n";
     return $price;
 }
 
@@ -67,27 +73,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         // Cek apakah voucher sudah digunakan (untuk voucher sekali pakai)
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             $voucherMessages[] = "<p class='voucher-message error'>Voucher hanya dapat digunakan sekali</p>";
+            $voucherCode = ''; // Reset voucher code jika tidak valid
         } else {
             // Update status penggunaan voucher
             date_default_timezone_set('Asia/Jakarta');
             $currentDateTime = date('Y-m-d H:i:s');
+            
+            // Update used_at timestamp
             $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
             $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
             $updateStmt->execute();
             
-            // If it's a one-time-use voucher, delete it immediately after use
-            if ($row['one_time_use'] == 1) {
-                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ? AND one_time_use = 1");
-                $deleteStmt->bind_param("s", $voucherCode);
-                $deleteStmt->execute();
-            }
-            
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
+            
+            // Simpan voucher code dalam session untuk digunakan di seluruh halaman
+            $_SESSION['active_voucher'] = $voucherCode;
         }
     } else {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
+        $voucherCode = ''; // Reset voucher code jika tidak valid
     }
 }
+
+// Gunakan voucher dari session jika ada
+$voucherCode = isset($_SESSION['active_voucher']) ? $_SESSION['active_voucher'] : '';
 
 // Ambil data produk yang visible
 $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
