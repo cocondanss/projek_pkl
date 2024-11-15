@@ -82,12 +82,12 @@ if (isset($_POST['TambahVoucherManual'])) {
 
     // echo "<script>alert('Voucher manual berhasil ditambahkan');</script>";
 
- if (isset($_POST['hapusvoucher'])) {
-    $id = $_POST['delete'];
-    $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
-    mysqli_query($conn, $query);
-    header('Location: voucher.php');
-}
+//  if (isset($_POST['hapusvoucher'])) {
+//     $id = $_POST['delete'];
+//     $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
+//     mysqli_query($conn, $query);
+//     header('Location: voucher.php');
+// }
 
 function validateVoucher($code) {
     global $conn;
