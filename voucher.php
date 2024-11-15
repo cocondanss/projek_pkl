@@ -571,13 +571,13 @@ function useVoucher($code) {
         var checkboxes = document.getElementsByName('delete[]');
         var checked = false;
         
-        // Cek apakah ada checkbox yang dipilih
-        for (var i = 0; i < checkboxes.length; i++) {
-            if (checkboxes[i].checked) {
-                checked = true;
-                break;
-            }
-        }
+        // // Cek apakah ada checkbox yang dipilih
+        // for (var i = 0; i < checkboxes.length; i++) {
+        //     if (checkboxes[i].checked) {
+        //         checked = true;
+        //         break;
+        //     }
+        // }
         
         if (!checked) {
             Swal.fire({
