@@ -155,6 +155,7 @@ require 'cek.php';
                 var checkboxes = document.getElementsByName('delete[]');
                 var checked = false;
                 
+                // Cek apakah ada checkbox yang dipilih
                 for (var i = 0; i < checkboxes.length; i++) {
                     if (checkboxes[i].checked) {
                         checked = true;
@@ -163,39 +164,11 @@ require 'cek.php';
                 }
                 
                 if (!checked) {
-                    Swal.fire({
-                        title: 'Peringatan!',
-                        text: 'Silakan pilih transaksi yang akan dihapus terlebih dahulu!',
-                        icon: 'warning',
-                        confirmButtonText: 'OK',
-                        customClass: {
-                            confirmButton: 'btn btn-dark'
-                        }
-                    });
+                    alert('Silakan pilih transaksi yang akan dihapus terlebih dahulu!');
                     return false;
                 }
                 
-                return new Promise((resolve) => {
-                    Swal.fire({
-                        title: 'Apakah Anda yakin?',
-                        text: "Transaksi yang dipilih akan dihapus permanen!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#343a40',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal',
-                        customClass: {
-                            confirmButton: 'btn btn-dark mr-2',
-                            cancelButton: 'btn btn-secondary'
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            document.querySelector('form').submit();
-                        }
-                    });
-                    return false;
-                });
+                return confirm('Apakah Anda yakin ingin menghapus transaksi yang dipilih?');
             }
         </script>
     </body>
