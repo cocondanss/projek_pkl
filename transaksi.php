@@ -63,7 +63,7 @@ require 'cek.php';
                         <div class="card mb-4">
                             <form method="post">
                             <div class="card-header">
-                                <button type="submit" name="hapustransaksi" class="btn btn-dark mr-2">
+                                <button type="submit" name="hapustransaksi" class="btn btn-dark mr-2" onclick="return validateDelete()">
                                     Hapus Transaksi Terpilih
                                 </button>
                             </div>
@@ -147,6 +147,26 @@ require 'cek.php';
                 for(var checkbox of checkboxes) {
                     checkbox.checked = this.checked;
                 }
+            }
+
+            function validateDelete() {
+                var checkboxes = document.getElementsByName('delete[]');
+                var checked = false;
+                
+                // Cek apakah ada checkbox yang dipilih
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].checked) {
+                        checked = true;
+                        break;
+                    }
+                }
+                
+                if (!checked) {
+                    alert('Silakan pilih transaksi yang akan dihapus terlebih dahulu!');
+                    return false;
+                }
+                
+                return confirm('Apakah Anda yakin ingin menghapus transaksi yang dipilih?');
             }
         </script>
     </body>
