@@ -252,7 +252,7 @@ function useVoucher($code) {
                                                 <th>sekali pakai</th>
                                                 <th>Tanggal Dibuat</th>
                                                 <th>Tanggal Digunakan</th>
-                                                <th>Aksi</th>
+                                                <th>Pilih</th>
                                                 <input type="checkbox" id="selectAll" onclick="toggle(this)"> Pilih Semua Voucher<br><br>
                                             </tr>
                                         </thead>
