@@ -172,9 +172,8 @@ require 'cek.php';
                         confirmButtonColor: '#343a40'
                     });
                     return false;
-                }
-                
-                return Swal.fire({
+                } else {
+                    return Swal.fire({
                     title: 'Konfirmasi Hapus',
                     text: 'Apakah Anda yakin ingin menghapus transaksi yang dipilih?',
                     icon: 'question',
@@ -184,9 +183,10 @@ require 'cek.php';
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#343a40'
                 }).then((result) => {
-                    return;
+                    return false;
                 });
             }
+        }
         </script>
     </body>
 </html>
