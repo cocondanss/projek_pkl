@@ -16,6 +16,7 @@ require 'function.php';
 function applyVoucher($voucherCode, $price) {
     global $conn;
     
+    // Debugging info
     $debug_info = "Voucher Code: $voucherCode, Original Price: $price\n";
 
     // Persiapkan query untuk mencari voucher
@@ -38,15 +39,19 @@ function applyVoucher($voucherCode, $price) {
             $discountedPrice = $price - $discountAmount;
         }
         
-        $debug_info .= "Calculated Discounted Price: $discountedPrice\n";
         // Pastikan harga tidak negatif
         $finalPrice = max($discountedPrice, 0);
+        $debug_info .= "Calculated Discounted Price: $finalPrice\n";
         
+        // Log debug info (misalnya, simpan ke file log)
+        error_log($debug_info); // Simpan ke log error PHP
+
         return $finalPrice;
     }
 
     $debug_info .= "No voucher found\n";
-    return $price;
+    error_log($debug_info); // Simpan log jika voucher tidak ditemukan
+    return $price; // Kembalikan harga asli jika voucher tidak valid
 }
 
 // Inisialisasi variabel untuk sistem voucher
