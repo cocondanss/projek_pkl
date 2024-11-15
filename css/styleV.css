@@ -71,3 +71,26 @@ footer a {
 footer a:hover {
     color: #2848dc;
 }
+.swal2-popup {
+    border-radius: 15px;
+}
+
+.swal2-title {
+    font-size: 1.5rem !important;
+    margin: 1rem 0 !important;
+}
+
+.swal2-text {
+    font-size: 1rem !important;
+}
+
+.swal2-confirm, .swal2-cancel {
+    border-radius: 5px !important;
+    padding: 8px 20px !important;
+    font-size: 0.9rem !important;
+    margin: 5px !important;
+}
+
+.swal2-actions {
+    margin-top: 1.5rem !important;
+}

@@ -171,6 +171,8 @@ function useVoucher($code) {
         <link href="css/style.css" rel="stylesheet" />
         <link href="css/styleV.css" rel="stylesheet" />
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
+        <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>          
     </head>
@@ -569,7 +571,6 @@ function useVoucher($code) {
         var checkboxes = document.getElementsByName('delete[]');
         var checked = false;
         
-        // Cek apakah ada checkbox yang dipilih
         for (var i = 0; i < checkboxes.length; i++) {
             if (checkboxes[i].checked) {
                 checked = true;
@@ -578,11 +579,39 @@ function useVoucher($code) {
         }
         
         if (!checked) {
-            alert('Silakan pilih voucher yang akan dihapus terlebih dahulu!');
+            Swal.fire({
+                title: 'Peringatan!',
+                text: 'Silakan pilih voucher yang akan dihapus terlebih dahulu!',
+                icon: 'warning',
+                confirmButtonText: 'OK',
+                customClass: {
+                    confirmButton: 'btn btn-dark'
+                }
+            });
             return false;
         }
         
-        return confirm('Apakah Anda yakin ingin menghapus voucher yang dipilih?');
+        return new Promise((resolve) => {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Voucher yang dipilih akan dihapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#343a40',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal',
+                customClass: {
+                    confirmButton: 'btn btn-dark mr-2',
+                    cancelButton: 'btn btn-secondary'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.querySelector('form').submit();
+                }
+            });
+            return false;
+        });
     }
         </script>
     </body>
