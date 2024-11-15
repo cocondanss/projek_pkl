@@ -6,6 +6,7 @@
  */
 
 require 'function.php';
+session_start();
 
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
@@ -16,37 +17,28 @@ require 'function.php';
 function applyVoucher($voucherCode, $price) {
     global $conn;
     
-    $debug_info = "Voucher Code: $voucherCode, Original Price: $price\n";
-
-    // Persiapkan query untuk mencari voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
-    $stmt->bind_param("s", $voucherCode);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($row = $result->fetch_assoc()) {
-        $debug_info .= "Voucher found: " . print_r($row, true) . "\n";
-        $discountAmount = $row['discount_amount'];
-        $debug_info .= "Discount Amount: $discountAmount\n";
-
-        // Cek tipe diskon (persentase atau nominal)
-        if ($discountAmount <= 100) {
-            // Diskon persentase
-            $discountedPrice = $price - ($price * ($discountAmount / 100));
-        } else {
-            // Diskon nominal langsung
-            $discountedPrice = $price - $discountAmount;
-        }
-        
-        $debug_info .= "Calculated Discounted Price: $discountedPrice\n";
-        // Pastikan harga tidak negatif
-        $finalPrice = max($discountedPrice, 0);
-        
-        return $finalPrice;
+    // Tambahkan validasi voucher menggunakan fungsi validateVoucher
+    $validation = validateVoucher($voucherCode);
+    if (!$validation['valid']) {
+        return $price; // Return harga asli jika voucher tidak valid
     }
-
-    $debug_info .= "No voucher found\n";
-    return $price;
+    
+    $voucher = $validation['voucher'];
+    
+    // Cek apakah voucher gratis
+    if ($voucher['is_free'] == 1) {
+        return 0; // Produk gratis
+    }
+    
+    // Hitung diskon
+    $discountAmount = $voucher['discount_amount'];
+    if ($discountAmount <= 100) {
+        // Diskon persentase
+        return $price - ($price * ($discountAmount / 100));
+    } else {
+        // Diskon nominal langsung
+        return max(0, $price - $discountAmount);
+    }
 }
 
 // Inisialisasi variabel untuk sistem voucher
@@ -510,7 +502,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
             // Buat elemen modal baru
             const modalHTML = `
-                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                <div class="modal fade" id="qrCodeModal" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -540,23 +532,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // Tambahkan modal ke body
             document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-            // Dapatkan referensi ke modal yang baru dibuat
-            const qrCodeModal = document.getElementById('qrCodeModal');
-            const qrCodeImage = qrCodeModal.querySelector('#qrCodeImage');
-                        
-                        // Set QR code image
-            qrCodeImage.src = response.qr_code_url;
-                        
-            // Set transaction ID
-            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
+            // Tampilkan modal
+            const qrCodeModal = new bootstrap.Modal(document.getElementById('qrCodeModal'));
+            qrCodeModal.show();
 
             // Start the countdown timer
             startCountdown(30 * 60); // 30 minutes in seconds
-
-            sdfwf// Tampilkan modal
-            const modalInstance = new bootstrap.Modal(qrCodeModal);
-            modalInstance.show();
-
         } else {
             alert('Error: ' + response.message);
         }
