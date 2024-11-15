@@ -376,11 +376,11 @@ function useVoucher($code) {
                                 <label>Jenis Voucher:</label>
                                 <div class="form-check">
                                     <input type="radio" name="voucherType" value="rupiah" id="rupiahRadio" class="form-check-input">
-                                    <label class="form-check-label" for="rupiahRadio">Rupiah</label>
+                                    <label class="form-check-label" for="rupiahRadio">Rupiah</label><br><br>
                                 </div>
                                 <div class="form-check">
                                     <input type="radio" name="voucherType" value="diskon" id="diskonRadio" class="form-check-input">
-                                    <label class="form-check-label" for="diskonRadio">Diskon</label>
+                                    <label class="form-check-label" for="diskonRadio">Diskon</label><br><br>
                                 </div>
                             </div>
 
