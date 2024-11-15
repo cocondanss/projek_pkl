@@ -227,7 +227,7 @@ function useVoucher($code) {
                                 <button type="button" class="btn btn-dark mr-2" data-toggle="modal" data-target="#manualVoucherModal">
                                     Tambah Voucher Manual
                                 </button>
-                                <button type="submit" name="hapusvoucher" id="hapusvoucher" class="btn btn-dark mr-2">
+                                <button type="submit" name="hapusvoucher" id="hapusvoucher" class="btn btn-dark mr-2" onclick="return validateDelete()">
                                     Hapus Voucher Terpilih
                                 </button>
                                 <button type="button" class="btn btn-dark mr-2" id="eksporVoucher">
@@ -564,6 +564,26 @@ function useVoucher($code) {
     $('#manualVoucherModal').on('show.bs.modal', function () {
         document.getElementById('oneTimeUse').checked = true; // Set checkbox menjadi tercentang
     });
+
+    function validateDelete() {
+        var checkboxes = document.getElementsByName('delete[]');
+        var checked = false;
+        
+        // Cek apakah ada checkbox yang dipilih
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                checked = true;
+                break;
+            }
+        }
+        
+        if (!checked) {
+            alert('Silakan pilih voucher yang akan dihapus terlebih dahulu!');
+            return false;
+        }
+        
+        return confirm('Apakah Anda yakin ingin menghapus voucher yang dipilih?');
+    }
         </script>
     </body>
 </html>
