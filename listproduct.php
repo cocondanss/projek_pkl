@@ -404,31 +404,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 });
             });
 
-            // function showPaymentModal(id, name, price) {
-            // // Cek apakah id, name, dan price valid
-            // if (id && name && price !== undefined) {
-            //     // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-            //     if (price === 0) {
-            //         const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
-            //         sessionStorage.setItem('successful_transaction', JSON.stringify({
-            //             transaction_id: orderId,
-            //             product_name: name,
-            //             amount: price,
-            //             created_at: new Date().toISOString()
-            //         }));
-            //         window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
-            //         return; // Keluar dari fungsi
-            //     }
+            function showPaymentModal(id, name, price) {
+            // Cek apakah id, name, dan price valid
+            if (id && name && price !== undefined) {
+                // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
+                if (price === 0) {
+                    const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
+                    sessionStorage.setItem('successful_transaction', JSON.stringify({
+                        transaction_id: orderId,
+                        product_name: name,
+                        amount: price,
+                        created_at: new Date().toISOString()
+                    }));
+                    window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
+                    return; // Keluar dari fungsi
+                }
 
-            //     // Jika harga lebih dari Rp 0, tampilkan modal pembayaran
-            //     document.getElementById('modal-product-id').value = id;
-            //     document.getElementById('modal-product-name').value = name;
-            //     document.getElementById('modal-product-price').value = price;
-            //     document.getElementById('modal-price').innerText = 'Rp ' + price;
-            //     $('#paymentModal').modal('show');
-            // } else {
-            //     console.error('Parameter tidak valid');
-            // }
+                // Jika harga lebih dari Rp 0, tampilkan modal pembayaran
+                document.getElementById('modal-product-id').value = id;
+                document.getElementById('modal-product-name').value = name;
+                document.getElementById('modal-product-price').value = price;
+                document.getElementById('modal-price').innerText = 'Rp ' + price;
+                $('#paymentModal').modal('show');
+            } else {
+                console.error('Parameter tidak valid');
+            }
 }
 
 
