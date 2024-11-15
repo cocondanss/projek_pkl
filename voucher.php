@@ -229,7 +229,7 @@ function useVoucher($code) {
                                 <button type="button" class="btn btn-dark mr-2" data-toggle="modal" data-target="#manualVoucherModal">
                                     Tambah Voucher Manual
                                 </button>
-                                <!-- <button type="submit" name="hapusvoucher" id="hapusvoucher" class="btn btn-dark mr-2" onclick="return validateDelete()"> -->
+                                <button type="submit" name="hapusvoucher" id="hapusvoucher" class="btn btn-dark mr-2" onclick="return validateDelete()">
                                     Hapus Voucher Terpilih
                                 </button>
                                 <button type="button" class="btn btn-dark mr-2" id="eksporVoucher">
