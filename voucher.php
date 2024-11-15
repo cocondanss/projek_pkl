@@ -83,11 +83,23 @@ if (isset($_POST['TambahVoucherManual'])) {
     // echo "<script>alert('Voucher manual berhasil ditambahkan');</script>";
 
 //  if (isset($_POST['hapusvoucher'])) {
-//     $id = $_POST['delete'];
-//     $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
-//     mysqli_query($conn, $query);
-//     header('Location: voucher.php');
+//     if (valuebawah)) {
 // }
+function valuebawah() {
+
+    global $conn;
+    try {
+        $id = $_POST['delete'];
+        $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
+        mysqli_query($conn, $query);
+        header('Location: voucher.php');
+    } catch (Exception $e) {
+        error_log("Error in valuebawah: " . $e->getMessage());
+        return false;
+    }
+}
+    
+    
 
 function validateVoucher($code) {
     global $conn;
@@ -600,7 +612,10 @@ function useVoucher($code) {
             confirmButtonColor: '#d33',
             cancelButtonColor: '#343a40'
         }).then((result) => {
-            return result.isConfirmed;
+            // return result.isConfirmed;
+            if (result.value === true) {
+                return valueBawah();
+            }
         });
     }
         </script>
