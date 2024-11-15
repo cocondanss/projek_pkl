@@ -101,7 +101,7 @@ while ($row = mysqli_fetch_assoc($result)) {
                                     <div class="row">
                                         <div class="col-3">Harga</div>
                                         <div class="col-1">:</div>
-                                        <div class="col-8">Rp<?php echo number_format($product['price'], 0, ',', '.'); ?></div>
+                                        <div class="col-8">Rp <?php echo number_format($product['price'], 0, ',', '.'); ?>,00</div>
                                     </div>
                                     <div class="row">
                                         <div class="col-3">Deskripsi</div>
