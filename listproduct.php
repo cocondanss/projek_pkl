@@ -510,7 +510,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
             // Buat elemen modal baru
             const modalHTML = `
-                <div class="modal fade" id="qrCodeModal" tabindex="-1">
+                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -540,12 +540,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // Tambahkan modal ke body
             document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-            // Tampilkan modal
-            const qrCodeModal = new bootstrap.Modal(document.getElementById('qrCodeModal'));
-            qrCodeModal.show();
+            // Dapatkan referensi ke modal yang baru dibuat
+            const qrCodeModal = document.getElementById('qrCodeModal');
+            const qrCodeImage = qrCodeModal.querySelector('#qrCodeImage');
+                        
+                        // Set QR code image
+            qrCodeImage.src = response.qr_code_url;
+                        
+            // Set transaction ID
+            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
 
             // Start the countdown timer
             startCountdown(30 * 60); // 30 minutes in seconds
+
+            sdf// Tampilkan modal
+            const modalInstance = new bootstrap.Modal(qrCodeModal);
+            modalInstance.show();
+
         } else {
             alert('Error: ' + response.message);
         }
