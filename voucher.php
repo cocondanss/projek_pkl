@@ -432,7 +432,7 @@ function useVoucher($code) {
 
                     <!-- Checkbox for One-Time Use -->
                     <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
-                    <label for="oneTimeUse">Sekali Pakai</label>
+                    <label for="oneTimeUse">Sekali Pakai</label><br>
 
                     <!-- Button to Create Voucher -->
                     <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherManual">Simpan</button>
