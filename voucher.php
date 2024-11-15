@@ -82,12 +82,12 @@ if (isset($_POST['TambahVoucherManual'])) {
 
     // echo "<script>alert('Voucher manual berhasil ditambahkan');</script>";
 
-//  if (isset($_POST['hapusvoucher'])) {
-//     if (valuebawah)) {
-// }
-
-    
-    
+ if (isset($_POST['hapusvoucher'])) {
+    $id = $_POST['delete'];
+    $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
+    mysqli_query($conn, $query);
+    header('Location: voucher.php');
+}
 
 function validateVoucher($code) {
     global $conn;
@@ -173,8 +173,6 @@ function useVoucher($code) {
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>          
-        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
 <body class="sb-nav-fixed">
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
@@ -375,14 +373,14 @@ function useVoucher($code) {
 
                             <!-- Radio Buttons -->
                             <div class="form-group">
-                                <label>Jenis Voucher:</label><br>
+                                <label>Jenis Voucher:</label>
                                 <div class="form-check">
                                     <input type="radio" name="voucherType" value="rupiah" id="rupiahRadio" class="form-check-input">
                                     <label class="form-check-label" for="rupiahRadio">Rupiah</label><br>
                                 </div>
                                 <div class="form-check">
                                     <input type="radio" name="voucherType" value="diskon" id="diskonRadio" class="form-check-input">
-                                    <label class="form-check-label" for="diskonRadio">Diskon</label><br>
+                                    <label class="form-check-label" for="diskonRadio">Diskon</label>
                                 </div>
                             </div>
 
@@ -571,54 +569,21 @@ function useVoucher($code) {
         var checkboxes = document.getElementsByName('delete[]');
         var checked = false;
         
-        // // Cek apakah ada checkbox yang dipilih
-        // for (var i = 0; i < checkboxes.length; i++) {
-        //     if (checkboxes[i].checked) {
-        //         checked = true;
-        //         break;
-        //     }
-        // }
+        // Cek apakah ada checkbox yang dipilih
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].checked) {
+                checked = true;
+                break;
+            }
+        }
         
         if (!checked) {
-            Swal.fire({
-                title: 'Peringatan',
-                text: 'Silakan pilih voucher yang akan dihapus terlebih dahulu!',
-                icon: 'warning',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#343a40'
-            });
+            alert('Silakan pilih voucher yang akan dihapus terlebih dahulu!');
             return false;
         }
         
-         Swal.fire({
-            title: 'Konfirmasi Hapus',
-            text: 'Apakah Anda yakin ingin menghapus voucher yang dipilih?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, Hapus',
-            cancelButtonText: 'Batal',
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#343a40'
-        }).then((result) => {
-            // return result.isConfirmed;
-            if (result.value === true) {
-                console.log('Berhasil konfirm');
-            }
-        });
+        return confirm('Apakah Anda yakin ingin menghapus voucher yang dipilih?');
     }
-
-    // function valuebawah() {
-
-         
-    //     try {
-    //         $id = $_POST['delete'];
-    //         $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
-    //         mysqli_query($conn, $query);
-    //         header('Location: voucher.php');
-    //     } catch {
-            
-    //     }
-    // }
         </script>
     </body>
 </html>
