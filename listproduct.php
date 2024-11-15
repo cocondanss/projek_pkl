@@ -658,33 +658,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             }
 
             // Update modal HTML untuk menambahkan tombol batal
-            const modalHTML = `
-                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="qr-code-container">
-                                    <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
-                                </div>
-                                <div id="countdown"></div>
-                                <div class="status-message"></div>
-                                <div class="button-container">
-                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
-                                        Batal
-                                    </button>
-                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
-                                        Cek
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+            // const modalHTML = `
+            //     <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+            //         <div class="modal-dialog modal-dialog-centered">
+            //             <div class="modal-content">
+            //                 <div class="modal-header">
+            //                     <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
+            //                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            //                 </div>
+            //                 <div class="modal-body">
+            //                     <div class="qr-code-container">
+            //                         <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
+            //                     </div>
+            //                     <div id="countdown"></div>
+            //                     <div class="status-message"></div>
+            //                     <div class="button-container">
+            //                         <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
+            //                             Batal
+            //                         </button>
+            //                         <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
+            //                             Cek
+            //                         </button>
+            //                     </div>
+            //                 </div>
+            //             </div>
+            //         </div>
+            //     </div>
+            // `;
 
             function checkPaymentStatus() {
                 // console.log(transactionId);
