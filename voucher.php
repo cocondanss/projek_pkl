@@ -590,7 +590,7 @@ function useVoucher($code) {
             return false;
         }
         
-        return Swal.fire({
+         Swal.fire({
             title: 'Konfirmasi Hapus',
             text: 'Apakah Anda yakin ingin menghapus voucher yang dipilih?',
             icon: 'question',
