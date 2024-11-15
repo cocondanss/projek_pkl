@@ -428,11 +428,11 @@ function useVoucher($code) {
 
                     <!-- Checkbox for Free Option -->
                     <input type="checkbox" name="is_free" id="isFree" onchange="toggleNominal()"> 
-                    <label for="isFree">Gratis</label><br><br>
+                    <label for="isFree">Gratis</label>
 
                     <!-- Checkbox for One-Time Use -->
                     <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
-                    <label for="oneTimeUse">Sekali Pakai</label><br><br>
+                    <label for="oneTimeUse">Sekali Pakai</label>
 
                     <!-- Button to Create Voucher -->
                     <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherManual">Simpan</button>
