@@ -152,39 +152,41 @@ require 'cek.php';
             }
 
             function validateDelete() {
-                var checkboxes = document.getElementsByName('delete[]');
-                var checked = false;
-                
-                // Cek apakah ada checkbox yang dipilih
-                for (var i = 0; i < checkboxes.length; i++) {
-                    if (checkboxes[i].checked) {
-                        checked = true;
-                        break;
+                    var checkboxes = document.getElementsByName('delete[]');
+                    var checked = false;
+                    
+                    // Cek apakah ada checkbox yang dipilih
+                    for (var i = 0; i < checkboxes.length; i++) {
+                        if (checkboxes[i].checked) {
+                            checked = true;
+                            break;
+                        }
                     }
-                }
-                
-                if (!checked) {
-                    Swal.fire({
-                        title: 'Peringatan',
-                        text: 'Silakan pilih transaksi yang akan dihapus terlebih dahulu!',
-                        icon: 'warning',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#343a40'
+                    
+                    if (!checked) {
+                        Swal.fire({
+                            title: 'Peringatan',
+                            text: 'Silakan pilih transaksi yang akan dihapus terlebih dahulu!',
+                            icon: 'warning',
+                            confirmButtonText: 'OK',
+                            confirmButtonColor: '#343a40'
+                        });
+                        return false;
+                    } else {
+                        return Swal.fire({
+                        title: 'Konfirmasi Hapus',
+                        text: 'Apakah Anda yakin ingin menghapus transaksi yang dipilih?',
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Hapus',
+                        cancelButtonText: 'Batal',
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#343a40'
+                    }).then((result) => {
+                        
                     });
-                    return false;
-                } else {
-                    return Swal.fire({
-                    title: 'Konfirmasi Hapus',
-                    text: 'Apakah Anda yakin ingin menghapus transaksi yang dipilih?',
-                    icon: 'question',
-                    showCancelButton: true,
-                    confirmButtonText: 'Ya, Hapus',
-                    cancelButtonText: 'Batal',
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#343a40'
-                });
+                }
             }
-        }
         </script>
     </body>
 </html>
