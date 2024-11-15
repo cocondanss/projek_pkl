@@ -283,10 +283,10 @@ if (isset($_POST['hapusbarang'])) {
 // Fungsi untuk hapus transaksi terpilih
 if (isset($_POST['hapustransaksi'])) {
     if (isset($_POST['delete'])) {
-        foreach ($_POST['delete'] as $order_id) {
-            $order_id = mysqli_real_escape_string($conn, $order_id);
-            $hapust = mysqli_query($conn, "DELETE FROM transaksi WHERE order_id='$order_id'");
-        }
+        // foreach ($_POST['delete'] as $order_id) {
+        //     $order_id = mysqli_real_escape_string($conn, $order_id);
+        //     $hapust = mysqli_query($conn, "DELETE FROM transaksi WHERE order_id='$order_id'");
+        // }
         
         if ($hapust) {
             header("location:transaksi.php");
