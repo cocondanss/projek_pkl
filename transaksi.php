@@ -14,7 +14,7 @@ require 'cek.php';
         <link href="css/styleT.css" rel="stylesheet">
         <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet" crossorigin="anonymous" />
         <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     </head>
 <body class="sb-nav-fixed">
@@ -63,9 +63,9 @@ require 'cek.php';
                         <h1 class="mt-4">Transaksi</h1>
                         </ol>
                         <div class="card mb-4">
-                            <form method="post">
+                            <form method="post" id="deleteForm">
                             <div class="card-header">
-                                <button type="submit" name="hapustransaksi" class="btn btn-dark mr-2" onclick="return validateDelete()">
+                                <button type="button" class="btn btn-dark mr-2" onclick="validateDelete()">
                                     Hapus Transaksi Terpilih
                                 </button>
                             </div>
@@ -143,14 +143,6 @@ require 'cek.php';
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/datatables-demo.js"></script>
         <script>
-            // Fungsi untuk select/deselect semua checkbox
-            document.getElementById('selectAll').onclick = function() {
-                var checkboxes = document.getElementsByName('delete[]');
-                for(var checkbox of checkboxes) {
-                    checkbox.checked = this.checked;
-                }
-            }
-
             function validateDelete() {
                 var checkboxes = document.getElementsByName('delete[]');
                 var checked = false;
@@ -175,27 +167,40 @@ require 'cek.php';
                     return false;
                 }
                 
-                return new Promise((resolve) => {
-                    Swal.fire({
-                        title: 'Apakah Anda yakin?',
-                        text: "Transaksi yang dipilih akan dihapus permanen!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#343a40',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal',
-                        customClass: {
-                            confirmButton: 'btn btn-dark mr-2',
-                            cancelButton: 'btn btn-secondary'
-                        }
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            document.querySelector('form').submit();
-                        }
-                    });
-                    return false;
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Transaksi yang dipilih akan dihapus permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#343a40',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal',
+                    customClass: {
+                        confirmButton: 'btn btn-dark mr-2',
+                        cancelButton: 'btn btn-secondary'
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Tambahkan input hidden untuk menandai aksi hapus
+                        var hiddenInput = document.createElement('input');
+                        hiddenInput.type = 'hidden';
+                        hiddenInput.name = 'hapustransaksi';
+                        hiddenInput.value = '1';
+                        document.getElementById('deleteForm').appendChild(hiddenInput);
+                        
+                        // Submit form
+                        document.getElementById('deleteForm').submit();
+                    }
                 });
+            }
+
+            // Fungsi untuk select/deselect semua checkbox
+            document.getElementById('selectAll').onclick = function() {
+                var checkboxes = document.getElementsByName('delete[]');
+                for(var checkbox of checkboxes) {
+                    checkbox.checked = this.checked;
+                }
             }
         </script>
     </body>
