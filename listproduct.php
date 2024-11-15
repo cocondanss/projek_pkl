@@ -7,6 +7,23 @@
 
 require 'function.php';
 
+$discountedPrice = $originalPrice;
+if (isset($_POST['voucher_code']) && !empty($_POST['voucher_code'])) {
+    $voucherCode = trim($_POST['voucher_code']);
+    $validationResult = validateVoucher($voucherCode);
+    
+    if ($validationResult['valid']) {
+        $voucher = $validationResult['voucher'];
+        // Jika voucher valid, terapkan diskon
+        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+        
+        // Jika voucher sekali pakai, update status penggunaan
+        if ($voucher['one_time_use'] == 1) {
+            useVoucher($voucherCode);
+        }
+    }
+}
+
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
@@ -71,8 +88,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // Update status penggunaan voucher
             date_default_timezone_set('Asia/Jakarta');
             $currentDateTime = date('Y-m-d H:i:s');
-            
-            // Update used_at timestamp
             $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
             $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
             $updateStmt->execute();
@@ -127,18 +142,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     <div class="product-list" style="background: none;" id="product-list">
                         <?php foreach ($produk as $item): 
                             $originalPrice = $item['price'];
-                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                            $discountedPrice = isset($_POST['voucher_code']) ? 
+                                applyVoucher($_POST['voucher_code'], $originalPrice) : 
+                                $originalPrice;
                             ?>
-                            <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
+                            <div class="product" data-product-id="<?php echo $item['id']; ?>">
                                 <div class="card-body"> 
 
                                     <h2><?php echo htmlspecialchars($item['name']); ?></h2>
                                     <div class="price-container">
                                         <?php if ($discountedPrice < $originalPrice): ?>
-                                            <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                                            <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?></span></p>
+                                            <p class="original-price">Rp <?php echo number_format($originalPrice, 0, ',', '.'); ?></p>
+                                            <p class="discounted-price">Rp <?php echo number_format($discountedPrice, 0, ',', '.'); ?></p>
                                             <?php else: ?>
-                                                <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                                                <p>Rp <?php echo number_format($originalPrice, 0, ',', '.'); ?></p>
                                                 <?php endif; ?>
                                             </div>
                                             <p><?php echo htmlspecialchars($item['description']); ?></p>
