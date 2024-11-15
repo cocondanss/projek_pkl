@@ -65,7 +65,7 @@ require 'cek.php';
                         <div class="card mb-4">
                             <form method="post">
                             <div class="card-header">
-                                <button type="submit" class="btn btn-dark mr-2" onclick="return validateDelete()">
+                                <button type="submit" name="hapustransaksi" class="btn btn-dark mr-2" onclick="validateDelete()">
                                     Hapus Transaksi Terpilih
                                 </button>
                             </div>
