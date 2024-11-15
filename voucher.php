@@ -298,7 +298,7 @@ function useVoucher($code) {
                                                         <?php elseif ($voucherType == 'diskon'): ?>
                                                             <?= htmlspecialchars($discount_amount) . '%' ?>
                                                         <?php else: ?>
-                                                            <?= 'Rp ' . number_format($discount_amount, 0, ',', '.') ?>
+                                                            <?= 'Rp ' . number_format($discount_amount, 0, ',', '.') . ',00' ?>
                                                         <?php endif; ?>
                                                     </td>
                                                     <td><?= htmlspecialchars($status_used); ?></td>
