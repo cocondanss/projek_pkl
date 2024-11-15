@@ -293,7 +293,7 @@ function useVoucher($code) {
                                                     <td><?= htmlspecialchars($code); ?></td>
                                                     <td>
                                                         <?php if ($is_free == 1): ?>
-                                                            Gratis
+                                                            Rp 0
                                                         <?php elseif ($voucherType == 'diskon'): ?>
                                                             <?= htmlspecialchars($discount_amount) . '%' ?>
                                                         <?php else: ?>
