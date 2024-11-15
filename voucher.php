@@ -428,7 +428,7 @@ function useVoucher($code) {
 
                     <!-- Checkbox for Free Option -->
                     <input type="checkbox" name="is_free" id="isFree" onchange="toggleNominal()"> 
-                    <label for="isFree">Gratis</label>
+                    <label for="isFree">Gratis</label><br>
 
                     <!-- Checkbox for One-Time Use -->
                     <input type="checkbox" name="one_time_use" id="oneTimeUse"> 
