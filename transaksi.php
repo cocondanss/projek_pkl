@@ -182,8 +182,6 @@ require 'cek.php';
                     cancelButtonText: 'Batal',
                     confirmButtonColor: '#d33',
                     cancelButtonColor: '#343a40'
-                }).then((result) => {
-                    return false;
                 });
             }
         }
