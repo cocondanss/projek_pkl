@@ -85,19 +85,7 @@ if (isset($_POST['TambahVoucherManual'])) {
 //  if (isset($_POST['hapusvoucher'])) {
 //     if (valuebawah)) {
 // }
-function valuebawah() {
 
-    global $conn;
-    try {
-        $id = $_POST['delete'];
-        $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
-        mysqli_query($conn, $query);
-        header('Location: voucher.php');
-    } catch (Exception $e) {
-        error_log("Error in valuebawah: " . $e->getMessage());
-        return false;
-    }
-}
     
     
 
@@ -614,10 +602,23 @@ function useVoucher($code) {
         }).then((result) => {
             // return result.isConfirmed;
             if (result.value === true) {
-                return valueBawah();
+                console.log('Berhasil konfirm');
             }
         });
     }
+
+    // function valuebawah() {
+
+         
+    //     try {
+    //         $id = $_POST['delete'];
+    //         $query = "DELETE FROM vouchers2 WHERE id IN (" . implode(',', $id) . ")";
+    //         mysqli_query($conn, $query);
+    //         header('Location: voucher.php');
+    //     } catch {
+            
+    //     }
+    // }
         </script>
     </body>
 </html>
