@@ -292,3 +292,46 @@ function midtrans_notification() {
         echo json_encode(["error" => $e->getMessage()]);
     }
 }
+
+function apply_voucher($data) {
+    global $db;
+
+    if (!isset($data['product_id']) || !isset($data['voucher_code']) || !isset($data['product_price'])) {
+        header("HTTP/1.0 400 Bad Request");
+        echo json_encode(["error" => "Missing required fields"]);
+        return;
+    }
+
+    $product_id = $data['product_id'];
+    $voucher_code = $data['voucher_code'];
+    $product_price = $data['product_price'];
+
+    // Logika untuk menerapkan voucher
+    $stmt = $db->prepare("SELECT id, discount_amount, is_used FROM vouchers WHERE code = ?");
+    $stmt->execute([$voucher_code]);
+    $voucher = $stmt->fetch();
+
+    if ($voucher) {
+        if ($voucher['is_used'] == 0) {
+            $discount = intval($voucher['discount_amount']);
+            $discounted_price = $product_price - $discount; // Hitung harga setelah diskon
+            // Pastikan harga tidak negatif
+            $discounted_price = max($discounted_price, 0);
+
+            // Tandai voucher sebagai digunakan
+            $stmt = $db->prepare("UPDATE vouchers SET is_used = 1 WHERE id = ?");
+            $stmt->execute([$voucher['id']]);
+
+            echo json_encode([
+                'success' => true,
+                'discount' => $discount,
+                'discounted_price' => $discounted_price,
+                'message' => "Voucher berhasil diterapkan!"
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'message' => "Kode voucher sudah digunakan!"]);
+        }
+    } else {
+        echo json_encode(['success' => false, 'message' => "Kode voucher tidak valid!"]);
+    }
+}
