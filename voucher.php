@@ -248,7 +248,6 @@ function useVoucher($code) {
                                                 <th>Code</th>
                                                 <th>Diskon</th>
                                                 <th>Status</th>
-                                                <th>Gratis</th>
                                                 <th>Sekali Pakai</th>
                                                 <th>Tanggal Dibuat</th>
                                                 <th>Tanggal Digunakan</th>
@@ -294,7 +293,7 @@ function useVoucher($code) {
                                                     <td><?= htmlspecialchars($code); ?></td>
                                                     <td>
                                                         <?php if ($is_free == 1): ?>
-                                                            RP 0
+                                                            Gratis
                                                         <?php elseif ($voucherType == 'diskon'): ?>
                                                             <?= htmlspecialchars($discount_amount) . '%' ?>
                                                         <?php else: ?>
@@ -302,7 +301,6 @@ function useVoucher($code) {
                                                         <?php endif; ?>
                                                     </td>
                                                     <td><?= htmlspecialchars($status_used); ?></td>
-                                                    <td><?= htmlspecialchars($isFreeDisplay); ?></td>
                                                     <td><?= htmlspecialchars($oneTimeUse); ?></td>
                                                     <td>
                                                         <script>
