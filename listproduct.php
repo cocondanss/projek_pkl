@@ -71,9 +71,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // Update status penggunaan voucher
             date_default_timezone_set('Asia/Jakarta');
             $currentDateTime = date('Y-m-d H:i:s');
+            
+            // Update used_at timestamp
             $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
             $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
             $updateStmt->execute();
+            
+            // If it's a one-time-use voucher, delete it immediately after use
+            if ($row['one_time_use'] == 1) {
+                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ? AND one_time_use = 1");
+                $deleteStmt->bind_param("s", $voucherCode);
+                $deleteStmt->execute();
+            }
             
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
