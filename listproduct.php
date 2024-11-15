@@ -139,8 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 <h2><?php echo htmlspecialchars($item['name']); ?></h2>
                                                 <div class="price-container">
                                                     <?php if ($discountedPrice < $originalPrice): ?>
-                                                        <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                                                        <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?></span></p>
+                                                        <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                                        <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
                                                     <?php else: ?>
                                                         <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
                                                     <?php endif; ?>

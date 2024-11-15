@@ -102,7 +102,7 @@ require 'cek.php';
                                                     <td><?=$i++;?></td>
                                                     <td><?=$order_id;?></td>
                                                     <td><?=$product_name;?></td>
-                                                    <td>Rp<?=number_format($price, 0, ',', '.');?></td>
+                                                    <td>Rp <?=number_format($price, 0, ',', '.');?>,00</td>
                                                     <td><?=$formattedDate;?></td> <!-- Gunakan tanggal yang sudah diformat -->
                                                     <td><?=$status;?></td>
                                                     <td><input type="checkbox" name="delete[]" value="<?=$order_id;?>"></td>
