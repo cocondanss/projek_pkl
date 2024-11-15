@@ -248,6 +248,7 @@ function useVoucher($code) {
                                                 <th>Code</th>
                                                 <th>Diskon</th>
                                                 <th>Status</th>
+                                                <!-- <th>Gratis</th> -->
                                                 <th>Sekali Pakai</th>
                                                 <th>Tanggal Dibuat</th>
                                                 <th>Tanggal Digunakan</th>
@@ -301,7 +302,7 @@ function useVoucher($code) {
                                                         <?php endif; ?>
                                                     </td>
                                                     <td><?= htmlspecialchars($status_used); ?></td>
-                                                    <td><?= htmlspecialchars($isFreeDisplay); ?></td>
+                                                    <!-- <td><?= htmlspecialchars($isFreeDisplay); ?></td> -->
                                                     <td><?= htmlspecialchars($oneTimeUse); ?></td>
                                                     <td>
                                                         <script>
