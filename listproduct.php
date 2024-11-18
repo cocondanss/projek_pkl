@@ -509,10 +509,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                     <div class="status-message"></div>
                                     <div class="button-container">
                                         <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
-                                        <div id="loading-container" style="display: none;">
-                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                            Menunggu Pembayaran...
-                                        </div>
+                                        <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
                                     </div>
                                 </div>
                             </div>
@@ -664,10 +661,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                     <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
                                         Batal
                                     </button>
-                                    <div id="loading-container" style="display: none;">
-                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                        Menunggu Pembayaran...
-                                    </div>
+                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
+                                        Cek
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -676,16 +672,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             `;
 
             function checkPaymentStatus() {
+                // console.log(transactionId);
                 const modal = document.getElementById('qrCodeModal');
                 const statusMessage = modal.querySelector('.status-message');
-                const loadingContainer = document.getElementById('loading-container');
+                const checkButton = modal.querySelector('#btn-check');
 
-                // Tampilkan animasi loading dan sembunyikan pesan status sebelumnya
-                loadingContainer.style.display = 'block';
-                statusMessage.innerHTML = ''; // Kosongkan pesan status
+                // Disable the check button and show loading state
+                checkButton.disabled = true;
+                checkButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memeriksa...';
 
-                const transactionId = getCurrentTransactionId();
-
+                // Assuming you have a way to get the current transaction ID
+                 
+                const transactionId = getCurrentTransactionId(); 
+                console.log(transactionId);
                 fetch('api.php', {
                     method: 'POST',
                     headers: {
@@ -698,37 +697,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    loadingContainer.style.display = 'none'; // Sembunyikan animasi loading setelah mendapatkan respons
+                        
+                        checkButton.disabled = false;
+                        checkButton.innerHTML = 'Cek';
 
-                    if (data.success) {
-                        switch (data.status) {
-                            case 'settlement':
-                                statusMessage.innerHTML = '<div class="alert alert-success" role="alert">Pembayaran berhasil!</div>';
-                                setTimeout(() => {
-                                    window.location.href = 'transberhasil.php'; // Redirect ke halaman sukses
-                                }, 2000);
-                                break;
-                            case 'pending':
-                                statusMessage.innerHTML = '<div class="alert alert-warning" role="alert">Pembayaran masih dalam proses. Silakan coba cek lagi nanti.</div>';
-                                break;
-                            case 'expire':
-                                statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran telah kedaluwarsa. Silakan lakukan pemesanan ulang.</div>';
-                                break;
-                            case 'cancel':
-                                statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran dibatalkan. Silakan lakukan pemesanan ulang jika diperlukan.</div>';
-                                break;
-                            default:
-                                statusMessage.innerHTML = '<div class="alert alert-info" role="alert">Status pembayaran: ' + data.status + '</div>';
+                        if (data.success) {
+                            switch (data.status) {
+                                case 'settlement':
+                                    statusMessage.innerHTML = '<div class="alert alert-success" role="alert">Pembayaran berhasil!</div>';
+                                    setTimeout(() => {
+                                        window.location.href = 'transberhasil.php'; // Redirect ke halaman sukses
+                                    }, 2000);
+                                    break;
+                                    break;
+                                case 'pending':
+                                    statusMessage.innerHTML = '<div class="alert alert-warning" role="alert">Pembayaran masih dalam proses. Silakan coba cek lagi nanti.</div>';
+                                    break;
+                                case 'expire':
+                                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran telah kedaluwarsa. Silakan lakukan pemesanan ulang.</div>';
+                                    break;
+                                case 'cancel':
+                                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran dibatalkan. Silakan lakukan pemesanan ulang jika diperlukan.</div>';
+                                    break;
+                                default:
+                                    statusMessage.innerHTML = '<div class="alert alert-info" role="alert">Status pembayaran: ' + data.status + '</div>';
+                            }
+                        } else {
+                            statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan: ' + data.message + '</div>';
                         }
-                    } else {
-                        statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan: ' + data.message + '</div>';
-                    }
-                })
-                .catch(error => {
-                    loadingContainer.style.display = 'none'; // Sembunyikan animasi loading jika terjadi kesalahan
-                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat memeriksa status. Silakan coba lagi.</div>';
-                    console.error('Error:', error);
-                });
+                    })
+                    .catch(error => {
+                        checkButton.disabled = false;
+                        checkButton.innerHTML = 'Cek';
+                        statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat memeriksa status. Silakan coba lagi.</div>';
+                        console.error('Error:', error);
+                    });
             }
 
             function getCurrentTransactionId() {
