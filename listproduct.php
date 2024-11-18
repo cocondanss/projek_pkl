@@ -435,13 +435,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             type: type
                         },
                         dataType: 'json',
-                        success: function (response) {
+                        success: function(response) {
                             if (response.success) {
-                                if (type === 'admin') {
-                                    window.location.href = 'login.php';
-                                } else {
-                                    window.location.href = 'transaksiberhasil.php';
-                                }
+                                window.location.href = response.redirect;
                             } else {
                                 $('#keypadModal').modal('hide');
                                 alert('PIN tidak valid');
@@ -449,7 +445,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                 display.textContent = '';
                             }
                         },
-                        error: function () {
+                        error: function() {
                             alert('Terjadi kesalahan. Silakan coba lagi.');
                         }
                     });
