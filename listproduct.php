@@ -431,7 +431,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         success: function (response) {
                             if (response.success) {
                                 window.location.href = 'login.php';
-                                window.location.href = 'transaksiberhasil.php';
+                                array.forEach(element => {
+                                    window.location.href ='transaksiberhasil.php';
+                                });
                             } else {
                                 $('#keypadModal').modal('hide');
                                 $('#errorModal').modal('show');
