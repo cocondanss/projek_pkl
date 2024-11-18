@@ -435,7 +435,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             } else {
                                 $('#keypadModal').modal('hide');
                                 $('#errorModal').modal('show');
-                                pinCode = '';
+                                pinCode = 'Salahh';
                                 display.textContent = '';
                             }
                         },
