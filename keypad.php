@@ -7,7 +7,6 @@ $conn = mysqli_connect("localhost", "u529472640_root", "Daclen123", "u529472640_
 function cek_pin($pin) {
     global $conn;
     $stmt = $conn->prepare("SELECT setting_value FROM settings WHERE setting_key = 'keypad_pin'");
-    $stmt = $conn->prepare("SELECT setting_value FROM settings WHERE setting_key = 'success_page_pin'");
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
