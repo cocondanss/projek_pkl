@@ -9,7 +9,7 @@
 <body>
     <div class="container mt-5">
         <div class="alert alert-success" role="alert">
-            <h4 class="alert-heading">Transaksi Berhasil!</h4>
+            <h4 class="alert-heading">Transaksi Berhasil!</h4><br>
             <p>Terima kasih atas pembelian Anda.</p>
         </div>
         <a href="listproduct.php" class="btn btn-dark mr-2">Kembali ke Daftar Produk</a>
