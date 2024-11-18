@@ -423,17 +423,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
             function enter() {
                 if (pinCode.length === 4) {
+                    // Tentukan type berdasarkan tombol yang diklik
+                    const lockButton = document.querySelector('.fa-lock');
+                    const type = lockButton ? 'admin' : 'success';
+                    
                     $.ajax({
                         url: 'keypad.php',
                         method: 'POST',
                         data: { 
                             pin: pinCode,
-                            type: 'success' // Mengirim type untuk mengecek PIN success page
+                            type: type
                         },
                         dataType: 'json',
                         success: function (response) {
                             if (response.success) {
-                                window.location.href = 'transaksiberhasil.php';
+                                if (type === 'admin') {
+                                    window.location.href = 'login.php';
+                                } else {
+                                    window.location.href = 'transaksiberhasil.php';
+                                }
                             } else {
                                 $('#keypadModal').modal('hide');
                                 alert('PIN tidak valid');
