@@ -28,6 +28,26 @@ function updateSetting($key, $value) {
     return $stmt->execute();
 }
 
+// Tambahkan fungsi untuk update success PIN
+function updateSuccessPin($pin) {
+    global $conn;
+    $stmt = $conn->prepare("UPDATE success_pin SET pin = ? WHERE id = 1");
+    $stmt->bind_param("s", $pin);
+    return $stmt->execute();
+}
+
+// Tambahkan fungsi untuk mendapatkan success PIN
+function getSuccessPin() {
+    global $conn;
+    $stmt = $conn->prepare("SELECT pin FROM success_pin WHERE id = 1");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    if ($row = $result->fetch_assoc()) {
+        return $row['pin'];
+    }
+    return null;
+}
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $success = true;
@@ -66,6 +86,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $success = false;
             $message = 'PIN must be exactly 4 digits.';
+        }
+    }
+
+    // Update success page PIN
+    if (isset($_POST['update_success_pin'])) {
+        $success_pin = $_POST['success_page_pin'];
+        if (strlen($success_pin) === 4 && is_numeric($success_pin)) {
+            $success = updateSuccessPin($success_pin);
+            $message = $success ? 'Success page PIN updated successfully!' : 'Failed to update success page PIN.';
+        } else {
+            $success = false;
+            $message = 'Success page PIN must be exactly 4 digits.';
         }
     }
 }
@@ -199,6 +231,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                            maxlength="4" required>
                                 </div>
                                 <button type="submit" name="update_pin" class="btn btn-dark mr-2">Update PIN</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Success Page PIN -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Success Page Access PIN</h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Success Page PIN (4 digits)</label>
+                                    <input type="text" class="form-control" name="success_page_pin" 
+                                           pattern="[0-9]{4}" 
+                                           value="<?php echo htmlspecialchars(getSuccessPin()); ?>" 
+                                           maxlength="4" required>
+                                    <small class="form-text text-muted">This PIN is used to access the transaction success page.</small>
+                                </div>
+                                <button type="submit" name="update_success_pin" class="btn btn-dark mr-2">Update Success Page PIN</button>
                             </form>
                         </div>
                     </div>
