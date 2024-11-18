@@ -680,8 +680,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 const statusMessage = modal.querySelector('.status-message');
                 const loadingContainer = document.getElementById('loading-container');
 
-                // Tampilkan animasi loading dan sembunyikan tombol
+                // Tampilkan animasi loading dan sembunyikan pesan status sebelumnya
                 loadingContainer.style.display = 'block';
+                statusMessage.innerHTML = ''; // Kosongkan pesan status
 
                 const transactionId = getCurrentTransactionId();
 
@@ -697,7 +698,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    loadingContainer.style.display = 'none'; // Sembunyikan animasi loading
+                    loadingContainer.style.display = 'none'; // Sembunyikan animasi loading setelah mendapatkan respons
 
                     if (data.success) {
                         switch (data.status) {
@@ -705,7 +706,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                 statusMessage.innerHTML = '<div class="alert alert-success" role="alert">Pembayaran berhasil!</div>';
                                 setTimeout(() => {
                                     window.location.href = 'transberhasil.php'; // Redirect ke halaman sukses
-                                }, 2000); // Ganti dengan waktu yang Anda inginkan
+                                }, 2000);
                                 break;
                             case 'pending':
                                 statusMessage.innerHTML = '<div class="alert alert-warning" role="alert">Pembayaran masih dalam proses. Silakan coba cek lagi nanti.</div>';
@@ -724,7 +725,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     }
                 })
                 .catch(error => {
-                    loadingContainer.style.display = 'none'; // Sembunyikan animasi loading
+                    loadingContainer.style.display = 'none'; // Sembunyikan animasi loading jika terjadi kesalahan
                     statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat memeriksa status. Silakan coba lagi.</div>';
                     console.error('Error:', error);
                 });
