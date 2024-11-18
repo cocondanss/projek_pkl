@@ -435,13 +435,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             type: type
                         },
                         dataType: 'json',
-                        success: function (response) {
+                        success: function(response) {
                             if (response.success) {
-                                if (type === 'admin') {
-                                    window.location.href = 'login.php';
-                                } else {
-                                    window.location.href = 'transaksiberhasil.php';
-                                }
+                                window.location.href = response.redirect;
                             } else {
                                 $('#keypadModal').modal('hide');
                                 alert('PIN tidak valid');
@@ -449,7 +445,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                 display.textContent = '';
                             }
                         },
-                        error: function () {
+                        error: function() {
                             alert('Terjadi kesalahan. Silakan coba lagi.');
                         }
                     });
@@ -482,7 +478,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     }
 
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-    if (price < 1.000,00) { // Memastikan harga kurang dari Rp 1000
+    if (price < 1.000) { // Memastikan harga kurang dari Rp 1000
     console.log('Harga produk adalah kurang dari Rp 1000, mengarahkan ke transberhasil.php');
     console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
     window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
