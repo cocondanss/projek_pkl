@@ -4,29 +4,24 @@ session_start();
 $conn = mysqli_connect("localhost", "u529472640_root", "Daclen123", "u529472640_framee");
 
 
-function cek_pin($pin) {
+function cek_pin($pin, $type = 'admin') {
     global $conn;
-    $stmt = $conn->prepare("SELECT setting_value FROM settings WHERE setting_key = 'keypad_pin'");
+    $key = ($type === 'success') ? 'success_page_pin' : 'keypad_pin';
+    $stmt = $conn->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
+    $stmt->bind_param("s", $key);
     $stmt->execute();
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
     return $pin === $row['setting_value'];
 }
 
-// Fungsi untuk login
-function login($pin) {
-    return cek_pin($pin);
-}
-
 // Handle AJAX request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pin = $_POST['pin'];
-    if (cek_pin($pin)) {
-        if (login($pin)) {
-            echo json_encode(['success' => true]);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Login failed']);
-        }
+    $type = $_POST['type'] ?? 'admin'; // Default ke admin jika tidak ada type
+
+    if (cek_pin($pin, $type)) {
+        echo json_encode(['success' => true]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Invalid PIN']);
     }

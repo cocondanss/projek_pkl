@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+// Redirect jika tidak ada akses yang valid
+if (!isset($_SESSION['success_page_access']) || $_SESSION['success_page_access'] !== true) {
+    header('Location: listproduct.php');
+    exit;
+}
+
+// Reset akses setelah halaman dimuat
+unset($_SESSION['success_page_access']);
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
