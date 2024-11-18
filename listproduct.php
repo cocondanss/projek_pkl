@@ -484,13 +484,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
     if (price < 1.000,00) { // Memastikan harga kurang dari Rp 1000
     console.log('Harga produk adalah kurang dari Rp 1000, mengarahkan ke transberhasil.php');
-    const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
-    sessionStorage.setItem('successful_transaction', JSON.stringify({
-        transaction_id: orderId,
-        product_name: name,
-        amount: price,
-        created_at: new Date().toISOString()
-    }));
     console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
     window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
     return; // Keluar dari fungsi
