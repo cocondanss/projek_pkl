@@ -11,14 +11,6 @@
         <div class="alert alert-success" role="alert">
             <h4 class="alert-heading">Transaksi Berhasil!</h4>
             <p>Terima kasih atas pembelian Anda.</p>
-            <hr>
-            <p class="mb-0">Detail Transaksi:</p>
-            <ul>
-                <li>ID Transaksi: <?php echo htmlspecialchars($transactionData['transaction_id']); ?></li>
-                <li>Produk: <?php echo $productName; ?></li> <!-- Menampilkan nama produk -->
-                <li>Harga: Rp <?php echo number_format($transactionData['amount'], 0, ',', '.'); ?></li>
-                <li>Tanggal: <?php echo $formattedDate; ?></li>
-            </ul>
         </div>
         <a href="listproduct.php" class="btn btn-dark mr-2">Kembali ke Daftar Produk</a>
     </div>
