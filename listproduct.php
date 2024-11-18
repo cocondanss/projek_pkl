@@ -474,7 +474,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     }
 
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-    if (price <= 0.00) {
+    if (price <= 1) {
     console.log('Harga produk adalah Rp 0, mengarahkan ke transberhasil.php');
     const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
     sessionStorage.setItem('successful_transaction', JSON.stringify({
