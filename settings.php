@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_success_pin'])) {
         $success_pin = $_POST['success_page_pin'];
         if (strlen($success_pin) === 4 && is_numeric($success_pin)) {
-            $success = updateSuccessPin($success_pin);
+            $success = updateSetting('success_page_pin', $success_pin);
             $message = $success ? 'Success page PIN updated successfully!' : 'Failed to update success page PIN.';
         } else {
             $success = false;
