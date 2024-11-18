@@ -471,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     }
 
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-    if (price === 0.00) { // Menggunakan <= 0 untuk mencakup kemungkinan nilai negatif
+    if (price <= 0) { // Menggunakan <= 0 untuk mencakup kemungkinan nilai negatif
         const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
         sessionStorage.setItem('successful_transaction', JSON.stringify({
             transaction_id: orderId,
@@ -539,11 +539,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             alert('Terjadi kesalahan saat membuat transaksi.');
         });
 }
-
-// Mencegah refresh pada form
-document.querySelector('form').addEventListener('submit', function(event) {
-    event.preventDefault(); // Mencegah refresh halaman
-});
 
 
             // Add countdown timer function
