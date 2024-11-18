@@ -426,23 +426,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     $.ajax({
                         url: 'keypad.php',
                         method: 'POST',
-                        data: { 
-                            pin: pinCode,
-                            action: 'check_success_pin' // Add new action parameter
-                        },
+                        data: { pin: pinCode },
                         dataType: 'json',
                         success: function (response) {
                             if (response.success) {
-                                window.location.href = 'transaksiberhasil.php';
+                                window.location.href = 'login.php';
                             } else {
                                 $('#keypadModal').modal('hide');
-                                alert('PIN tidak valid');
+                                $('#errorModal').modal('show');
                                 pinCode = '';
                                 display.textContent = '';
                             }
                         },
                         error: function () {
-                            alert('Terjadi kesalahan. Silakan coba lagi.');
+                            alert('An error occurred. Please try again.');
                         }
                     });
                 }
@@ -464,7 +461,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 pinCode = '';
                 display.textContent = '';
             });
-
             function showPaymentModal(id, name, price, discount = 0) {
     console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
@@ -476,7 +472,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
     if (price <= 0) { // Menggunakan <= 0 untuk mencakup kemungkinan nilai negatif
-        console.log('Harga produk adalah Rp 0, mengarahkan ke transberhasil.php');
         const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
         sessionStorage.setItem('successful_transaction', JSON.stringify({
             transaction_id: orderId,
@@ -492,7 +487,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     // Jika harga lebih dari Rp 0, buat transaksi
     createTransaction(id, name, price, discount)
         .then(response => {
-            console.log('Response from createTransaction:', response); // Log respons untuk debugging
             if (response.success) {
                 // Hapus modal lama jika ada
                 const existingModal = document.getElementById('qrCodeModal');
