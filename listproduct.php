@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                     <?php if ($discountedPrice < $originalPrice): ?>
                                                         <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
                                                         <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
-                                        x            <?php else: ?>
+                                                    <?php else: ?>
                                                         <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
                                                     <?php endif; ?>
                                                 </div>
