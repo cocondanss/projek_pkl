@@ -426,23 +426,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     $.ajax({
                         url: 'keypad.php',
                         method: 'POST',
-                        data: { 
-                            pin: pinCode,
-                            type: 'success' // Mengirim type untuk mengecek PIN success page
-                        },
+                        data: { pin: pinCode },
                         dataType: 'json',
                         success: function (response) {
                             if (response.success) {
-                                window.location.href = 'transaksiberhasil.php';
+                                window.location.href = 'login.php';
                             } else {
                                 $('#keypadModal').modal('hide');
-                                alert('PIN tidak valid');
+                                $('#errorModal').modal('show');
                                 pinCode = '';
                                 display.textContent = '';
                             }
                         },
                         error: function () {
-                            alert('Terjadi kesalahan. Silakan coba lagi.');
+                            alert('An error occurred. Please try again.');
                         }
                     });
                 }
@@ -474,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     }
 
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-    if (price <= 0) { //z Menggunakan <= 0 untuk mencakup kemungkinan nilai negatif
+    if (price <= 0) { // Menggunakan <= 0 untuk mencakup kemungkinan nilai negatif
         const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
         sessionStorage.setItem('successful_transaction', JSON.stringify({
             transaction_id: orderId,
