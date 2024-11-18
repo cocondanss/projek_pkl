@@ -409,11 +409,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     });
                 });
             });
-
-            // Di dalam showPaymentModal
-            
-
-
             function appendNumber(number) {
                 if (pinCode.length < 4) {
                     pinCode += number;
@@ -469,23 +464,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             function showPaymentModal(id, name, price, discount = 0) {
     console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
+    // Validasi parameter
     if (!id || !name || price === undefined) {
         console.error('Parameter tidak valid');
         return;
     }
 
-    // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
+    // Log nilai price sebelum pengecekan
+    console.log('Price before check:', price);
+
+    // Jika harga kurang dari 1, langsung arahkan ke halaman transaksi berhasil
     if (price < 1) {
         const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
-        sessionStorage.setItem('successful_transaction', JSON.stringify({
+        const transactionData = {
             transaction_id: orderId,
             product_name: name,
             amount: price,
             created_at: new Date().toISOString()
-        }));
+        };
+        
+        // Simpan data transaksi ke session storage
+        sessionStorage.setItem('successful_transaction', JSON.stringify(transactionData));
+        console.log('Stored transaction:', sessionStorage.getItem('successful_transaction')); // Log untuk memastikan data tersimpan
+
+        // Redirect ke halaman transaksi berhasil
+        console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
         window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
         return; // Keluar dari fungsi
     }
+
+    // Jika harga lebih dari atau sama dengan 1, lakukan logika lain (tambahkan sesuai kebutuhan)
+    console.log('Price is valid, proceed with payment logic'); // Log untuk validasi harga
+    // Tambahkan logika pembayaran di sini
+}
 
     // Jika harga lebih dari Rp 0, buat transaksi
     createTransaction(id, name, price, discount).then(response => {
