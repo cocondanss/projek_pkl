@@ -664,9 +664,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                     <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
                                         Batal
                                     </button>
-                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
-                                        Cek
-                                    </button>
+                                    <div id="loading-container" style="display: none;">
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        Menunggu Pembayaran...
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -675,7 +676,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             `;
 
             function checkPaymentStatus() {
-                // console.log(transactionId);
                 const modal = document.getElementById('qrCodeModal');
                 const statusMessage = modal.querySelector('.status-message');
                 const loadingContainer = document.getElementById('loading-container');
@@ -683,10 +683,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 // Tampilkan animasi loading dan sembunyikan tombol
                 loadingContainer.style.display = 'block';
 
-                // Assuming you have a way to get the current transaction ID
-                 
-                const transactionId = getCurrentTransactionId(); 
-                console.log(transactionId);
+                const transactionId = getCurrentTransactionId();
+
                 fetch('api.php', {
                     method: 'POST',
                     headers: {
@@ -699,39 +697,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 })
                 .then(response => response.json())
                 .then(data => {
-                        
                     loadingContainer.style.display = 'none'; // Sembunyikan animasi loading
 
-                        if (data.success) {
-                            switch (data.status) {
-                                case 'settlement':
-                                    statusMessage.innerHTML = '<div class="alert alert-success" role="alert">Pembayaran berhasil!</div>';
-                                    setTimeout(() => {
-                                        window.location.href = 'transberhasil.php'; // Redirect ke halaman sukses
-                                    }, 2000);
-                                    break;
-                                    break;
-                                case 'pending':
-                                    statusMessage.innerHTML = '<div class="alert alert-warning" role="alert">Pembayaran masih dalam proses. Silakan coba cek lagi nanti.</div>';
-                                    break;
-                                case 'expire':
-                                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran telah kedaluwarsa. Silakan lakukan pemesanan ulang.</div>';
-                                    break;
-                                case 'cancel':
-                                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran dibatalkan. Silakan lakukan pemesanan ulang jika diperlukan.</div>';
-                                    break;
-                                default:
-                                    statusMessage.innerHTML = '<div class="alert alert-info" role="alert">Status pembayaran: ' + data.status + '</div>';
-                            }
-                        } else {
-                            statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan: ' + data.message + '</div>';
+                    if (data.success) {
+                        switch (data.status) {
+                            case 'settlement':
+                                statusMessage.innerHTML = '<div class="alert alert-success" role="alert">Pembayaran berhasil!</div>';
+                                setTimeout(() => {
+                                    window.location.href = 'transberhasil.php'; // Redirect ke halaman sukses
+                                }, 2000); // Ganti dengan waktu yang Anda inginkan
+                                break;
+                            case 'pending':
+                                statusMessage.innerHTML = '<div class="alert alert-warning" role="alert">Pembayaran masih dalam proses. Silakan coba cek lagi nanti.</div>';
+                                break;
+                            case 'expire':
+                                statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran telah kedaluwarsa. Silakan lakukan pemesanan ulang.</div>';
+                                break;
+                            case 'cancel':
+                                statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran dibatalkan. Silakan lakukan pemesanan ulang jika diperlukan.</div>';
+                                break;
+                            default:
+                                statusMessage.innerHTML = '<div class="alert alert-info" role="alert">Status pembayaran: ' + data.status + '</div>';
                         }
-                    })
-                    .catch(error => {
-                        loadingContainer.style.display = 'none'; // Sembunyikan animasi loading
-                        statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat memeriksa status. Silakan coba lagi.</div>';
-                        console.error('Error:', error);
-                    });
+                    } else {
+                        statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan: ' + data.message + '</div>';
+                    }
+                })
+                .catch(error => {
+                    loadingContainer.style.display = 'none'; // Sembunyikan animasi loading
+                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat memeriksa status. Silakan coba lagi.</div>';
+                    console.error('Error:', error);
+                });
             }
 
             function getCurrentTransactionId() {
