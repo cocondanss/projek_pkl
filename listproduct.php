@@ -540,6 +540,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         });
 }
 
+// Mencegah refresh pada form
+document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); // Mencegah refresh halaman
+});
+
 
             // Add countdown timer function
             function startCountdown(duration) {
