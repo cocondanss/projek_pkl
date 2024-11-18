@@ -162,7 +162,7 @@ require 'cek.php';
                 }
                 
                 if (!checked) {
-                    alert('Silakan pilih transaksi yang akan dihapus terlebih dahulu!');
+                    alert('Silakan pilih kolom transaksi yang akan dihapus terlebih dahulu!');
                     return false;
                 }
                 
