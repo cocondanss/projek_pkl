@@ -423,6 +423,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
             function enter() {
                 if (pinCode.length === 4) {
+                    // Tentukan type berdasarkan tombol yang diklik
                     const lockButton = document.querySelector('.fa-lock');
                     const type = lockButton ? 'admin' : 'success';
                     
