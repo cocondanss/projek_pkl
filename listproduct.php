@@ -423,25 +423,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
             function enter() {
                 if (pinCode.length === 4) {
-                    // Tentukan type berdasarkan tombol yang diklik
-                    const lockButton = document.querySelector('.fa-lock');
-                    const type = lockButton ? 'admin' : 'success';
-                    
                     $.ajax({
                         url: 'keypad.php',
                         method: 'POST',
                         data: { 
                             pin: pinCode,
-                            type: type
+                            type: 'success' // Mengirim type untuk mengecek PIN success page
                         },
                         dataType: 'json',
                         success: function (response) {
                             if (response.success) {
-                                if (type === 'admin') {
-                                    window.location.href = 'login.php';
-                                } else {
-                                    window.location.href = 'transaksiberhasil.php';
-                                }
+                                window.location.href = 'transaksiberhasil.php';
                             } else {
                                 $('#keypadModal').modal('hide');
                                 alert('PIN tidak valid');
@@ -482,12 +474,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     }
 
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-    if (price < 1.000,00) { // Memastikan harga kurang dari Rp 1000
-    console.log('Harga produk adalah kurang dari Rp 1000, mengarahkan ke transberhasil.php');
-    console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
-    window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
-    return; // Keluar dari fungsi
-}
+    if (price <= 0) { //z Menggunakan <= 0 untuk mencakup kemungkinan nilai negatif
+        const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
+        sessionStorage.setItem('successful_transaction', JSON.stringify({
+            transaction_id: orderId,
+            product_name: name,
+            amount: price,
+            created_at: new Date().toISOString()
+        }));
+        console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
+        window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
+        return; // Keluar dari fungsi
+    }
 
     // Jika harga lebih dari Rp 0, buat transaksi
     createTransaction(id, name, price, discount)

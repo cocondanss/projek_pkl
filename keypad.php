@@ -13,32 +13,31 @@ function cek_pin($pin, $type = 'admin') {
     $result = $stmt->get_result();
     $row = $result->fetch_assoc();
     
-    if ($row && $pin === $row['setting_value']) {
-        if ($type === 'success') {
-            $_SESSION['success_page_access'] = true;
-        } else {
-            $_SESSION['log'] = 'true';
-        }
-        return true;
-    }
-    return false;
+    error_log("Checking PIN: $pin for type: $type with key: $key");
+    error_log("Stored PIN value: " . ($row ? $row['setting_value'] : 'not found'));
+    
+    return $pin === $row['setting_value'];
+}
+
+// Fungsi untuk login
+function login($pin) {
+    return cek_pin($pin);
 }
 
 // Handle AJAX request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pin = $_POST['pin'];
-    $type = $_POST['type'] ?? 'admin';
+    $type = $_POST['type'] ?? 'admin'; // Default ke admin jika tidak ada type
+    
+    error_log("Received request - PIN: $pin, Type: $type");
     
     if (cek_pin($pin, $type)) {
-        echo json_encode([
-            'success' => true,
-            'redirect' => $type === 'success' ? 'transaksiberhasil.php' : 'login.php'
-        ]);
+        if ($type === 'admin') {
+            $_SESSION['log'] = 'true'; // Set session untuk admin login
+        }
+        echo json_encode(['success' => true]);
     } else {
-        echo json_encode([
-            'success' => false,
-            'message' => 'PIN tidak valid'
-        ]);
+        echo json_encode(['success' => false, 'message' => 'Invalid PIN']);
     }
     exit;
 }
