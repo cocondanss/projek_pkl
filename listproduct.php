@@ -509,7 +509,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                     <div class="status-message"></div>
                                     <div class="button-container">
                                         <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
-                                        <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
+                                        <div id="loading-container" style="display: none;">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                            Menunggu Pembayaran...
+                                        </div>
                                     </div>
                                 </div>
                             </div>
