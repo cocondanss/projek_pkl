@@ -246,7 +246,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     <label class="form-label">Success Page PIN (4 digits)</label>
                                     <input type="text" class="form-control" name="success_page_pin" 
                                            pattern="[0-9]{4}" 
-                                           value="<?php echo htmlspecialchars(getSuccessPin()); ?>" 
+                                           value="<?php echo htmlspecialchars(getSuccessPin('success_page_pin')); ?>" 
                                            maxlength="4" required>
                                     <small class="form-text text-muted">This PIN is used to access the transaction success page.</small>
                                 </div>
