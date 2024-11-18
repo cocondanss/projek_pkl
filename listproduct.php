@@ -263,31 +263,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
-            document.getElementById('applyVoucher').addEventListener('click', function() {
-    const voucherCode = document.getElementById('voucherCode').value;
-    const product = document.querySelector('.product');
-    const originalPriceElement = product.querySelector('.original-price');
-    const discountedPriceElement = product.querySelector('.discounted-price');
-
-    let originalPrice = parseInt(originalPriceElement.textContent);
-    let discountedPrice = originalPrice;
-
-    // Cek apakah voucher sudah digunakan
-    if (sessionStorage.getItem('voucherUsed') === 'true') {
-        alert('Voucher sudah digunakan!');
-        return;
-    }
-
-    // Cek kode voucher
-    if (voucherCode === 'DISKON10') {
-        discountedPrice -= 1000; // Diskon 1000
-        discountedPriceElement.textContent = discountedPrice; // Update harga diskon
-        sessionStorage.setItem('voucherUsed', 'true'); // Tandai voucher sudah digunakan
-        alert('Voucher berhasil diterapkan!');
-    } else {
-        alert('Kode voucher tidak valid!');
-    }
-});
             let pinCode = '';
             let display = document.getElementById('display');
 
