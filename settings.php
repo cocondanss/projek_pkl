@@ -225,7 +225,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="card-body">
                             <form method="POST">
                                 <div class="mb-3">
-                                    <label class="form-label">PIN (4 digits)</label>
+                                    <label class="form-label">PIN Access (4 digits)</label>
                                     <input type="text" class="form-control" name="keypad_pin" pattern="[0-9]{4}" 
                                            value="<?php echo htmlspecialchars(getSetting('keypad_pin')); ?>" 
                                            maxlength="4" required>
