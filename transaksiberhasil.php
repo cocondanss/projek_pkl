@@ -8,7 +8,7 @@ session_start();
 // }
 
 // Reset akses setelah halaman dimuat
-// unset($_SESSION['success_page_access']);
+unset($_SESSION['success_page_access']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,7 +23,6 @@ session_start();
         <div class="alert alert-success" role="alert">
             <h4 class="alert-heading">Transaksi Berhasil!</h4>
             <p>Terima kasih atas pembelian Anda.</p>
-            <hr>
         <a href="listproduct.php" class="btn btn-dark mr-2">Kembali ke Daftar Produk</a>
     </div>
 </body>
