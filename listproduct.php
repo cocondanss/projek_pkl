@@ -436,7 +436,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                 $('#errorModal').modal('show');
                                 pinCode = 'Salahh';
                                 display.textContent = '';
-                            }
+                            };
+                            
                             if (response.success) {
                                 window.location.href = 'transaksiberhasil.php';
                             } else {
