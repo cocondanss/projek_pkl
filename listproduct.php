@@ -678,11 +678,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 // console.log(transactionId);
                 const modal = document.getElementById('qrCodeModal');
                 const statusMessage = modal.querySelector('.status-message');
-                const checkButton = modal.querySelector('#btn-check');
+                const loadingContainer = document.getElementById('loading-container');
 
-                // Disable the check button and show loading state
-                checkButton.disabled = true;
-                checkButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memeriksa...';
+                // Tampilkan animasi loading dan sembunyikan tombol
+                loadingContainer.style.display = 'block';
 
                 // Assuming you have a way to get the current transaction ID
                  
@@ -701,8 +700,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 .then(response => response.json())
                 .then(data => {
                         
-                        checkButton.disabled = false;
-                        checkButton.innerHTML = 'Cek';
+                    loadingContainer.style.display = 'none'; // Sembunyikan animasi loading
 
                         if (data.success) {
                             switch (data.status) {
@@ -730,8 +728,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         }
                     })
                     .catch(error => {
-                        checkButton.disabled = false;
-                        checkButton.innerHTML = 'Cek';
+                        loadingContainer.style.display = 'none'; // Sembunyikan animasi loading
                         statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat memeriksa status. Silakan coba lagi.</div>';
                         console.error('Error:', error);
                     });
