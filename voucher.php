@@ -452,6 +452,31 @@ function useVoucher($code) {
         <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
         <script src="assets/demo/datatables-demo.js"></script>
         <script>
+            document.getElementById('applyVoucher').addEventListener('click', function() {
+    const voucherCode = document.getElementById('voucherCode').value;
+    const product = document.querySelector('.product');
+    const originalPriceElement = product.querySelector('.original-price');
+    const discountedPriceElement = product.querySelector('.discounted-price');
+
+    let originalPrice = parseInt(originalPriceElement.textContent);
+    let discountedPrice = originalPrice;
+
+    // Cek apakah voucher sudah digunakan
+    if (sessionStorage.getItem('voucherUsed') === 'true') {
+        alert('Voucher sudah digunakan!');
+        return;
+    }
+
+    // Cek kode voucher
+    if (voucherCode === 'DISKON10') {
+        discountedPrice -= 1000; // Diskon 1000
+        discountedPriceElement.textContent = discountedPrice; // Update harga diskon
+        sessionStorage.setItem('voucherUsed', 'true'); // Tandai voucher sudah digunakan
+        alert('Voucher berhasil diterapkan!');
+    } else {
+        alert('Kode voucher tidak valid!');
+    }
+});
             // Fungsi untuk menampilkan input berdasarkan pilihan radio
             function handleVoucherTypeChange() {
                 const rupiahRadio = document.getElementById('rupiahRadio');
