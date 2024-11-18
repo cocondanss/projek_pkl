@@ -15,6 +15,11 @@ function cek_pin($pin, $type = 'admin') {
     return $pin === $row['setting_value'];
 }
 
+// Fungsi untuk login
+function login($pin) {
+    return cek_pin($pin);
+}
+
 // Handle AJAX request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pin = $_POST['pin'];
