@@ -426,20 +426,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     $.ajax({
                         url: 'keypad.php',
                         method: 'POST',
-                        data: { pin: pinCode },
+                        data: { 
+                            pin: pinCode,
+                            action: 'check_success_pin' // Add new action parameter
+                        },
                         dataType: 'json',
                         success: function (response) {
                             if (response.success) {
-                                window.location.href = 'login.php';
+                                window.location.href = 'transaksiberhasil.php';
                             } else {
                                 $('#keypadModal').modal('hide');
-                                $('#errorModal').modal('show');
+                                alert('PIN tidak valid');
                                 pinCode = '';
                                 display.textContent = '';
                             }
                         },
                         error: function () {
-                            alert('An error occurred. Please try again.');
+                            alert('Terjadi kesalahan. Silakan coba lagi.');
                         }
                     });
                 }

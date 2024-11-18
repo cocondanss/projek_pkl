@@ -68,6 +68,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = 'PIN must be exactly 4 digits.';
         }
     }
+
+    // Update Success Page PIN
+    if (isset($_POST['update_success_pin'])) {
+        $success_pin = $_POST['success_pin'];
+        if (strlen($success_pin) === 4 && is_numeric($success_pin)) {
+            $success = updateSetting('success_pin', $success_pin);
+            $message = $success ? 'Success page PIN updated successfully!' : 'Failed to update success page PIN.';
+        } else {
+            $success = false;
+            $message = 'PIN must be exactly 4 digits.';
+        }
+    }
 }
 ?>
 
@@ -199,6 +211,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                            maxlength="4" required>
                                 </div>
                                 <button type="submit" name="update_pin" class="btn btn-dark mr-2">Update PIN</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Success Page PIN -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Success Page PIN</h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label">Success Page PIN (4 digits)</label>
+                                    <input type="text" class="form-control" name="success_pin" 
+                                           pattern="[0-9]{4}" 
+                                           value="<?php echo htmlspecialchars(getSetting('success_pin')); ?>" 
+                                           maxlength="4" required>
+                                    <small class="form-text text-muted">This PIN is used to access the transaction success page.</small>
+                                </div>
+                                <button type="submit" name="update_success_pin" class="btn btn-dark mr-2">Update Success Page PIN</button>
                             </form>
                         </div>
                     </div>
