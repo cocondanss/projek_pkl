@@ -168,11 +168,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     $deleteStmt->execute();
                 }
 
-                $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
+                // $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
             }
         } else {
             // Voucher tidak valid
-            $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
+            // $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
         }
     }
 ?>
