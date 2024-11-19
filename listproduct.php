@@ -128,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
                     <?php foreach ($produk as $item): 
-                                            // $originalPrice = $item['price'];
+                                            $originalPrice = $item['price'];
                                             
                                             // // Cek apakah diskon sudah disimpan dalam sesi
                                             // if (isset($_SESSION['discountedPrice'])) {
