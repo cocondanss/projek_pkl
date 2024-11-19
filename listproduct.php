@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $originalPrice = $item['price'];
     
     // Tentukan harga diskon yang akan digunakan
-    $discountedPrice = isset($_SESSION['discountedPrice']) ? $_SESSION['discountedPrice'] : applyVoucher($voucherCode, $originalPrice);
+    $discountedPrice = applyVoucher($voucherCode, $originalPrice);
 ?>
                             <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                                             <div class="card-body"> 
