@@ -486,7 +486,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         created_at: new Date().toISOString()
                     }));
                     console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
-                    window.location.replace('transberhasil.php'); // Menggunakan replace untuk redirect
+                    window.location.href('transberhasil.php'); // Menggunakan href untuk redirect
                     return; // Keluar dari fungsi
                 }
 
@@ -610,7 +610,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 const checkButton = modal.querySelector('#btn-check');
                 
                 cancelButton.disabled = true;
-                cancelButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Membatalkan...';
+                cancelButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Membatalkan';
                 checkButton.disabled = true;
                 
                 const transactionId = getCurrentTransactionId();
