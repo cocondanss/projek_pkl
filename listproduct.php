@@ -16,9 +16,6 @@ require 'function.php';
 function applyVoucher($voucherCode, $price) {
     global $conn;
     
-    // Debugging info
-    $debug_info = "Voucher Code: $voucherCode, Original Price: $price\n";
-
     // Persiapkan query untuk mencari voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
@@ -26,9 +23,7 @@ function applyVoucher($voucherCode, $price) {
     $result = $stmt->get_result();
     
     if ($row = $result->fetch_assoc()) {
-        $debug_info .= "Voucher found: " . print_r($row, true) . "\n";
         $discountAmount = $row['discount_amount'];
-        $debug_info .= "Discount Amount: $discountAmount\n";
 
         // Cek tipe diskon (persentase atau nominal)
         if ($discountAmount <= 100) {
@@ -38,19 +33,35 @@ function applyVoucher($voucherCode, $price) {
             // Diskon nominal langsung
             $discountedPrice = $price - $discountAmount;
         }
-        
+
         // Pastikan harga tidak negatif
         $finalPrice = max($discountedPrice, 0);
-        $debug_info .= "Calculated Discounted Price: $finalPrice\n";
-        
-        // Log debug info (misalnya, simpan ke file log)
-        error_log($debug_info); // Simpan ke log error PHP
 
-        return $finalPrice;
+        // Jika voucher sekali pakai dan sudah digunakan, jangan update status
+        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
+            // Voucher sudah digunakan, hanya tampilkan diskon
+            return $finalPrice; // Kembalikan harga diskon
+        }
+
+        // Jika voucher belum digunakan, update waktu dan status
+        date_default_timezone_set('Asia/Jakarta');
+        $currentDateTime = date('Y-m-d H:i:s');
+        
+        // Update used_at timestamp
+        $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+        $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+        $updateStmt->execute();
+
+        // If it's a one-time-use voucher, delete it immediately after use
+        if ($row['one_time_use'] == 1) {
+            $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ? AND one_time_use = 1");
+            $deleteStmt->bind_param("s", $voucherCode);
+            $deleteStmt->execute();
+        }
+
+        return $finalPrice; // Kembalikan harga diskon
     }
 
-    $debug_info .= "No voucher found\n";
-    error_log($debug_info); // Simpan log jika voucher tidak ditemukan
     return $price; // Kembalikan harga asli jika voucher tidak valid
 }
 
