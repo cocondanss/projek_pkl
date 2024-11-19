@@ -1,5 +1,6 @@
 <?php
 
+
 $transactionData = $_SESSION['successful_transaction'];
 
 // Retrieve product name from session
