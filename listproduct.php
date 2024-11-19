@@ -28,11 +28,14 @@ function applyVoucher($voucherCode, $price) {
         // Cek tipe diskon (persentase atau nominal)
         if ($discountAmount <= 100) {
             // Diskon persentase
-            return $price - ($price * ($discountAmount / 100));
+            $discountedPrice = $price - ($price * ($discountAmount / 100));
         } else {
             // Diskon nominal langsung
-            return $price - $discountAmount;
+            $discountedPrice = $price - $discountAmount;
         }
+
+        // Pastikan harga tidak menjadi negatif
+        return max(0, $discountedPrice);
     }
 
     return $price; // Kembalikan harga asli jika voucher tidak valid
@@ -41,7 +44,8 @@ function applyVoucher($voucherCode, $price) {
 // Inisialisasi variabel untuk sistem voucher
 $voucherMessages = [];
 $voucherCode = '';
-
+$originalPrice = 0; // Inisialisasi harga asli
+$discountedPrice = 0; // Inisialisasi harga diskon
 
 // Proses pengecekan voucher saat ada POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
@@ -88,11 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
         $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
     }
-} else {
-    $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
-    $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
 }
-
 
 // Ambil data produk yang visible
 $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
@@ -129,27 +129,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
                     <?php foreach ($produk as $item): 
-    $originalPrice = $item['price'];
-    
-    // Tentukan harga diskon yang akan digunakan
-    $discountedPrice = applyVoucher($voucherCode, $originalPrice); // Hanya hitung sekali
-?>
-                            <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
-                                            <div class="card-body"> 
-                                                <h2><?php echo htmlspecialchars($item['name']); ?></h2>
-                                                <div class="price-container">
-                                                    <?php if ($discountedPrice < $originalPrice): ?>
-                                                        <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
-                                                        <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
-                                                    <?php else: ?>
-                                                        <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <p><?php echo htmlspecialchars($item['description']); ?></p>
-                                                <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
-                                            </div>
-                                        </div>
-                                        <?php endforeach; ?>
+                        // Debug: Tampilkan data produk untuk memastikan data diambil
+                        // var_dump($item); // Ini akan menampilkan semua informasi produk
+                        $originalPrice = $item['price'];
+                        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                    ?>
+                        <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
+                            <div class="card-body"> 
+                                <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+                                <div class="price-container">
+                                    <?php if ($discountedPrice < $originalPrice): ?>
+                                        <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                        <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
+                                    <?php else: ?>
+                                        <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                    <?php endif; ?>
+                                </div>
+                                <p><?php echo htmlspecialchars($item['description']); ?></p>
+                                <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">Buy</button>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
                                         <div class="voucher-form">
                                             <div id="voucher-message-container">
                                                 <?php
