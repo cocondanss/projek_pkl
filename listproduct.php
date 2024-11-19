@@ -541,10 +541,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         },
                         body: JSON.stringify({
                             action: 'check_payment_status',
-                            product_id: id,
-                            product_name: name,
-                            product_price: 0,
-                            discount: discount
+                            transaction_id: transactionId
                         })
                     }).then(() => {
                         // Redirect to the success page with the transaction data
