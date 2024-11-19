@@ -17,7 +17,7 @@ function applyVoucher($voucherCode, $price) {
     global $conn;
 
     // Persiapkan query untuk mencari voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? AND (one_time_use = 0 OR used_at IS NULL)");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -130,7 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     <div class="product-list" style="background: none;" id="product-list">
                     <?php foreach ($produk as $item): 
                         $originalPrice = $item['price'];
-                        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                        $voucherCode = $item['voucher_code']; // Ambil kode voucher dari hasil kueri
+                        $discountedPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher ke harga asli
                     ?>
                         <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                             <div class="card-body"> 
