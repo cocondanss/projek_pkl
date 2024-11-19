@@ -17,7 +17,7 @@ function applyVoucher($voucherCode, $price) {
     global $conn;
 
     // Persiapkan query untuk mencari voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? AND (one_time_use = 0 OR used_at IS NULL)");
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -461,19 +461,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
 
             function showPaymentModal(id, name, price, discount = 0) {
-    console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
+                console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
-    // Validasi parameter
-    if (!id || !name || price === undefined) {
-        console.error('Parameter tidak valid');
-        return;
-    }
-
-    // Jika harga adalah 0, langsung arahkan ke halaman berhasil
-    if (price == 0.00) {
-        window.location.href = 'transberhasil.php'; // Ganti dengan URL halaman sukses Anda
-        return;
-    }
+                // Validasi parameter
+                if (!id || !name || price === undefined) {
+                    console.error('Parameter tidak valid');
+                    return;
+                }
 
     // Jika harga lebih dari Rp 0, buat transaksi
     createTransaction(id, name, price, discount)
