@@ -541,9 +541,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         },
                         body: JSON.stringify({
                             action: 'check_payment_status',
-                            transaction_id: transactionId
+                            product_id: id,
+                            product_name: name,
+                            product_price: 0,
+                            discount: discount
                         })
-                    }).then(() => {
+                    })
+                    .then(response => response.json())
+                    .then(data => {
                         // Redirect to the success page with the transaction data
                         window.location.href = 'transberhasil.php';
                     });
