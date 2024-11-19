@@ -128,10 +128,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             <div class="product-container">
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
-                        <?php foreach ($produk as $item): 
-                            $originalPrice = $item['price'];
-                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                            ?>
+                    <?php foreach ($produk as $item): 
+    $originalPrice = $item['price'];
+    
+    // Tentukan harga diskon yang akan digunakan
+    $discountedPrice = applyVoucher($voucherCode, $originalPrice); // Hanya hitung sekali
+?>
                             <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                                             <div class="card-body"> 
                                                 <h2><?php echo htmlspecialchars($item['name']); ?></h2>
