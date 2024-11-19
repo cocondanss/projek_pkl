@@ -24,6 +24,7 @@ function applyVoucher($voucherCode, $price) {
     
     if ($row = $result->fetch_assoc()) {
         $discountAmount = $row['discount_amount'];
+        $isUsed = $row['used_at'] !== null; // Cek apakah sudah digunakan
 
         // Cek tipe diskon (persentase atau nominal)
         if ($discountAmount <= 100) {
@@ -37,10 +38,9 @@ function applyVoucher($voucherCode, $price) {
         // Pastikan harga tidak negatif
         $finalPrice = max($discountedPrice, 0);
 
-        // Jika voucher sekali pakai dan sudah digunakan, jangan update status
-        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            // Voucher sudah digunakan, hanya tampilkan diskon
-            return $finalPrice; // Kembalikan harga diskon
+        // Jika voucher sudah digunakan dan sekali pakai, tidak mengupdate status
+        if ($row['one_time_use'] == 1 && $isUsed) {
+            return $finalPrice; // Kembalikan harga akhir
         }
 
         // Jika voucher belum digunakan, update waktu dan status
@@ -59,7 +59,7 @@ function applyVoucher($voucherCode, $price) {
             $deleteStmt->execute();
         }
 
-        return $finalPrice; // Kembalikan harga diskon
+        return $finalPrice; // Kembalikan harga akhir
     }
 
     return $price; // Kembalikan harga asli jika voucher tidak valid
