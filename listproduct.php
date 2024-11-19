@@ -15,56 +15,55 @@ require 'function.php';
  */
 function applyVoucher($voucherCode, $price) {
     global $conn;
-    
-    // Persiapkan query untuk mencari voucher
+
+    // Prepare query to find the voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
-    
+
+    $finalPrice = $price; // Default final price
+
     if ($row = $result->fetch_assoc()) {
         $discountAmount = $row['discount_amount'];
-        $isUsed = $row['used_at'] !== null; // Cek apakah sudah digunakan
+        $isUsed = $row['used_at'] !== null; // Check if already used
 
-        // Cek tipe diskon (persentase atau nominal)
+        // Check discount type (percentage or nominal)
         if ($discountAmount <= 100) {
-            // Diskon persentase
-            $discountedPrice = $price - ($price * ($discountAmount / 100));
+            // Percentage discount
+            $finalPrice = $price - ($price * ($discountAmount / 100));
         } else {
-            // Diskon nominal langsung
-            $discountedPrice = $price - $discountAmount;
+            // Nominal discount
+            $finalPrice = $price - $discountAmount;
         }
 
-        // Pastikan harga tidak negatif
-        $finalPrice = max($discountedPrice, 0);
+        // Ensure the price does not go negative
+        $finalPrice = max($finalPrice, 0);
 
-        // Jika voucher sudah digunakan dan sekali pakai, tidak mengupdate status
+        // If the voucher has been used and is one-time use, return the original price
         if ($row['one_time_use'] == 1 && $isUsed) {
-            return $finalPrice; // Kembalikan harga akhir
+            return $price; // Return original price if the voucher can't be used
         }
 
-        // Jika voucher belum digunakan, update waktu dan status
+        // If the voucher hasn't been used, update the timestamp and status
         date_default_timezone_set('Asia/Jakarta');
         $currentDateTime = date('Y-m-d H:i:s');
-        
-        // Update used_at timestamp
+
+        // Update the used_at timestamp
         $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
         $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
         $updateStmt->execute();
 
-        // If it's a one-time-use voucher, delete it immediately after use
+        // If it's a one-time-use voucher, delete it after use
         if ($row['one_time_use'] == 1) {
             $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ? AND one_time_use = 1");
             $deleteStmt->bind_param("s", $voucherCode);
             $deleteStmt->execute();
         }
-
-        return $finalPrice; // Kembalikan harga akhir
     }
 
-    return $price; // Kembalikan harga asli jika voucher tidak valid
+    return $finalPrice; // Return final price
 }
-
 // Inisialisasi variabel untuk sistem voucher
 $voucherMessages = [];
 $voucherCode = '';
