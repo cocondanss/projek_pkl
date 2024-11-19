@@ -15,9 +15,6 @@ require 'function.php';
  */
 function applyVoucher($voucherCode, $price) {
     global $conn;
-    
-    // Debugging info
-    $debug_info = "Voucher Code: $voucherCode, Original Price: $price\n";
 
     // Persiapkan query untuk mencari voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
@@ -26,31 +23,18 @@ function applyVoucher($voucherCode, $price) {
     $result = $stmt->get_result();
     
     if ($row = $result->fetch_assoc()) {
-        $debug_info .= "Voucher found: " . print_r($row, true) . "\n";
         $discountAmount = $row['discount_amount'];
-        $debug_info .= "Discount Amount: $discountAmount\n";
 
         // Cek tipe diskon (persentase atau nominal)
         if ($discountAmount <= 100) {
             // Diskon persentase
-            $discountedPrice = $price - ($price * ($discountAmount / 100));
+            return $price - ($price * ($discountAmount / 100));
         } else {
             // Diskon nominal langsung
-            $discountedPrice = $price - $discountAmount;
+            return $price - $discountAmount;
         }
-        
-        // Pastikan harga tidak negatif
-        $finalPrice = max($discountedPrice, 0);
-        $debug_info .= "Calculated Discounted Price: $finalPrice\n";
-        
-        // Log debug info (misalnya, simpan ke file log)
-        error_log($debug_info); // Simpan ke log error PHP
-
-        return $finalPrice;
     }
 
-    $debug_info .= "No voucher found\n";
-    error_log($debug_info); // Simpan log jika voucher tidak ditemukan
     return $price; // Kembalikan harga asli jika voucher tidak valid
 }
 
