@@ -128,54 +128,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
                     <?php foreach ($produk as $item): 
-    $originalPrice = $item['price'];
-    
-    // Inisialisasi harga diskon
-    $discountedPrice = $originalPrice; // Default ke harga asli
-
-    // Cek jika voucher masih berlaku dan belum digunakan
-    if (!empty($voucherCode)) {
-        $voucherResult = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
-        $voucherResult->bind_param("s", $voucherCode);
-        $voucherResult->execute();
-        $voucherRow = $voucherResult->get_result()->fetch_assoc();
-
-        if ($voucherRow) {
-            // Cek apakah voucher sudah digunakan
-            if ($voucherRow['one_time_use'] == 1 && $voucherRow['used_at'] !== null) {
-                // Voucher sudah digunakan
-                $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tetap berlaku.</p>";
-            } else {
-                // Hitung diskon
-                $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                
-                // Simpan diskon dalam sesi jika berlaku
-                $_SESSION['discountedPrice'] = $discountedPrice;
-
-                // Update waktu penggunaan jika voucher digunakan
-                date_default_timezone_set('Asia/Jakarta');
-                $currentDateTime = date('Y-m-d H:i:s');
-
-                // Update used_at timestamp
-                $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-                $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-                $updateStmt->execute();
-
-                // Hapus voucher dari database jika sekali pakai
-                if ($voucherRow['one_time_use'] == 1) {
-                    $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-                    $deleteStmt->bind_param("s", $voucherCode);
-                    $deleteStmt->execute();
-                }
-
-                // $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
-            }
-        } else {
-            // Voucher tidak valid
-            // $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
-        }
-    }
-?>
+                            $originalPrice = $item['price'];
+                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                            ?>
                             <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                                             <div class="card-body"> 
                                                 <h2><?php echo htmlspecialchars($item['name']); ?></h2>
