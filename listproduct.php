@@ -128,34 +128,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
                     <?php foreach ($produk as $item): 
-                            $originalPrice = $item['price'];
-                            if (isset($_POST['voucher_code']) && !empty(trim($_POST['voucher_code']))) {
-                                $voucherCode = trim($_POST['voucher_code']);
-                                // Hitung diskon berdasarkan voucher
-                                $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                                // Simpan diskon dalam sesi
-                                $_SESSION['discountedPrice'] = $discountedPrice;
-                            } else {
-                                // Jika tidak ada voucher, gunakan harga asli
-                                $discountedPrice = isset($_SESSION['discountedPrice']) ? $_SESSION['discountedPrice'] : $originalPrice;
-                            }
-                            ?>
-                                <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
-                                    <div class="card-body"> 
-                                        <h2><?php echo htmlspecialchars($item['name']); ?></h2>
-                                            <div class="price-container">
-                                                <?php if ($discountedPrice < $originalPrice): ?>
-                                                    <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
-                                                    <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
-                                                <?php else: ?>
-                                                    <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                                                    <?php endif; ?>
-                                                </div>
-                                            <p><?php echo htmlspecialchars($item['description']); ?></p>
-                                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
-                                        </div>
-                                    </div>
-                                    <?php endforeach; ?>
+    $originalPrice = $item['price'];
+    $discountedPrice = $originalPrice; // Default ke harga asli
+
+    // Cek apakah ada voucher yang diterapkan
+    if (isset($_POST['voucher_code']) && !empty(trim($_POST['voucher_code']))) {
+        $voucherCode = trim($_POST['voucher_code']);
+        // Hitung diskon berdasarkan voucher
+        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+        // Simpan diskon dalam sesi
+        $_SESSION['discountedPrice'] = $discountedPrice;
+
+        // Debugging: Tampilkan nilai diskon
+        echo "<p>Diskon dihitung: Rp " . number_format($discountedPrice, 0, ',', '.') . "</p>";
+    } else {
+        // Jika tidak ada voucher, gunakan harga dari sesi
+        if (isset($_SESSION['discountedPrice'])) {
+            $discountedPrice = $_SESSION['discountedPrice'];
+            // Debugging: Tampilkan nilai dari sesi
+            echo "<p>Diskon dari sesi: Rp " . number_format($discountedPrice, 0, ',', '.') . "</p>";
+        }
+    }
+?>
+    <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
+        <div class="card-body"> 
+            <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+            <div class="price-container">
+                <?php if ($discountedPrice < $originalPrice): ?>
+                    <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                    <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
+                <?php else: ?>
+                    <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                <?php endif; ?>
+            </div>
+            <p><?php echo htmlspecialchars($item['description']); ?></p>
+            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
+        </div>
+    </div>
+<?php endforeach; ?>
                                         <div class="voucher-form">
                                             <div id="voucher-message-container">
                                                 <?php
