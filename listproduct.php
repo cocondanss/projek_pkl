@@ -788,3 +788,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         </script>
 </body>
 </html>
+                            console.error('Error:', error);
+                            alert('Terjadi kesalahan saat memproses voucher');
+                        })
+                        .finally(() => {
+                            // Re-enable form
+                            submitButton.disabled = false;
+                            submitButton.innerHTML = originalButtonText;
+                        });
+                    });
+                }
+            });
+
+        </script>
+</body>
+</html>
