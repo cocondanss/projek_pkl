@@ -15,55 +15,45 @@ require 'function.php';
  */
 function applyVoucher($voucherCode, $price) {
     global $conn;
+    
+    // Debugging info
+    $debug_info = "Voucher Code: $voucherCode, Original Price: $price\n";
 
-    // Prepare query to find the voucher
+    // Persiapkan query untuk mencari voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
-
-    $finalPrice = $price; // Default final price
-
+    
     if ($row = $result->fetch_assoc()) {
+        $debug_info .= "Voucher found: " . print_r($row, true) . "\n";
         $discountAmount = $row['discount_amount'];
-        $isUsed = $row['used_at'] !== null; // Check if already used
+        $debug_info .= "Discount Amount: $discountAmount\n";
 
-        // Check discount type (percentage or nominal)
+        // Cek tipe diskon (persentase atau nominal)
         if ($discountAmount <= 100) {
-            // Percentage discount
-            $finalPrice = $price - ($price * ($discountAmount / 100));
+            // Diskon persentase
+            $discountedPrice = $price - ($price * ($discountAmount / 100));
         } else {
-            // Nominal discount
-            $finalPrice = $price - $discountAmount;
+            // Diskon nominal langsung
+            $discountedPrice = $price - $discountAmount;
         }
+        
+        // Pastikan harga tidak negatif
+        $finalPrice = max($discountedPrice, 0);
+        $debug_info .= "Calculated Discounted Price: $finalPrice\n";
+        
+        // Log debug info (misalnya, simpan ke file log)
+        error_log($debug_info); // Simpan ke log error PHP
 
-        // Ensure the price does not go negative
-        $finalPrice = max($finalPrice, 0);
-
-        // If the voucher has been used and is one-time use, return the original price
-        if ($row['one_time_use'] == 1 && $isUsed) {
-            return $price; // Return original price if the voucher can't be used
-        }
-
-        // If the voucher hasn't been used, update the timestamp and status
-        date_default_timezone_set('Asia/Jakarta');
-        $currentDateTime = date('Y-m-d H:i:s');
-
-        // Update the used_at timestamp
-        $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-        $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-        $updateStmt->execute();
-
-        // If it's a one-time-use voucher, delete it after use
-        if ($row['one_time_use'] == 1) {
-            $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ? AND one_time_use = 1");
-            $deleteStmt->bind_param("s", $voucherCode);
-            $deleteStmt->execute();
-        }
+        return $finalPrice;
     }
 
-    return $finalPrice; // Return final price
+    $debug_info .= "No voucher found\n";
+    error_log($debug_info); // Simpan log jika voucher tidak ditemukan
+    return $price; // Kembalikan harga asli jika voucher tidak valid
 }
+
 // Inisialisasi variabel untuk sistem voucher
 $voucherMessages = [];
 $voucherCode = '';
@@ -140,28 +130,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             <div class="product-container">
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
-                    <?php foreach ($produk as $item): 
-    $originalPrice = $item['price'];
-    $voucherCode = ''; // Ambil kode voucher dari input pengguna jika ada
-    list($finalPrice, $discountAmount) = applyVoucher($voucherCode, $originalPrice); // Menggunakan hasil dari applyVoucher
-    $discountedPrice = $originalPrice - ($discountAmount <= 100 ? ($originalPrice * ($discountAmount / 100)) : $discountAmount);
-    ?>
-    <div class="product" data-product-id="<?php echo $item['id']; ?>">
-        <div class="card-body"> 
-            <h2><?php echo htmlspecialchars($item['name']); ?></h2>
-            <div class="price-container">
-                <?php if ($discountedPrice < $originalPrice): ?>
-                    <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
-                    <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
-                <?php else: ?>
-                    <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                <?php endif; ?>
-            </div>
-            <p><?php echo htmlspecialchars($item['description']); ?></p>
-            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $finalPrice; ?>)">Buy</button>
-        </div>
-    </div>
-<?php endforeach; ?>
+                        <?php foreach ($produk as $item): 
+                            $originalPrice = $item['price'];
+                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                            ?>
+                            <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
+                                            <div class="card-body"> 
+                                                <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+                                                <div class="price-container">
+                                                    <?php if ($discountedPrice < $originalPrice): ?>
+                                                        <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                                        <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
+                                                    <?php else: ?>
+                                                        <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <p><?php echo htmlspecialchars($item['description']); ?></p>
+                                                <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
+                                            </div>
+                                        </div>
+                                        <?php endforeach; ?>
                                         <div class="voucher-form">
                                             <div id="voucher-message-container">
                                                 <?php
