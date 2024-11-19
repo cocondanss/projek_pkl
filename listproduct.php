@@ -486,7 +486,7 @@ foreach ($produk as $item):
                         created_at: new Date().toISOString()
                     }));
                     console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
-                    window.location.href('transberhasil.php'); // Menggunakan href untuk redirect
+                    window.location.replace('transberhasil.php'); // Menggunakan replace untuk redirect
                     return; // Keluar dari fungsi
                 }
 
