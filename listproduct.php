@@ -22,18 +22,18 @@ function applyVoucher($voucherCode, $price) {
     $stmt->execute();
     $result = $stmt->get_result();
     
-    if ($row = $result->fetch_assoc()) {
-        $discountAmount = $row['discount_amount'];
+    // if ($row = $result->fetch_assoc()) {
+    //     $discountAmount = $row['discount_amount'];
 
-        // Cek tipe diskon (persentase atau nominal)
-        if ($discountAmount <= 100) {
-            // Diskon persentase
-            return $price - ($price * ($discountAmount / 100));
-        } else {
-            // Diskon nominal langsung
-            return $price - $discountAmount;
-        }
-    }
+    //     // Cek tipe diskon (persentase atau nominal)
+    //     if ($discountAmount <= 100) {
+    //         // Diskon persentase
+    //         return $price - ($price * ($discountAmount / 100));
+    //     } else {
+    //         // Diskon nominal langsung
+    //         return $price - $discountAmount;
+    //     }
+    // }
 
     return $price; // Kembalikan harga asli jika voucher tidak valid
 }
