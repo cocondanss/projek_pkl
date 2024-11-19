@@ -54,16 +54,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
-        // Hitung diskon
-        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-        
-        // Simpan diskon dalam sesi
-        $_SESSION['discountedPrice'] = $discountedPrice;
-
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tetap berlaku.</p>";
+            // Gunakan diskon dari sesi jika voucher sudah digunakan
+            $discountedPrice = isset($_SESSION['discountedPrice']) ? $_SESSION['discountedPrice'] : $originalPrice;
         } else {
+            // Hitung diskon
+            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+            
+            // Simpan diskon dalam sesi
+            $_SESSION['discountedPrice'] = $discountedPrice;
+
             // Update waktu penggunaan
             date_default_timezone_set('Asia/Jakarta');
             $currentDateTime = date('Y-m-d H:i:s');
@@ -126,10 +128,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             <div class="product-container">
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
-                        <?php foreach ($produk as $item): 
-                            $originalPrice = $item['price'];
-                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                            ?>
+                    <?php foreach ($produk as $item): 
+    $originalPrice = $item['price'];
+    
+    // Tentukan harga diskon yang akan digunakan
+    $discountedPrice = applyVoucher($voucherCode, $originalPrice); // Hanya hitung sekali
+?>
                             <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                                             <div class="card-body"> 
                                                 <h2><?php echo htmlspecialchars($item['name']); ?></h2>
@@ -475,8 +479,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         amount: price,
                         created_at: new Date().toISOString()
                     }));
-                    console.log('Redirecting to transgratis.php'); // Log sebelum redirect
-                    window.location.replace('transgratis.php'); // Menggunakan replace untuk redirect
+                    console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
+                    window.location.replace('transberhasil.php'); // Menggunakan replace untuk redirect
                     return; // Keluar dari fungsi
                 }
 
