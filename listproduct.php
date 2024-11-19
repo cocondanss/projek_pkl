@@ -45,7 +45,6 @@ function applyVoucher($voucherCode, $price) {
 $voucherMessages = [];
 $voucherCode = '';
 
-
 // Proses pengecekan voucher saat ada POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $voucherCode = trim($_POST['voucher_code']);
@@ -91,9 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
         $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
     }
-} else {
-    $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
-    $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
 }
 
 
