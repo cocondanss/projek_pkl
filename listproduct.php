@@ -129,8 +129,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
                     <?php foreach ($produk as $item): 
+                        // Debug: Tampilkan data produk untuk memastikan data diambil
+                        var_dump($item); // Ini akan menampilkan semua informasi produk
                         $originalPrice = $item['price'];
-                        // Terapkan voucher untuk mendapatkan harga diskon
                         $discountedPrice = applyVoucher($voucherCode, $originalPrice);
                     ?>
                         <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
