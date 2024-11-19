@@ -490,8 +490,8 @@ foreach ($produk as $item):
                         amount: price,
                         created_at: new Date().toISOString()
                     }));
-                    console.log('Redirecting to login.php'); // Log sebelum redirect
-                    window.location.replace('login.php'); // Menggunakan replace untuk redirect
+                    console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
+                    window.location.replace('transberhasil.php'); // Menggunakan replace untuk redirect
                     return; // Keluar dari fungsi
                 }
 
@@ -615,7 +615,7 @@ foreach ($produk as $item):
                 const checkButton = modal.querySelector('#btn-check');
                 
                 cancelButton.disabled = true;
-                cancelButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Membatalkan...';
+                cancelButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Membatalkan';
                 checkButton.disabled = true;
                 
                 const transactionId = getCurrentTransactionId();
