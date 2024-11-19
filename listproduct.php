@@ -28,11 +28,14 @@ function applyVoucher($voucherCode, $price) {
         // Cek tipe diskon (persentase atau nominal)
         if ($discountAmount <= 100) {
             // Diskon persentase
-            return $price - ($price * ($discountAmount / 100));
+            $discountedPrice = $price - ($price * ($discountAmount / 100));
         } else {
             // Diskon nominal langsung
-            return $price - $discountAmount;
+            $discountedPrice = $price - $discountAmount;
         }
+
+        // Pastikan harga tidak menjadi negatif
+        return max(0, $discountedPrice);
     }
 
     return $price; // Kembalikan harga asli jika voucher tidak valid
