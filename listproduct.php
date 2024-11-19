@@ -135,10 +135,15 @@ foreach ($produk as $item):
 
     // Tentukan harga diskon yang akan digunakan
     if ($discountedPriceFromSession !== null) {
-        $discountedPrice = $discountedPriceFromSession; // Gunakan diskon dari sesi
+        // Gunakan diskon dari sesi jika ada
+        $discountedPrice = $discountedPriceFromSession; 
     } else {
-        $discountedPrice = applyVoucher($voucherCode, $originalPrice); // Hitung diskon jika tidak ada dalam sesi
+        // Hitung diskon menggunakan voucher jika belum ada diskon dalam sesi
+        $discountedPrice = applyVoucher($voucherCode, $originalPrice); 
     }
+
+    // Pastikan harga tidak negatif
+    $discountedPrice = max(0, $discountedPrice);
     ?>
     <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
         <div class="card-body"> 
