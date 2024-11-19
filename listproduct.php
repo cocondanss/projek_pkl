@@ -540,7 +540,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            action: 'create_transaction',
+                            action: 'check_payment_status',
                             product_id: id,
                             product_name: name,
                             product_price: 0,
