@@ -139,8 +139,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         // Simpan diskon dalam sesi
         $_SESSION['discountedPrice'] = $discountedPrice;
 
-        // Debugging: Tampilkan nilai diskon
-        echo "<p>Diskon dihitung: Rp " . number_format($discountedPrice, 0, ',', '.') . "</p>";
+        // // Debugging: Tampilkan nilai diskon
+        // echo "<p>Diskon dihitung: Rp " . number_format($discountedPrice, 0, ',', '.') . "</p>";
     } else {
         // Jika tidak ada voucher, gunakan harga dari sesi
         if (isset($_SESSION['discountedPrice'])) {
