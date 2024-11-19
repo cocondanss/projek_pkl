@@ -134,11 +134,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                             if (isset($_SESSION['discountedPrice'])) {
                                                 $discountedPrice = $_SESSION['discountedPrice'];
                                             } else {
-                                                // // Hitung diskon jika belum disimpan
-                                                // $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                                                // Hitung diskon jika belum disimpan
+                                                $discountedPrice = applyVoucher($voucherCode, $originalPrice);
                                                 
-                                                // Simpan diskon dalam sesi
-                                                $_SESSION['discountedPrice'] = $discountedPrice;
+                                                // // Simpan diskon dalam sesi
+                                                // $_SESSION['discountedPrice'] = $discountedPrice;
                                             }
                                         ?>
                                             <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
