@@ -59,6 +59,7 @@ $voucherMessages = [];
 $voucherCode = '';
 
 // Proses pengecekan voucher saat ada POST request
+// Proses pengecekan voucher saat ada POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $voucherCode = trim($_POST['voucher_code']);
     
@@ -68,10 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $stmt->execute();
     $result = $stmt->get_result();
     
+    // Di dalam blok yang memproses voucher
     if ($row = $result->fetch_assoc()) {
         // Cek apakah voucher sudah digunakan (untuk voucher sekali pakai)
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
+            // Voucher sudah digunakan, tampilkan pesan atau diskon yang sudah digunakan
             $voucherMessages[] = "<p class='voucher-message error'>Voucher hanya dapat digunakan sekali</p>";
+            $discountedPrice = $originalPrice; // Tetap tampilkan harga asli jika sudah digunakan
         } else {
             // Update waktu
             date_default_timezone_set('Asia/Jakarta');
@@ -82,17 +86,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
             $updateStmt->execute();
             
-            // If it's a one-time-use voucher, delete it immediately after use
-            if ($row['one_time_use'] == 1) {
-                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ? AND one_time_use = 1");
-                $deleteStmt->bind_param("s", $voucherCode);
-                $deleteStmt->execute();
-            }
+            // Jika voucher sekali pakai, Anda dapat mempertimbangkan untuk menghapusnya atau membiarkannya
+            $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ? AND one_time_use = 1");
+            $deleteStmt->bind_param("s", $voucherCode);
+            $deleteStmt->execute();
             
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
+            
+            // Hitung harga diskon
+            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
         }
     } else {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
+        $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
     }
 }
 
