@@ -476,7 +476,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         created_at: new Date().toISOString()
                     }));
                     console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
-                    window.location.replace('transberhasil.php'); // Menggunakan replace untuk redirect
+                        setTimeout(() => {
+                            window.location.href = 'transberhasil.php'; // Redirect ke halaman sukses
+                        }, 2000);
                     return; // Keluar dari fungsi
                 }
 
