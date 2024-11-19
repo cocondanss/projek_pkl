@@ -128,28 +128,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             <div class="product-container">
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
-                    <?php foreach ($produk as $item): 
-    $originalPrice = $item['price'];
-    
-    // Tentukan harga diskon yang akan digunakan
-    $discountedPrice = isset($_SESSION['discountedPrice']) ? $_SESSION['discountedPrice'] : applyVoucher($voucherCode, $originalPrice);
-?>
-    <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
-        <div class="card-body"> 
-            <h2><?php echo htmlspecialchars($item['name']); ?></h2>
-            <div class="price-container">
-                <?php if ($discountedPrice < $originalPrice): ?>
-                    <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
-                    <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
-                <?php else: ?>
-                    <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                <?php endif; ?>
-            </div>
-            <p><?php echo htmlspecialchars($item['description']); ?></p>
-            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, ',', '.'); ?>)">Buy</button>
-        </div>
-    </div>
-<?php endforeach; ?>
+                        <?php foreach ($produk as $item): 
+                            $originalPrice = $item['price'];
+                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                            ?>
+                            <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
+                                            <div class="card-body"> 
+                                                <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+                                                <div class="price-container">
+                                                    <?php if ($discountedPrice < $originalPrice): ?>
+                                                        <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                                        <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
+                                                    <?php else: ?>
+                                                        <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <p><?php echo htmlspecialchars($item['description']); ?></p>
+                                                <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
+                                            </div>
+                                        </div>
+                                        <?php endforeach; ?>
                                         <div class="voucher-form">
                                             <div id="voucher-message-container">
                                                 <?php
@@ -479,8 +477,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         amount: price,
                         created_at: new Date().toISOString()
                     }));
-                    console.log('Redirecting to transgratis.php'); // Log sebelum redirect
-                    window.location.replace('transgratis.php'); // Menggunakan replace untuk redirect
+                    console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
+                    window.location.replace('transberhasil.php'); // Menggunakan replace untuk redirect
                     return; // Keluar dari fungsi
                 }
 
