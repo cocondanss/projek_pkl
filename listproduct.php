@@ -148,21 +148,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             </div>
                         </div>
                     <?php endforeach; ?>
-                                        <div class="voucher-form">
-                                            <div id="voucher-message-container">
-                                                <?php
-                                                // Tampilkan semua pesan voucher
-                                                foreach ($voucherMessages as $message) {
-                                                echo $message;
-                                                }
-                                                ?>
-                                            </div>
-                                <form id="voucher-form" method="POST">
-                                    <input type="text" name="voucher_code" id="voucher-input" placeholder="Masukkan kode voucher" onclick="showVirtualKeyboard()">
-                                    <button type="submit">Terapkan Voucher</button>
-                                </form>
+                            <div class="voucher-form">
+                            <div id="voucher-message-container">
+                                <?php
+                                    // Tampilkan semua pesan voucher
+                                    foreach ($voucherMessages as $message) {
+                                    echo $message;
+                                     }
+                                    ?>
                             </div>
+                            <form id="voucher-form" method="POST">
+                                <input type="text" name="voucher_code" id="voucher-input" placeholder="Masukkan kode voucher" onclick="showVirtualKeyboard()">
+                                <button type="submit">Terapkan Voucher</button>
+                            </form>
                         </div>
+                    </div>
                 </div>
             </div>
         </div>
