@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     <div class="product-list" style="background: none;" id="product-list">
                     <?php foreach ($produk as $item): 
                         $originalPrice = $item['price'];
-                        $discountedPrice = isset($_SESSION['discountedPrice']) ? $_SESSION['discountedPrice'] : applyVoucher($voucherCode, $originalPrice);
+                        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
                     ?>
                         <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                             <div class="card-body"> 
@@ -477,8 +477,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         amount: price,
                         created_at: new Date().toISOString()
                     }));
-                    console.log('Redirecting to transgratis.php'); // Log sebelum redirect
-                    window.location.replace('transgratis.php'); // Menggunakan replace untuk redirect
+                    console.log('Redirecting to transberhasil.php'); // Log sebelum redirect
+                    window.location.replace('transberhasil.php'); // Menggunakan replace untuk redirect
                     return; // Keluar dari fungsi
                 }
 
