@@ -470,7 +470,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     }
 
     // Jika harga adalah 0, langsung arahkan ke halaman berhasil
-    if (price <= 0) {
+    if (price <= 0,00) {
         window.location.href = 'transberhasil.php'; // Ganti dengan URL halaman sukses Anda
         return;
     }
