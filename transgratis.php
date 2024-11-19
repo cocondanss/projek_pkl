@@ -1,5 +1,4 @@
 <?php
-session_start(); // Ensure session is started
 
 $transactionData = $_SESSION['successful_transaction'];
 
