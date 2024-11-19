@@ -128,10 +128,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             <div class="product-container">
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
-                        <?php foreach ($produk as $item): 
-                            $originalPrice = $item['price'];
-                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                            ?>
+                    <?php foreach ($produk as $item): 
+    $originalPrice = $item['price'];
+    
+    // Hitung harga diskon
+    $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+    
+    // Simpan ke sesi hanya jika diskon valid
+    if ($discountedPrice < $originalPrice) {
+        $_SESSION['discountedPrice'] = $discountedPrice;
+    } else {
+        unset($_SESSION['discountedPrice']); // Hapus dari sesi jika tidak ada diskon
+    }
+?>
                             <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                                             <div class="card-body"> 
                                                 <h2><?php echo htmlspecialchars($item['name']); ?></h2>
