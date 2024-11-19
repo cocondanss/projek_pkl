@@ -471,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     }
 
     // Jika harga adalah Rp 0, langsung arahkan ke halaman transaksi berhasil
-    if (price == 0) { // Menggunakan <= 0 untuk mencakup kemungkinan nilai negatif
+    if (price <= 0) { // Menggunakan <= 0 untuk mencakup kemungkinan nilai negatif
         const orderId = 'TRX-' + Date.now(); // Simulasi ID transaksi
         sessionStorage.setItem('successful_transaction', JSON.stringify({
             transaction_id: orderId,
@@ -483,6 +483,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         window.location.href = 'transberhasil.php'; // Redirect ke halaman transaksi berhasil
         return; // Keluar dari fungsi
     }
+
+    // Jika harga lebih dari Rp 0, tampilkan modal pembayaran
+    // Kode untuk menampilkan modal pembayaran di sini...
+}
 
     // Jika harga lebih dari Rp 0, buat transaksi
     createTransaction(id, name, price, discount)
