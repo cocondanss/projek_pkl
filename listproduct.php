@@ -53,19 +53,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Di dalam blok yang memproses voucher
     if ($row = $result->fetch_assoc()) {
-        // Cek apakah voucher sudah digunakan
-        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            // Voucher sudah digunakan, tampilkan pesan
-            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tetap berlaku.</p>";
-        } 
-        
         // Hitung diskon
         $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+        
+        // Simpan diskon dalam sesi
+        $_SESSION['discountedPrice'] = $discountedPrice;
 
-        // Jika voucher belum digunakan, lakukan update dan hapus
-        if ($row['one_time_use'] == 0 || $row['used_at'] === null) {
+        // Cek apakah voucher sudah digunakan
+        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tetap berlaku.</p>";
+        } else {
             // Update waktu penggunaan
             date_default_timezone_set('Asia/Jakarta');
             $currentDateTime = date('Y-m-d H:i:s');
@@ -128,26 +126,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             <div class="product-container">
                 <div class="row">
                     <div class="product-list" style="background: none;" id="product-list">
-                        <?php foreach ($produk as $item): 
-                            $originalPrice = $item['price'];
-                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                            ?>
-                            <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
-                                            <div class="card-body"> 
-                                                <h2><?php echo htmlspecialchars($item['name']); ?></h2>
-                                                <div class="price-container">
-                                                    <?php if ($discountedPrice < $originalPrice): ?>
-                                                        <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
-                                                        <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
-                                                    <?php else: ?>
-                                                        <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <p><?php echo htmlspecialchars($item['description']); ?></p>
-                                                <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
-                                            </div>
-                                        </div>
-                                        <?php endforeach; ?>
+                    <?php 
+// Ambil diskon dari sesi jika ada
+$discountedPriceFromSession = isset($_SESSION['discountedPrice']) ? $_SESSION['discountedPrice'] : null;
+
+foreach ($produk as $item): 
+    $originalPrice = $item['price'];
+
+    // Tentukan harga diskon yang akan digunakan
+    if ($discountedPriceFromSession !== null) {
+        $discountedPrice = $discountedPriceFromSession; // Gunakan diskon dari sesi
+    } else {
+        $discountedPrice = applyVoucher($voucherCode, $originalPrice); // Hitung diskon jika tidak ada dalam sesi
+    }
+    ?>
+    <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
+        <div class="card-body"> 
+            <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+            <div class="price-container">
+                <?php if ($discountedPrice < $originalPrice): ?>
+                    <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                    <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
+                <?php else: ?>
+                    <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?></span></p>
+                <?php endif; ?>
+            </div>
+            <p><?php echo htmlspecialchars($item['description']); ?></p>
+            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
+        </div>
+    </div>
+<?php endforeach; ?>
                                         <div class="voucher-form">
                                             <div id="voucher-message-container">
                                                 <?php
