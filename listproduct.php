@@ -129,7 +129,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     <div class="product-list" style="background: none;" id="product-list">
                     <?php foreach ($produk as $item): 
                             $originalPrice = $item['price'];
-                            $discountedPrice = isset($_SESSION['discountedPrice']) ? $_SESSION['discountedPrice'] : $originalPrice;
+                            if (isset($_POST['voucher_code']) && !empty(trim($_POST['voucher_code']))) {
+                                $voucherCode = trim($_POST['voucher_code']);
+                                // Hitung diskon berdasarkan voucher
+                                $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                                // Simpan diskon dalam sesi
+                                $_SESSION['discountedPrice'] = $discountedPrice;
+                            } else {
+                                // Jika tidak ada voucher, gunakan harga asli
+                                $discountedPrice = isset($_SESSION['discountedPrice']) ? $_SESSION['discountedPrice'] : $originalPrice;
+                            }
                             ?>
                                 <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                                     <div class="card-body"> 
