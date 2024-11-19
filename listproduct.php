@@ -117,63 +117,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     <link href="css/styleLP.css" rel="stylesheet" />
 </head>
 <body>
-<div class="container-index" style="max-width: 100%;">
-    <div class="header-index">
-        <div class="container-button">
-            <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal"
-                style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
-                <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
-            </button>
-        </div>
-        <div class="product-container">
-            <div class="row">
-                <div class="product-list" style="background: none;" id="product-list">
-                    <?php if (!empty($produk)): ?>
-                        <?php foreach ($produk as $item): 
-                            $originalPrice = $item['price'];
-                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                        ?>
-                            <div class="product" data-product-id="<?php echo $item['id']; ?>">
-                                <div class="card-body"> 
-                                    <h2><?php echo htmlspecialchars($item['name']); ?></h2>
-                                    <div class="price-container">
-                                        <?php if ($discountedPrice < $originalPrice): ?>
-                                            <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
-                                            <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
-                                        <?php else: ?>
-                                            <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
-                                        <?php endif; ?>
-                                    </div>
-                                    <p><?php echo htmlspecialchars($item['description']); ?></p>
-                                    <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">Buy</button>
+    <div class="container-index" style="max-width: 100%;">
+        <div class="header-index">
+            <div class="container-button">
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal"
+                    style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
+                    <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
+                </button>
+            </div>
+            <div class="product-container">
+                <div class="row">
+                    <div class="product-list" style="background: none;" id="product-list">
+                    <?php foreach ($produk as $item): 
+                        $originalPrice = $item['price'];
+                        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                    ?>
+                        <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
+                            <div class="card-body"> 
+                                <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+                                <div class="price-container">
+                                    <?php if ($discountedPrice < $originalPrice): ?>
+                                        <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                        <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
+                                    <?php else: ?>
+                                        <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                    <?php endif; ?>
                                 </div>
+                                <p><?php echo htmlspecialchars($item['description']); ?></p>
+                                <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">Buy</button>
                             </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p>Tidak ada produk yang tersedia.</p>
-                    <?php endif; ?>
-                    <div class="voucher-form">
-                        <div id="voucher-message-container">
-                            <?php
-                            if (!empty($voucherMessages)) {
-                                foreach ($voucherMessages as $message) {
-                                    echo $message;
-                                }
-                            } else {
-                                echo "<p>Tidak ada pesan voucher.</p>";
-                            }
-                            ?>
                         </div>
-                        <form id="voucher-form" method="POST">
-                            <input type="text" name="voucher_code" id="voucher-input" placeholder="Masukkan kode voucher" onclick="showVirtualKeyboard()">
-                            <button type="submit">Terapkan Voucher</button>
-                        </form>
-                    </div>
+                    <?php endforeach; ?>
+                                        <div class="voucher-form">
+                                            <div id="voucher-message-container">
+                                                <?php
+                                                // Tampilkan semua pesan voucher
+                                                foreach ($voucherMessages as $message) {
+                                                echo $message;
+                                                }
+                                                ?>
+                                            </div>
+                                <form id="voucher-form" method="POST">
+                                    <input type="text" name="voucher_code" id="voucher-input" placeholder="Masukkan kode voucher" onclick="showVirtualKeyboard()">
+                                    <button type="submit">Terapkan Voucher</button>
+                                </form>
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
     <div class="modal fade" id="virtualKeyboardModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content" style="width: 120%   ; right: 50px;">
