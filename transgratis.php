@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 
 $transactionData = $_SESSION['successful_transaction'];
 
