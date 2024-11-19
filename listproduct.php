@@ -55,14 +55,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     
     // Di dalam blok yang memproses voucher
     if ($row = $result->fetch_assoc()) {
-        // Cek apakah voucher sudah digunakan (untuk voucher sekali pakai)
+        // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            // Voucher sudah digunakan, tampilkan pesan atau diskon yang sudah digunakan
+            // Voucher sudah digunakan, tampilkan pesan
             $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tetap berlaku.</p>";
             // Hitung diskon meski sudah digunakan
             $discountedPrice = applyVoucher($voucherCode, $originalPrice);
         } else {
-            // Hitung diskon sebelum menghapus voucher
+            // Hitung diskon
             $discountedPrice = applyVoucher($voucherCode, $originalPrice);
             
             // Update waktu penggunaan
@@ -81,11 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
+    }
     } else {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
         $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
     }
-}
+
 
 // Ambil data produk yang visible
 $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
