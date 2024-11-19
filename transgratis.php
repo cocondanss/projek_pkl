@@ -1,6 +1,10 @@
 <?php
+session_start(); // Ensure session is started
 
 $transactionData = $_SESSION['successful_transaction'];
+
+// Retrieve product name from session
+$productName = $transactionData['product_name']; // Get product name from session
 
 $createdAtUTC = $transactionData['created_at'];
 $tanggal = new DateTime($createdAtUTC, new DateTimeZone('UTC')); // Set zona waktu ke UTC
