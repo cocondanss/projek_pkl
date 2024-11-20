@@ -106,15 +106,15 @@ function create_transaction($data) {
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
-        // Jika total_price adalah 0, langsung arahkan ke halaman sukses
+        // Jika total_price adalah 0, langsung simpan transaksi dan redirect
         if ($total_price == 0) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Transaksi berhasil, tidak ada pembayaran yang diperlukan.',
-                'order_id' => $order_id
-            ]);
+            completeZeroPriceTransaction($order_id, $product_id, $product_name);
             return; // Keluar dari fungsi
         }
+
+        // Simpan transaksi ke database
+        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
+        $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
         // Siapkan parameter Midtrans
         $transaction_params = [
@@ -168,6 +168,32 @@ function create_transaction($data) {
             'message' => $e->getMessage()
         ]);
     }
+}
+/**
+ * Menyelesaikan transaksi dengan harga 0 dan redirect ke halaman sukses
+ * @param string $order_id
+ * @param string $product_id
+ * @param string $product_name
+ * @return void
+ */
+function completeZeroPriceTransaction($order_id, $product_id, $product_name) {
+    global $db;
+
+    // Simpan transaksi ke database
+    $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'settlement')");
+    $stmt->execute([$order_id, $product_id, $product_name, 0]);
+
+    // Simpan data transaksi ke session
+    $_SESSION['successful_transaction'] = [
+        'transaction_id' => $order_id,
+        'product_name' => $product_name,
+        'amount' => 0,
+        'created_at' => date('Y-m-d H:i:s')
+    ];
+
+    // Redirect ke halaman sukses
+    header('Location: transberhasil.php');
+    exit();
 }
 
 /**
