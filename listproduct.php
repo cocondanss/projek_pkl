@@ -44,7 +44,7 @@ function applyVoucher($voucherCode, $price) {
 $voucherMessages = [];
 $voucherCode = '';
 $originalPrice = 0; // Inisialisasi harga asli
-// $discountedPrice = 0; // Inisialisasi harga diskon
+$discountedPrice = 0; // Inisialisasi harga diskon
 
 // Proses pengecekan voucher saat ada POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
