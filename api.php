@@ -112,10 +112,6 @@ function create_transaction($data) {
             return true;
         }
 
-        // Simpan transaksi ke database
-        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
-        $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
-
         // Siapkan parameter Midtrans
         $transaction_params = [
             'payment_type' => 'qris',
