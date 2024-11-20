@@ -98,14 +98,7 @@ if (isset($_SESSION['lastUsedDiscount'])) {
     $discountedPrice = $originalPrice; // Jika tidak ada diskon, gunakan harga asli
 }
 
-// Tampilkan harga diskon
-echo "<p>Harga setelah diskon: Rp " . number_format($discountedPrice, 0, ',', '.') . "</p>";
-    } else {
-        $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
-        $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
-    }
-
-
+}
 // Ambil data produk yang visible
 $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
 if (!$produk) {
