@@ -131,12 +131,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     <div class="product-list" style="background: none;" id="product-list">
                     <?php foreach ($produk as $item): 
                         $originalPrice = $item['price'];
-                        if (isset($_SESSION['lastUsedDiscount'])) {
-                            $discountedPrice = $_SESSION['lastUsedDiscount'];
-                             // Debugging
-                        } else {
-                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                        }            
+                        $discountedPrice = $_SESSION['lastUsedDiscount'];
+                             // Debugging         
                     ?>
                         <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                             <div class="card-body"> 
