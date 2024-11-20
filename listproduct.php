@@ -13,32 +13,30 @@ require 'function.php';
  * @param float $price - Harga asli produk
  * @return float - Harga setelah penerapan voucher
  */
-function applyVoucher($voucherCode, $price) {
-    global $conn;
+function applyVoucher($voucherCode, $price) { 
+    global $conn; 
 
-    // Persiapkan query untuk mencari voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
-    $stmt->bind_param("s", $voucherCode);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($row = $result->fetch_assoc()) {
-        $discountAmount = $row['discount_amount'];
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? "); 
+    $stmt->bind_param("s", $voucherCode); 
+    $stmt->execute(); 
+    $result = $stmt->get_result(); 
 
-        // Cek tipe diskon (persentase atau nominal)
-        if ($discountAmount <= 100) {
-            // Diskon persentase
-            $discountedPrice = $price - ($price * ($discountAmount / 100));
-        } else {
-            // Diskon nominal langsung
-            $discountedPrice = $price - $discountAmount;
-        }
+    if ($row = $result->fetch_assoc()) { 
+        $discountAmount = $row['discount_amount']; 
+        error_log("Discount Amount: " . $discountAmount); // Log diskon yang diambil dari database
 
-        // Pastikan harga tidak menjadi negatif
-        return max(0, $discountedPrice);
-    }
+        if ($discountAmount <= 100) { 
+            $discountedPrice = $price - ($price * ($discountAmount / 100)); 
+        } else { 
+            $discountedPrice = $price - $discountAmount; 
+        } 
 
-    return $price; // Kembalikan harga asli jika voucher tidak valid
+        error_log("Original Price: " . $price . " Discounted Price: " . $discountedPrice); // Log harga asli dan harga diskon
+
+        return max(0, $discountedPrice); 
+    } 
+
+    return $price; // Kembalikan harga asli jika voucher tidak valid 
 }
 
 // Inisialisasi variabel untuk sistem voucher
