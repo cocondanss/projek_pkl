@@ -43,7 +43,7 @@ function applyVoucher($voucherCode, $price) {
 // Inisialisasi variabel untuk sistem voucher
 $voucherMessages = [];
 $voucherCode = '';
-// $originalPrice = 0; // Inisialisasi harga asli
+$originalPrice = 0; // Inisialisasi harga asli
 // $discountedPrice = 0; // Inisialisasi harga diskon
 
 // Proses pengecekan voucher saat ada POST request
