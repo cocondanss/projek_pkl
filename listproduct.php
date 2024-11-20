@@ -16,20 +16,25 @@ require 'function.php';
 function applyVoucher($voucherCode, $price) {
     global $conn;
 
+    // Persiapkan dan eksekusi query untuk mendapatkan voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? ");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // Cek apakah voucher ditemukan
     if ($row = $result->fetch_assoc()) {
         $discountAmount = $row['discount_amount'];
-        
-        // Logika untuk menghitung harga setelah diskon
+        echo "Discount Amount: " . $discountAmount . "<br>"; // Debugging
+
+        // Hitung harga setelah diskon
         if ($discountAmount <= 100) { // Jika diskon dalam persentase
             $discountedPrice = $price - ($price * ($discountAmount / 100));
         } else { // Jika diskon dalam nominal
             $discountedPrice = $price - $discountAmount;
         }
+
+        echo "Discounted Price: " . $discountedPrice . "<br>"; // Debugging
 
         return max(0, $discountedPrice); // Pastikan harga tidak negatif
     }
