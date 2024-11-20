@@ -471,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 }
 
                 // Jika harga lebih dari Rp 0, buat transaksi
-                if (price > 0) {
+                if (price > 1) {
                     createTransaction(id, name, price, discount)
                         .then(response => {
                             if (response.success) {
