@@ -130,7 +130,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     <div class="product-list" style="background: none;" id="product-list">
                     <?php foreach ($produk as $item): 
                         $originalPrice = $item['price'];
-                        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+
+                        // Cek apakah ada diskon yang disimpan dari voucher yang sudah digunakan
+                        if (isset($_SESSION['lastUsedDiscount'])) {
+                            $discountedPrice = $_SESSION['lastUsedDiscount'];
+                        } else {
+                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                        }
                     ?>
                         <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                             <div class="card-body"> 
@@ -154,8 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                     // Tampilkan semua pesan voucher
                                     foreach ($voucherMessages as $message) {
                                     echo $message;
-                                     }
-                                    ?>
+                                    }
+                                ?>
                             </div>
                             <form id="voucher-form" method="POST">
                                 <input type="text" name="voucher_code" id="voucher-input" placeholder="Masukkan kode voucher" onclick="showVirtualKeyboard()">
