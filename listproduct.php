@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         $originalPrice = $item['price'];
                         if (isset($_SESSION['lastUsedDiscount'])) {
                             $discountedPrice = $_SESSION['lastUsedDiscount'];
-                            echo "Diskon yang diambil dari sesi: " . $discountedPrice . "<br>"; // Debugging
+                             // Debugging
                         } else {
                             $discountedPrice = applyVoucher($voucherCode, $originalPrice);
                         }            
