@@ -465,76 +465,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
     // Validasi parameter
-    if (!id || !name || typeof price !== 'number' || isNaN(price)) {
+    if (!id || !name || typeof price !== 'number') {
         console.error('Parameter tidak valid');
         return;
     }
 
-    // Logika untuk menampilkan modal pembayaran
-    // Misalnya, mengisi elemen modal dengan informasi produk
-    document.getElementById('modalProductName').innerText = name;
-    document.getElementById('modalProductPrice').innerText = price.toFixed(2);
-    document.getElementById('modalProductDiscount').innerText = discount.toFixed(2);
+    // Jika harga kurang dari atau sama dengan Rp 1, arahkan ke halaman transberhasil
+    if (price <= 1) {
+        // Arahkan ke halaman transberhasil
+        window.location.href = 'transberhasil.php';
+        return; // Keluar dari fungsi
+    }
 
-    // Tampilkan modal
-    $('#paymentModal').modal('show');
-}
+    // Jika harga lebih dari Rp 0, buat transaksi
+    createTransaction(id, name, price, discount)
+        .then(response => {
+            if (response.success) {
+                // Hapus modal lama jika ada
+                const existingModal = document.getElementById('qrCodeModal');
+                if (existingModal) existingModal.remove();
 
-            // Jika harga lebih dari Rp 0, buat transaksi
-            createTransaction(id, name, price, discount)
-                .then(response => {
-                    if (response.success) {
-                        // Hapus modal lama jika ada
-                        const existingModal = document.getElementById('qrCodeModal');
-                        if (existingModal) existingModal.remove();
-
-                        // Buat elemen modal baru
-                        const modalHTML = `
-                            <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="qr-code-container">
-                                                <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
-                                            </div>
-                                            <div id="countdown"></div>
-                                            <div class="status-message"></div>
-                                            <div class="button-container">
-                                                <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
-                                                <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
-                                            </div>
-                                        </div>
+                // Buat elemen modal baru
+                const modalHTML = `
+                    <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="qr-code-container">
+                                        <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
+                                    </div>
+                                    <div id="countdown"></div>
+                                    <div class="status-message"></div>
+                                    <div class="button-container">
+                                        <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
+                                        <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
                                     </div>
                                 </div>
                             </div>
-                        `;
+                        </div>
+                    </div>
+                `;
 
-                        // Tambahkan modal ke body
-                        document.body.insertAdjacentHTML('beforeend', modalHTML);
+                // Tambahkan modal ke body
+                document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-                        // Set transaction ID
-                        const qrCodeModal = document.getElementById('qrCodeModal');
-                        qrCodeModal.setAttribute('data-transaction-id', response.order_id);
+                // Set transaction ID
+                const qrCodeModal = document.getElementById('qrCodeModal');
+                qrCodeModal.setAttribute('data-transaction-id', response.order_id);
 
-                        // Start the countdown timer
-                        startCountdown(30 * 60); // 30 minutes in seconds
+                // Start the countdown timer
+                startCountdown(30 * 60); // 30 minutes in seconds
 
-                        // Tampilkan modal
-                        const bootstrapModal = new bootstrap.Modal(qrCodeModal);
-                        bootstrapModal.show();
-                    } else {
-                        alert('Error: ' + response.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error in createTransaction:', error);
-                    alert('Terjadi kesalahan saat membuat transaksi.');
-                });
-        }
+                // Tampilkan modal
+                const bootstrapModal = new bootstrap.Modal(qrCodeModal);
+                bootstrapModal.show();
+            } else {
+                alert('Error: ' + response.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error in createTransaction:', error);
+            alert('Terjadi kesalahan saat membuat transaksi.');
+        });
+}
 
 
             // Add countdown timer function
