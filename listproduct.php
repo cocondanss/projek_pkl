@@ -13,33 +13,33 @@ require 'function.php';
  * @param float $price - Harga asli produk
  * @return float - Harga setelah penerapan voucher
  */
-function applyVoucher($voucherCode, $price) {
-    global $conn;
+function applyVoucher($voucherCode, $price) { 
+    global $conn; 
 
-    // Persiapkan query untuk mencari voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
-    $stmt->bind_param("s", $voucherCode);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($row = $result->fetch_assoc()) {
-        $discountAmount = $row['discount_amount'];
+    // Persiapkan query untuk mencari voucher 
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? "); 
+    $stmt->bind_param("s", $voucherCode); 
+    $stmt->execute(); 
+    $result = $stmt->get_result(); 
 
-        // Cek tipe diskon (persentase atau nominal)
-        if ($discountAmount <= 100) {
-            // Diskon persentase
-            $discountedPrice = $price - ($price * ($discountAmount / 100));
-        } else {
-            // Diskon nominal langsung
-            $discountedPrice = $price - $discountAmount;
-        }
+    if ($row = $result->fetch_assoc()) { 
+        $discountAmount = $row['discount_amount']; 
 
-        // Pastikan harga tidak menjadi negatif
-        return max(0, $discountedPrice);
-    }
+        // Cek tipe diskon (persentase atau nominal) 
+        if ($discountAmount <= 100) { 
+            // Diskon persentase 
+            $discountedPrice = $price - ($price * ($discountAmount / 100)); 
+        } else { 
+            // Diskon nominal langsung 
+            $discountedPrice = $price - $discountAmount; 
+        } 
 
-    return $price; // Kembalikan harga asli jika voucher tidak valid
-}
+        // Pastikan harga tidak menjadi negatif 
+        return max(0, $discountedPrice); 
+    } 
+
+    return $price; // Kembalikan harga asli jika voucher tidak valid 
+} 
 
 // Inisialisasi variabel untuk sistem voucher
 $voucherMessages = [];
@@ -93,6 +93,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
     }
 }
+
+foreach ($produk as $item): 
+    $originalPrice = $item['price']; 
+    $discountedPrice = applyVoucher($voucherCode, $originalPrice); 
+
+    // Jika voucher sudah digunakan, tampilkan harga diskon
+    if ($discountedPrice < $originalPrice) {
+        echo "<p class='original-price'>Rp <span>" . number_format($originalPrice, 0, ',', '.') . ",00</span></p>"; 
+        echo "<p class='discounted-price'>Rp <span>" . number_format($discountedPrice, 0, ',', '.') . ",00</span></p>"; 
+    } else {
+        echo "<p>Rp <span>" . number_format($originalPrice, 0, ',', '.') . ",00</span></p>"; 
+    }
+endforeach; 
 
 // Ambil data produk yang visible
 $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
