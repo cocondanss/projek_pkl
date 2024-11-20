@@ -471,7 +471,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     }
 
     // Jika harga kurang dari atau sama dengan Rp 1, arahkan ke halaman transberhasil
-    if (price == 0,00) {
+    if (price <= 1) {
         // Arahkan ke halaman transberhasil
         window.location.href = 'transberhasil.php';
         return; // Keluar dari fungsi
