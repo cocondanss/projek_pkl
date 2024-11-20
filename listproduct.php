@@ -462,13 +462,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
 
             function showPaymentModal(id, name, price, discount = 0) {
-                console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
+    console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
-                // Validasi parameter
-                if (!id || !name || price === undefined) {
-                    console.error('Parameter tidak valid');
-                    return;
-                }
+    // Validasi parameter
+    if (!id || !name || typeof price !== 'number' || isNaN(price)) {
+        console.error('Parameter tidak valid');
+        return;
+    }
+
+    // Logika untuk menampilkan modal pembayaran
+    // Misalnya, mengisi elemen modal dengan informasi produk
+    document.getElementById('modalProductName').innerText = name;
+    document.getElementById('modalProductPrice').innerText = price.toFixed(2);
+    document.getElementById('modalProductDiscount').innerText = discount.toFixed(2);
+
+    // Tampilkan modal
+    $('#paymentModal').modal('show');
+}
 
             // Jika harga lebih dari Rp 0, buat transaksi
             createTransaction(id, name, price, discount)
