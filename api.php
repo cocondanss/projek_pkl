@@ -108,7 +108,8 @@ function create_transaction($data) {
 
         // Jika total_price adalah 0, langsung simpan transaksi dan redirect
         if ($total_price == 0) {
-            return completeZeroPriceTransaction($order_id, $product_id, $product_name);
+            completeZeroPriceTransaction($order_id, $product_id, $product_name);
+            return true;
         }
 
         // Simpan transaksi ke database
