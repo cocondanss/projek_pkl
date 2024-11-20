@@ -100,16 +100,20 @@ function create_transaction($data) {
         $discount = isset($data['discount']) ? intval($data['discount']) : 0;
 
         // Hitung total harga
-        echo $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
+        $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
         // Simpan transaksi ke database
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
-        // Jika total_price adalah 0, langsung simpan transaksi dan redirect
+        // Jika total_price adalah 0, langsung arahkan ke halaman sukses
         if ($total_price == 0) {
-            completeZeroPriceTransaction($order_id, $product_id, $product_name);
-            return;
+            echo json_encode([
+                'success' => true,
+                'message' => 'Transaksi berhasil, tidak ada pembayaran yang diperlukan.',
+                'order_id' => $order_id
+            ]);
+            return; // Keluar dari fungsi
         }
 
         // Siapkan parameter Midtrans
@@ -164,32 +168,6 @@ function create_transaction($data) {
             'message' => $e->getMessage()
         ]);
     }
-}
-/**
- * Menyelesaikan transaksi dengan harga 0 dan redirect ke halaman sukses
- * @param string $order_id
- * @param string $product_id
- * @param string $product_name
- * @return void
- */
-function completeZeroPriceTransaction($order_id, $product_id, $product_name) {
-    global $db;
-
-    // Simpan transaksi ke database
-    $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'settlement')");
-    $stmt->execute([$order_id, $product_id, $product_name, 0]);
-
-    // Simpan data transaksi ke session
-    $_SESSION['successful_transaction'] = [
-        'transaction_id' => $order_id,
-        'product_name' => $product_name,
-        'amount' => 0,
-        'created_at' => date('Y-m-d H:i:s')
-    ];
-
-    // Redirect ke halaman sukses
-    header('Location: transberhasil.php');
-    exit();
 }
 
 /**
