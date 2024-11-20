@@ -40,11 +40,11 @@ while ($row = mysqli_fetch_assoc($result)) {
                         
                         // Array menu navigasi
                         $menu_items = [
-                            'produk' => ['file' => 'index.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Produk'],
-                            'transaksi' => ['file' => 'transaksi.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Transaksi'],
-                            'voucher' => ['file' => 'voucher.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Voucher'],
-                            'settings' => ['file' => 'settings.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Settings'],
-                            'logout' => ['file' => 'logout.php', 'icon' => 'fas fa-tachometer-alt', 'text' => 'Logout']
+                            'produk' => ['file' => 'index.php', 'icon' => 'fas fa-box', 'text' => 'Produk'],
+                            'transaksi' => ['file' => 'transaksi.php', 'icon' => 'fas fa-exchange-alt', 'text' => 'Transaksi'],
+                            'voucher' => ['file' => 'voucher.php', 'icon' => 'fas fa-tags', 'text' => 'Voucher'],
+                            'settings' => ['file' => 'settings.php', 'icon' => 'fas fa-cog', 'text' => 'Settings'],
+                            'logout' => ['file' => 'logout.php', 'icon' => 'fas fa-sign-out-alt', 'text' => 'Logout']
                         ];
 
                         // Membuat menu items
