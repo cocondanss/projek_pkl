@@ -25,16 +25,14 @@ function applyVoucher($voucherCode, $price) {
     // Cek apakah voucher ditemukan
     if ($row = $result->fetch_assoc()) {
         $discountAmount = $row['discount_amount'];
-        echo "Discount Amount: " . $discountAmount . "<br>"; // Debugging
+        
 
         // Hitung harga setelah diskon
         if ($discountAmount <= 100) { // Jika diskon dalam persentase
             $discountedPrice = $price - ($price * ($discountAmount / 100));
         } else { // Jika diskon dalam nominal
             $discountedPrice = $price - $discountAmount;
-        }
-
-        echo "Discounted Price: " . $discountedPrice . "<br>"; // Debugging
+        } 
 
         return max(0, $discountedPrice); // Pastikan harga tidak negatif
     }
