@@ -60,13 +60,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tetap berlaku.</p>";
             // Gunakan diskon dari sesi jika voucher sudah digunakan
-            $discountedPrice = isset($_SESSION['discountedPrice']) ? $_SESSION['discountedPrice'] : $originalPrice;
+            $discountedPrice = isset($_SESSION['lastUsedDiscount']) ? $_SESSION['lastUsedDiscount'] : $originalPrice;
         } else {
             // Hitung diskon
             $discountedPrice = applyVoucher($voucherCode, $originalPrice);
             
             // Simpan diskon dalam sesi
-            $_SESSION['discountedPrice'] = $discountedPrice;
+            $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
 
             // Update waktu penggunaan
             date_default_timezone_set('Asia/Jakarta');
@@ -79,8 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             
             // Hapus voucher dari database jika sekali pakai
             if ($row['one_time_use'] == 1) {
-                // Simpan informasi diskon ke sesi sebelum menghapus voucher
-                $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
                 $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
                 $deleteStmt->bind_param("s", $voucherCode);
                 $deleteStmt->execute();
@@ -112,7 +110,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
         // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
         $order_id = 'TRX-' . time() . '-' . uniqid();
         $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
-        $stmt->execute([$order_id, $productId, $productName, $productPrice]);
+        $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+        $stmt->execute();
 
         // Arahkan ke halaman transberhasil
         header("Location: transberhasil.php");
@@ -122,7 +121,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
     // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
     $order_id = 'TRX-' . time() . '-' . uniqid();
     $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
-    $stmt->execute([$order_id, $productId, $productName, $productPrice]);
+    $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+    $stmt->execute();
 
     // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
     // ...
