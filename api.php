@@ -108,11 +108,6 @@ function create_transaction($data) {
 
         // Jika total_price adalah 0, langsung arahkan ke halaman sukses
         if ($total_price == 0) {
-            // Simpan transaksi ke database
-            $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'settlement')");
-            $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
-
-            // Kembalikan respons JSON untuk pengalihan
             echo json_encode([
                 'success' => true,
                 'redirect' => 'transberhasil.php' // Kembalikan URL untuk pengalihan
