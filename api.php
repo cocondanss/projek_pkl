@@ -102,12 +102,9 @@ function create_transaction($data) {
         // Hitung total harga
         $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
-        // Simpan transaksi ke database
-        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
-        $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
-
         // Jika total_price adalah 0, langsung arahkan ke halaman sukses
         if ($total_price == 0) {
+            // Simpan transaksi ke database jika perlu, atau bisa juga hanya mengarahkan
             echo json_encode([
                 'success' => true,
                 'message' => 'Transaksi berhasil, tidak ada pembayaran yang diperlukan.',
@@ -115,6 +112,10 @@ function create_transaction($data) {
             ]);
             return; // Keluar dari fungsi
         }
+
+        // Simpan transaksi ke database
+        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
+        $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
         // Siapkan parameter Midtrans
         $transaction_params = [
@@ -169,7 +170,6 @@ function create_transaction($data) {
         ]);
     }
 }
-
 /**
  * Memeriksa status pembayaran
  * @param array $data Data dengan transaction_id
