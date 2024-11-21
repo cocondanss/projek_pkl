@@ -120,12 +120,12 @@ function create_transaction($data) {
             'payment_type' => 'qris',
             'transaction_details' => [
                 'order_id' => $order_id,
-                'gross_amount' => intval($total_price), // Pastikan ini adalah integer
-                'currency' => 'IDR' // Pastikan Anda menyertakan mata uang
+                'gross_amount' => intval($total_price),
+                'currency' => 'IDR'
             ],
             'item_details' => [[
                 'id' => $product_id,
-                'price' => intval($total_price), // Pastikan ini adalah integer
+                'price' => intval($total_price),
                 'quantity' => 1,
                 'name' => $product_name
             ]],
