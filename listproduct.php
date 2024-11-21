@@ -501,11 +501,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
         createTransaction(id, name, price, discount)
             .then(response => {
-                if (response.success) {
+                if (response && response.success) {
                     // Arahkan ke halaman transberhasil
                     window.location.href = 'transberhasil.php';
                 } else {
-                    alert('Error: ' + response.message);
+                    alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
                 }
             })
             .catch(error => {
@@ -518,7 +518,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     // Jika harga lebih dari Rp 0, buat transaksi
     createTransaction(id, name, price, discount)
         .then(response => {
-            if (response.success) {
+            if (response && response.success) {
                 // Cek apakah ada URL pengalihan
                 if (response.redirect) {
                     // Jika ada URL pengalihan, arahkan ke sana
@@ -569,7 +569,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 const bootstrapModal = new bootstrap.Modal(qrCodeModal);
                 bootstrapModal.show();
             } else {
-                alert('Error: ' + response.message);
+                alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
             }
         })
         .catch(error => {
