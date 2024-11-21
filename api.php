@@ -107,10 +107,13 @@ function create_transaction($data) {
             // Simpan transaksi ke database jika perlu (optional), atau langsung arahkan
             $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'settlement')");
             $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
-
-            // Arahkan ke halaman sukses
-            header('Location: transberhasil.php');
-            exit(); // Pastikan untuk keluar setelah pengalihan
+        
+            // Kembalikan respons JSON untuk pengalihan
+            echo json_encode([
+                'success' => true,
+                'redirect' => 'transberhasil.php' // Kembalikan URL untuk pengalihan
+            ]);
+            return; // Keluar dari fungsi
         }
 
         // Simpan transaksi ke database jika harga lebih dari 0
