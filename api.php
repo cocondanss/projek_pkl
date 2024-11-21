@@ -104,16 +104,16 @@ function create_transaction($data) {
 
         // Jika total_price adalah 0, langsung arahkan ke halaman sukses
         if ($total_price == 0) {
-            // Simpan transaksi ke database jika perlu, atau bisa juga hanya mengarahkan
-            echo json_encode([
-                'success' => true,
-                'message' => 'Transaksi berhasil, tidak ada pembayaran yang diperlukan.',
-                'order_id' => $order_id
-            ]);
-            return; // Keluar dari fungsi
+            // Simpan transaksi ke database jika perlu (optional), atau langsung arahkan
+            $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'settlement')");
+            $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
+
+            // Arahkan ke halaman sukses
+            header('Location: transberhasil.php');
+            exit(); // Pastikan untuk keluar setelah pengalihan
         }
 
-        // Simpan transaksi ke database
+        // Simpan transaksi ke database jika harga lebih dari 0
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
