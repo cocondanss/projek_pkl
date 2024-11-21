@@ -25,7 +25,6 @@ function applyVoucher($voucherCode, $price) {
     // Cek apakah voucher ditemukan
     if ($row = $result->fetch_assoc()) {
         $discountAmount = $row['discount_amount'];
-        
 
         // Hitung harga setelah diskon
         if ($discountAmount <= 100) { // Jika diskon dalam persentase
@@ -68,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             
             // Simpan diskon dalam sesi
             $_SESSION['discountedPrice'] = $discountedPrice;
-    
+
             // Update waktu penggunaan
             date_default_timezone_set('Asia/Jakarta');
             $currentDateTime = date('Y-m-d H:i:s');
@@ -79,14 +78,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $updateStmt->execute();
             
             // Hapus voucher dari database jika sekali pakai
-            // if ($row['one_time_use'] == 1) {
-            //     // Simpan informasi diskon ke sesi sebelum menghapus voucher
-            //     $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
-            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-            //     $deleteStmt->bind_param("s", $voucherCode);
-            //     $deleteStmt->execute();
-            // }
-    
+            if ($row['one_time_use'] == 1) {
+                // Simpan informasi diskon ke sesi sebelum menghapus voucher
+                $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
+                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+                $deleteStmt->bind_param("s", $voucherCode);
+                $deleteStmt->execute();
+            }
+
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
@@ -99,6 +98,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
 if (!$produk) {
     die("Query gagal: " . mysqli_error($conn));
+}
+
+// Proses pembelian produk
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
+    $productId = $_POST['product_id'];
+    $productName = $_POST['product_name'];
+    $originalPrice = $_POST['product_price']; // Ambil harga asli produk
+    $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
+
+    // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
+    if ($productPrice <= 0) {
+        // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
+        $order_id = 'TRX-' . time() . '-' . uniqid();
+        $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
+        $stmt->execute([$order_id, $productId, $productName, $productPrice]);
+
+        // Arahkan ke halaman transberhasil
+        header("Location: transberhasil.php");
+        exit();
+    }
+
+    // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
+    $order_id = 'TRX-' . time() . '-' . uniqid();
+    $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
+    $stmt->execute([$order_id, $productId, $productName, $productPrice]);
+
+    // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
+    // ...
 }
 
 // Mulai output buffering untuk request AJAX
