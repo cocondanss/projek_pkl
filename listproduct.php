@@ -78,13 +78,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $updateStmt->execute();
             
             // Hapus voucher dari database jika sekali pakai
-            if ($row['one_time_use'] == 1) {
-                // Simpan informasi diskon ke sesi sebelum menghapus voucher
-                $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
-                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-                $deleteStmt->bind_param("s", $voucherCode);
-                $deleteStmt->execute();
-            }
+            // if ($row['one_time_use'] == 1) {
+            //     // Simpan informasi diskon ke sesi sebelum menghapus voucher
+            //     $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
+            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+            //     $deleteStmt->bind_param("s", $voucherCode);
+            //     $deleteStmt->execute();
+            // }
 
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
@@ -496,10 +496,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         return;
     }
 
-    // Jika harga kurang dari atau sama dengan Rp 1, arahkan ke halaman transberhasil
-    if (price <= 1) {
-        // Arahkan ke halaman transberhasil
-        window.location.href = 'transberhasil.php';
+    // Jika harga kurang dari atau sama dengan Rp 0, arahkan ke halaman transberhasil
+    if (price <= 0) {
+        // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
+        createTransaction(id, name, price, discount)
+            .then(response => {
+                if (response.success) {
+                    // Arahkan ke halaman transberhasil
+                    window.location.href = 'transberhasil.php';
+                } else {
+                    alert('Error: ' + response.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error in createTransaction:', error);
+                alert('Terjadi kesalahan saat membuat transaksi.');
+            });
         return; // Keluar dari fungsi
     }
 
