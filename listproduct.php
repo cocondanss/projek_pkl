@@ -470,8 +470,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         return;
     }
 
+    // Log harga untuk debugging
+    console.log('Harga sebelum pengecekan:', price);
+
     // Jika harga kurang dari atau sama dengan Rp 1, arahkan ke halaman transberhasil
     if (price <= 1) {
+        console.log('Harga Rp 0,00 atau kurang. Mengalihkan ke transberhasil.php');
         // Arahkan ke halaman transberhasil
         window.location.href = 'transberhasil.php';
         return; // Keluar dari fungsi
