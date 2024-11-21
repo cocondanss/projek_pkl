@@ -477,23 +477,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     }
 
     // Jika harga lebih dari Rp 0, buat transaksi
-    function showPaymentModal(id, name, price, discount = 0) {
-    console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
-
-    // Validasi parameter
-    if (!id || !name || typeof price !== 'number') {
-        console.error('Parameter tidak valid');
-        return;
-    }
-
-    // Jika harga kurang dari atau sama dengan Rp 1, arahkan ke halaman transberhasil
-    if (price <= 1) {
-        // Arahkan ke halaman transberhasil
-        window.location.href = 'transberhasil.php';
-        return; // Keluar dari fungsi
-    }
-
-    // Jika harga lebih dari Rp 0, buat transaksi
     createTransaction(id, name, price, discount)
         .then(response => {
             if (response.success) {
