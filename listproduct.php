@@ -290,6 +290,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script>
+            function buyProduct(productId, productName, productPrice) {
+            const formData = new FormData();
+            formData.append('buy_product', true);
+            formData.append('product_id', productId);
+            formData.append('product_name', productName);
+            formData.append('product_price', productPrice);
+
+            fetch('listproduct.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('result').innerHTML = data; // Tampilkan hasil dari server
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
             let pinCode = '';
             let display = document.getElementById('display');
 
