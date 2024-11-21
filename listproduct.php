@@ -79,13 +79,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $updateStmt->execute();
             
             // Hapus voucher dari database jika sekali pakai
-            if ($row['one_time_use'] == 1) {
-                // Simpan informasi diskon ke sesi sebelum menghapus voucher
-                $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
-                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-                $deleteStmt->bind_param("s", $voucherCode);
-                $deleteStmt->execute();
-            }
+            // if ($row['one_time_use'] == 1) {
+            //     // Simpan informasi diskon ke sesi sebelum menghapus voucher
+            //     $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
+            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+            //     $deleteStmt->bind_param("s", $voucherCode);
+            //     $deleteStmt->execute();
+            // }
     
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
