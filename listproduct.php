@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     if ($row = $result->fetch_assoc()) {
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tetap berlaku.</p>";
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan.</p>";
             // Gunakan diskon dari sesi jika voucher sudah digunakan
             $discountedPrice = isset($_SESSION['lastUsedDiscount']) ? $_SESSION['lastUsedDiscount'] : $originalPrice;
         } else {
