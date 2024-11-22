@@ -501,36 +501,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 pinCode = '';
                 display.textContent = '';
             });
-            function showPaymentModal(productId, productName, productPrice) {
-    // Cek apakah harga produk adalah Rp 0
-    if (productPrice <= 0) {
-        // Simpan transaksi ke database dan arahkan ke halaman transberhasil
-        $.ajax({
-            url: 'api.php', // Ganti dengan URL yang sesuai untuk menyimpan transaksi
-            method: 'POST',
-            data: {
-                action: 'create_transaction', // Pastikan ini sesuai dengan action yang Anda gunakan
-                product_id: productId,
-                product_name: productName,
-                product_price: productPrice
-            },
-            success: function(response) {
-                if (response.success) {
-                    // Arahkan ke halaman sukses
-                    window.location.href = 'transberhasil.php';
-                } else {
-                    alert('Gagal menyimpan transaksi: ' + response.message);
-                }
-            },
-            error: function() {
-                alert('Terjadi kesalahan saat menyimpan transaksi. Silakan coba lagi.');
-            }
-        });
-    } else {
-        // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans)
-        // Tambahkan logika untuk memproses pembayaran di sini
-    }
-}
+            
             function showPaymentModal(id, name, price, discount = 0) {
                 console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
