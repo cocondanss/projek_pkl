@@ -506,7 +506,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 if (price <= 0) {
                     window.location.href = 'transberhasil.php';
                 } else {
-                    // Jika harga lebih dari Rp 0, tampilkan modal QR Code
                     // Hapus modal lama jika ada
                     const existingModal = document.getElementById('qrCodeModal');
                     if (existingModal) existingModal.remove();
