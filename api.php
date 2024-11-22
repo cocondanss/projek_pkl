@@ -111,10 +111,10 @@ function create_transaction($data) {
         $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
         // Simpan transaksi ke database
-        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
+        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
-        // Jika total_price adalah 0, langsung arahkan ke halaman sukses
+        // Jika total_price adalah 0, arahkan ke halaman sukses
         if ($total_price == 0) {
             echo json_encode([
                 'success' => true,
@@ -123,7 +123,7 @@ function create_transaction($data) {
             return; // Keluar dari fungsi
         }
 
-        // Siapkan parameter Midtrans
+        // Siapkan parameter Midtrans untuk transaksi berbayar
         $transaction_params = [
             'payment_type' => 'qris',
             'transaction_details' => [
