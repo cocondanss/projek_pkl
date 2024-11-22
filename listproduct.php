@@ -506,7 +506,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
     // Validasi parameter
-    if (!id || !name || typeof price !== 'number') {
+    if (!id || !name || typeof price !== 'number' || price < 0) {
         console.error('Parameter tidak valid');
         return;
     }
@@ -592,7 +592,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             alert('Terjadi kesalahan saat membuat transaksi.');
         });
 }
-
 
             // Add countdown timer function
             function startCountdown(duration) {
