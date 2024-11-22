@@ -91,21 +91,31 @@ function create_transaction($data) {
         throw new Exception("Data produk tidak lengkap");
     }
 
+    // Validasi dan sanitasi input
+    $product_id = $data['product_id'];
+    $product_name = $data['product_name'];
+    $product_price = filter_var($data['product_price'], FILTER_VALIDATE_FLOAT);
+    $discount = isset($data['discount']) ? filter_var($data['discount'], FILTER_VALIDATE_FLOAT) : 0;
+
+    if ($product_price === false || $product_price < 0) {
+        throw new Exception("Harga produk tidak valid");
+    }
+
+    if ($discount < 0 || $discount > $product_price) {
+        throw new Exception("Diskon tidak valid");
+    }
+
     try {
         // Persiapkan data transaksi
         $order_id = 'TRX-' . time() . '-' . uniqid();
-        $product_id = $data['product_id'];
-        $product_name = $data['product_name'];
-        $product_price = intval($data['product_price']);
-        $discount = isset($data['discount']) ? intval($data['discount']) : 0;
-
-        // Hitung total harga
         $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
-        
+        error_log("Order ID: $order_id, Total Price: $total_price");
+
         // Simpan transaksi ke database
-        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
-        $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
+        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, ?)");
+        $status = $total_price == 0 ? 'completed' : 'pending'; // Set status berdasarkan total_price
+        $stmt->execute([$order_id, $product_id, $product_name, $total_price, $status]);
 
         // Jika total_price adalah 0, arahkan ke halaman sukses
         if ($total_price == 0) {
@@ -116,7 +126,7 @@ function create_transaction($data) {
             return; // Keluar dari fungsi
         }
 
-        // Siapkan parameter Midtrans
+        // Siapkan parameter Midtrans untuk transaksi berbayar
         $transaction_params = [
             'payment_type' => 'qris',
             'transaction_details' => [
@@ -141,28 +151,30 @@ function create_transaction($data) {
         // Proses pembayaran dengan Midtrans
         $qris_response = \Midtrans\CoreApi::charge($transaction_params);
         
-        // Ambil URL QR Code
-        $qr_code_url = null;
-        if (isset($qris_response->actions)) {
-            foreach ($qris_response->actions as $action) {
-                if ($action->name == 'generate-qr-code') {
-                    $qr_code_url = $action->url;
-                    break;
-                }
-            }
-        }
+        // Periksa respons dari Midtrans
+        if ($qris_response->status_code == '201') {
+            // Jika berhasil, simpan URL QR Code dan update status
+            $qr_code_url = $qris_response->redirect_url; // URL untuk pembayaran
+            $stmt = $db->prepare("UPDATE transaksi SET status = 'completed' WHERE order_id = ?");
+            $stmt->execute([$order_id]);
 
-        if (!$qr_code_url) {
-            throw new Exception("URL QR Code tidak ditemukan");
+            echo json_encode([
+                'success' => true,
+                'qr_code_url' => $qr_code_url,
+                'order_id' => $order_id
+            ]);
+        } else {
+            // Jika ada kesalahan, log dan beri tahu pengguna
+            error_log("Midtrans Error: " . $qris_response->status_message);
+            echo json_encode([
+                'success' => false,
+                'message' => $qris_response->status_message
+            ]);
         }
-
-        echo json_encode([
-            'success' => true,
-            'qr_code_url' => $qr_code_url,
-            'order_id' => $order_id
-        ]);
 
     } catch (Exception $e) {
+        // Log error untuk analisis lebih lanjut
+        error_log("Error creating transaction: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => $e->getMessage()
