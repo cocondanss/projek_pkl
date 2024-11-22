@@ -58,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     if ($row = $result->fetch_assoc()) {
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            // Simpan diskon yang diterapkan meskipun voucher sudah digunakan
-            $discountedPrice = isset($_SESSION['lastUsedDiscount']) ? $_SESSION['lastUsedDiscount'] : $originalPrice;
             $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tetap berlaku.</p>";
+            // Gunakan diskon dari sesi jika voucher sudah digunakan
+            $discountedPrice = isset($_SESSION['lastUsedDiscount']) ? $_SESSION['lastUsedDiscount'] : $originalPrice;
         } else {
             // Hitung diskon
             $discountedPrice = applyVoucher($voucherCode, $originalPrice);
@@ -68,21 +68,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // Simpan diskon dalam sesi
             $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
 
-            // Update waktu penggunaan jika voucher digunakan
-            if ($row['one_time_use'] == 1) {
-                // Hapus voucher dari database
-                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-                $deleteStmt->bind_param("s", $voucherCode);
-                $deleteStmt->execute();
-            } else {
-                // Update used_at timestamp jika voucher digunakan
-                date_default_timezone_set('Asia/Jakarta');
-                $currentDateTime = date('Y-m-d H:i:s');
-                $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-                $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-                $updateStmt->execute();
-            }
-    
+            // Update waktu penggunaan
+            date_default_timezone_set('Asia/Jakarta');
+            $currentDateTime = date('Y-m-d H:i:s');
+            
+            // Update used_at timestamp
+            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+            $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+            $updateStmt->execute();
+            
+            // Hapus voucher dari database jika sekali pakai
+            // if ($row['one_time_use'] == 1) {
+            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+            //     $deleteStmt->bind_param("s", $voucherCode);
+            //     $deleteStmt->execute();
+            // }
+
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
