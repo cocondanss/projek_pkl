@@ -91,30 +91,22 @@ function create_transaction($data) {
         throw new Exception("Data produk tidak lengkap");
     }
 
-    // Validasi dan sanitasi input
-    $product_id = $data['product_id'];
-    $product_name = $data['product_name'];
-    $product_price = filter_var($data['product_price'], FILTER_VALIDATE_FLOAT);
-    $discount = isset($data['discount']) ? filter_var($data['discount'], FILTER_VALIDATE_FLOAT) : 0;
-
-    if ($product_price === false || $product_price < 0) {
-        throw new Exception("Harga produk tidak valid");
-    }
-
-    if ($discount < 0 || $discount > $product_price) {
-        throw new Exception("Diskon tidak valid");
-    }
-
     try {
         // Persiapkan data transaksi
         $order_id = 'TRX-' . time() . '-' . uniqid();
+        $product_id = $data['product_id'];
+        $product_name = $data['product_name'];
+        $product_price = intval($data['product_price']);
+        $discount = isset($data['discount']) ? intval($data['discount']) : 0;
+
+        // Hitung total harga
         $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
         // Simpan transaksi ke database
-        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
+        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
-        // Jika total_price adalah 0, arahkan ke halaman sukses
+        // Jika total_price adalah 0, langsung arahkan ke halaman sukses
         if ($total_price == 0) {
             echo json_encode([
                 'success' => true,
@@ -123,7 +115,7 @@ function create_transaction($data) {
             return; // Keluar dari fungsi
         }
 
-        // Siapkan parameter Midtrans untuk transaksi berbayar
+        // Siapkan parameter Midtrans
         $transaction_params = [
             'payment_type' => 'qris',
             'transaction_details' => [
@@ -170,8 +162,6 @@ function create_transaction($data) {
         ]);
 
     } catch (Exception $e) {
-        // Log error untuk analisis lebih lanjut
-        error_log("Error creating transaction: " . $e->getMessage());
         echo json_encode([
             'success' => false,
             'message' => $e->getMessage()
