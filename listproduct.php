@@ -67,23 +67,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             
             // Simpan diskon dalam sesi
             $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
-
-            // Update waktu penggunaan
-            date_default_timezone_set('Asia/Jakarta');
-            $currentDateTime = date('Y-m-d H:i:s');
-            
-            // Update used_at timestamp
-            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-            $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-            $updateStmt->execute();
-            
-            // Hapus voucher dari database jika sekali pakai
+    
+            // Update waktu penggunaan jika voucher digunakan
             if ($row['one_time_use'] == 1) {
+                // Hapus voucher dari database
                 $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
                 $deleteStmt->bind_param("s", $voucherCode);
                 $deleteStmt->execute();
+            } else {
+                // Update used_at timestamp jika voucher digunakan
+                date_default_timezone_set('Asia/Jakarta');
+                $currentDateTime = date('Y-m-d H:i:s');
+                $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+                $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+                $updateStmt->execute();
             }
-
+    
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
