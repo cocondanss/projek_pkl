@@ -76,9 +76,10 @@ if(isset($_POST['kembali'])){
         }
 
         .card {
+            width: 400px; /* Perbesar lebar card */
             border: none; /* Remove default border */
             border-radius: 15px; /* Rounded corners */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Add shadow */
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); /* Tambah bayangan yang lebih dalam */
             transition: transform 0.3s; /* Smooth transition for hover effect */
         }
 
@@ -86,24 +87,37 @@ if(isset($_POST['kembali'])){
             transform: scale(1.05); /* Scale up on hover */
         }
 
+        .form-control {
+            border-radius: 10px; /* Rounded corners for input fields */
+            border: 1px solid #ced4da; /* Border color */
+            transition: border-color 0.3s; /* Smooth transition for border color */
+        }
+
+        .form-control:focus {
+            border-color: #007bff; /* Change border color on focus */
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
+        }
+
         .btn-info {
-            background-color: #007bff; /* Custom color */
-            border: none; /* Remove border */
-            transition: background-color 0.3s; /* Smooth transition */
+            width: 100%; /* Tombol mengisi lebar penuh */
+            border-radius: 10px; /* Rounded corners for buttons */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
         }
 
         .btn-info:hover {
             background-color: #0056b3; /* Darker shade on hover */
+            transform: translateY(-2px); /* Efek angkat saat hover */
         }
 
         .btn-secondary {
-            background-color: #6c757d; /* Custom color */
-            border: none; /* Remove border */
-            transition: background-color 0.3s; /* Smooth transition */
+            width: 100%; /* Tombol mengisi lebar penuh */
+            border-radius: 10px; /* Rounded corners for buttons */
+            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
         }
 
         .btn-secondary:hover {
             background-color: #5a6268; /* Darker shade on hover */
+            transform: translateY(-2px); /* Efek angkat saat hover */
         }
     </style>
 </head>
