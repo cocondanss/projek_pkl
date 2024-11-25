@@ -54,59 +54,34 @@ if(isset($_POST['kembali'])){
     <meta name="author" content="" />
     <title>Login</title>
     <link href="css/style.css" rel="stylesheet" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Background color for the body */
-body {
-        background-color: #f8f9fa; /* Light background for contrast */
-    }
-
-    /* Card styling */
-    .card {
-        border-radius: 15px; /* Rounded corners */
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
-    }
-
-    /* Header styling */
-    .card-header {
-        background-color: #007bff; /* Primary color for header */
-        color: white; /* White text for contrast */
-        border-top-left-radius: 15px; /* Rounded corners */
-        border-top-right-radius: 15px; /* Rounded corners */
-    }
-
-    /* Button styling */
-    .btn-info {
-        background-color: #28a745; /* Green button */
-        border: none; /* No border */
-        transition: background-color 0.3s; /* Smooth transition */
-    }
-
-    .btn-info:hover {
-        background-color: #218838; /* Darker green on hover */
-    }
-
-    .btn-secondary {
-        background-color: #6c757d; /* Gray button */
-        border: none; /* No border */
-        transition: background-color 0.3s; /* Smooth transition */
-    }
-
-    .btn-secondary:hover {
-        background-color: #5a6268; /* Darker gray on hover */
-    }
-
-    /* Input field styling */
-    .form-control {
-        border-radius: 10px; /* Rounded corners */
-        border: 1px solid #ced4da; /* Light border */
-        transition: border-color 0.3s; /* Smooth transition */
-    }
-
-    .form-control:focus {
-        border-color: #007bff; /* Change border color on focus */
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Light blue shadow */
-    }
+        body {
+            background-color: #f5f5f7; /* Warna latar belakang mirip Apple */
+            font-family: 'Helvetica', sans-serif; /* Font mirip Apple */
+        }
+        .card {
+            border: none; /* Menghilangkan border */
+            border-radius: 12px; /* Sudut yang lebih bulat */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Bayangan halus */
+        }
+        .card-header {
+            background-color: #ffffff; /* Latar belakang header putih */
+            border-top-left-radius: 12px; /* Sudut bulat di kiri atas */
+            border-top-right-radius: 12px; /* Sudut bulat di kanan atas */
+        }
+        .btn-info {
+            background-color: #0071e3; /* Warna tombol masuk */
+            border: none; /* Menghilangkan border */
+        }
+        .btn-secondary {
+            background-color: #f5f5f7; /* Warna tombol kembali */
+            border: 1px solid #0071e3; /* Border tombol kembali */
+            color: #0071e3; /* Warna teks tombol kembali */
+        }
+        .btn-secondary:hover {
+            background-color: #e1e1e1; /* Warna hover tombol kembali */
+        }
     </style>
 </head>
 <body class="bg-dark">
