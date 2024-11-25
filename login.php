@@ -76,7 +76,8 @@ if(isset($_POST['kembali'])){
         }
 
         .card {
-            width: 400px; /* Perbesar lebar card */
+            width: 500px; /* Perbesar lebar card */
+            height: 400px; /*pertinggi card
             border: none; /* Remove default border */
             border-radius: 15px; /* Rounded corners */
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); /* Tambah bayangan yang lebih dalam */
