@@ -80,7 +80,7 @@ if(isset($_POST['kembali'])){
             <div class="row justify-content-center">
                 <div class="col-lg-5">
                     <!-- Card untuk form login -->
-                    <!-- <div class="card shadow-lg border-0 rounded-lg mt-5"> -->
+                    <div class="card shadow-lg border-0 rounded-lg mt-5">
                         <div class="card-header">
                             <h3 class="text-center font-weight-bold my-4">Login As Admin</h3>
                         </div>
@@ -112,7 +112,7 @@ if(isset($_POST['kembali'])){
                                 </div>
                             </form>
                         </div>
-                    <!-- </div> -->
+                    </div>
                 </div>
             </div>
         </main>
