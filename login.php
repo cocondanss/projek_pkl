@@ -58,7 +58,7 @@ if(isset($_POST['kembali'])){
     <link rel="stylesheet" href="css/styleL.css">
 </head>
 <body class="bg-dark">
-    <div class="animated-background">
+    <div>
         <main>
             <div class="row justify-content-center">
                 <div class="col-lg-5">
