@@ -55,7 +55,59 @@ if(isset($_POST['kembali'])){
     <title>Login</title>
     <link href="css/style.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="css/styleL.css">
+    <style>
+        /* Background color for the body */
+body {
+        background-color: #f8f9fa; /* Light background for contrast */
+    }
+
+    /* Card styling */
+    .card {
+        border-radius: 15px; /* Rounded corners */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    }
+
+    /* Header styling */
+    .card-header {
+        background-color: #007bff; /* Primary color for header */
+        color: white; /* White text for contrast */
+        border-top-left-radius: 15px; /* Rounded corners */
+        border-top-right-radius: 15px; /* Rounded corners */
+    }
+
+    /* Button styling */
+    .btn-info {
+        background-color: #28a745; /* Green button */
+        border: none; /* No border */
+        transition: background-color 0.3s; /* Smooth transition */
+    }
+
+    .btn-info:hover {
+        background-color: #218838; /* Darker green on hover */
+    }
+
+    .btn-secondary {
+        background-color: #6c757d; /* Gray button */
+        border: none; /* No border */
+        transition: background-color 0.3s; /* Smooth transition */
+    }
+
+    .btn-secondary:hover {
+        background-color: #5a6268; /* Darker gray on hover */
+    }
+
+    /* Input field styling */
+    .form-control {
+        border-radius: 10px; /* Rounded corners */
+        border: 1px solid #ced4da; /* Light border */
+        transition: border-color 0.3s; /* Smooth transition */
+    }
+
+    .form-control:focus {
+        border-color: #007bff; /* Change border color on focus */
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Light blue shadow */
+    }
+    </style>
 </head>
 <body class="bg-dark">
     <div>
