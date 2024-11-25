@@ -61,6 +61,10 @@ if(isset($_POST['kembali'])){
             animation: gradient 10s ease infinite; /* Add animation */
             background: linear-gradient(45deg, #ff6b6b, #f7b733, #6a82fb, #fc5c7d); /* Initial gradient */
             background-size: 400% 400%; /* For smooth transition */
+            display: flex; /* Use flexbox */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            height: 100vh; /* Full viewport height */
         }
 
         @keyframes gradient {
