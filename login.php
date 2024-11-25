@@ -54,34 +54,36 @@ if(isset($_POST['kembali'])){
     <meta name="author" content="" />
     <title>Login</title>
     <link href="css/style.css" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     <style>
         body {
-            background-color: #1c1c1e; /* Warna latar belakang gelap */
-            color: #ffffff; /* Warna teks putih */
+            background-color: #f5f5f7; /* Light gray background */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* Apple font stack */
         }
         .card {
-            background-color: #2c2c2e; /* Warna latar belakang kartu */
-            border: none; /* Menghilangkan border */
+            border-radius: 20px; /* Rounded corners */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
         }
         .card-header {
-            background-color: #3a3a3c; /* Warna latar belakang header kartu */
+            background-color: #ffffff; /* White header */
+            border-top-left-radius: 20px; /* Rounded corners */
+            border-top-right-radius: 20px; /* Rounded corners */
         }
         .btn-info {
-            background-color: #007aff; /* Warna tombol Masuk */
-            border: none; /* Menghilangkan border */
+            background-color: #0071e3; /* Apple blue */
+            border: none; /* No border */
+            border-radius: 20px; /* Rounded button */
+        }
+        .btn-info:hover {
+            background-color: #005bb5; /* Darker blue on hover */
         }
         .btn-secondary {
-            background-color: #8e8e93; /* Warna tombol Kembali */
-            border: none; /* Menghilangkan border */
+            background-color: #f5f5f7; /* Light gray */
+            border: 1px solid #d1d1d6; /* Light border */
+            border-radius: 20px; /* Rounded button */
         }
-        .form-control {
-            background-color: #3a3a3c; /* Warna latar belakang input */
-            color: #ffffff; /* Warna teks input */
-            border: 1px solid #48484a; /* Warna border input */
-        }
-        .form-control::placeholder {
-            color: #a1a1a6; /* Warna placeholder */
+        .btn-secondary:hover {
+            background-color: #e1e1e6; /* Darker gray on hover */
         }
     </style>
 </head>
