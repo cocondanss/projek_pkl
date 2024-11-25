@@ -1,0 +1,21 @@
+/* animated-background.css */
+body {
+    overflow: hidden; /* Mencegah scrollbar */
+}
+
+.animated-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); /* Warna latar belakang gelap */
+    z-index: -1; /* Pastikan berada di belakang konten */
+    animation: fog 10s infinite; /* Animasi kabut */
+}
+
+@keyframes fog {
+    0% { opacity: 0.5; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.5; }
+}

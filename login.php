@@ -55,9 +55,10 @@ if(isset($_POST['kembali'])){
     <title>Login</title>
     <link href="css/style.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="css/styleL.css">
 </head>
 <body class="bg-dark">
-    <div>
+    <div class="animated-background">
         <main>
             <div class="row justify-content-center">
                 <div class="col-lg-5">
