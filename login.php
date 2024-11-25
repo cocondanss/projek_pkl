@@ -84,10 +84,6 @@ if(isset($_POST['kembali'])){
             transition: transform 0.3s; /* Smooth transition for hover effect */
         }
 
-        .card:hover {
-            transform: scale(1.05); /* Scale up on hover */
-        }
-
         .form-control {
             border-radius: 10px; /* Rounded corners for input fields */
             border: 1px solid #ced4da; /* Border color */
