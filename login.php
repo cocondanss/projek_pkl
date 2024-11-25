@@ -57,17 +57,32 @@ if(isset($_POST['kembali'])){
     <link href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            overflow: hidden;
-            background-color: #f5f5f7; /* Warna latar belakang mirip Apple */
+            background-color: #000; /* Warna latar belakang gelap */
             font-family: 'Helvetica', sans-serif; /* Font mirip Apple */
+            overflow: hidden; /* Menghilangkan scrollbar */
+        }
+        .fog {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            opacity: 0.5;
+            animation: fogAnimation 10s infinite linear;
+            pointer-events: none; /* Agar tidak mengganggu interaksi */
+        }
+        @keyframes fogAnimation {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-100%); }
         }
         .card {
             border: none; /* Menghilangkan border */
             border-radius: 12px; /* Sudut yang lebih bulat */
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Bayangan halus */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Bayangan lebih gelap */
         }
         .card-header {
-            background-color: #ffffff; /* Latar belakang header putih */
+            background-color: rgba(255, 255, 255, 0.2); /* Latar belakang header transparan */
             border-top-left-radius: 12px; /* Sudut bulat di kiri atas */
             border-top-right-radius: 12px; /* Sudut bulat di kanan atas */
         }
@@ -76,16 +91,17 @@ if(isset($_POST['kembali'])){
             border: none; /* Menghilangkan border */
         }
         .btn-secondary {
-            background-color: #f5f5f7; /* Warna tombol kembali */
+            background-color: rgba(255, 255, 255, 0.2); /* Warna tombol kembali transparan */
             border: 1px solid #0071e3; /* Border tombol kembali */
             color: #0071e3; /* Warna teks tombol kembali */
         }
         .btn-secondary:hover {
-            background-color: #e1e1e1; /* Warna hover tombol kembali */
+            background-color: rgba(255, 255, 255, 0.3); /* Warna hover tombol kembali */
         }
     </style>
 </head>
 <body class="bg-dark">
+    <div class="fog"></div> <!-- Menambahkan elemen kabut -->
     <div>
         <main>
             <div class="row justify-content-center">
