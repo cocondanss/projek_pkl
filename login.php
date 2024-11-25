@@ -58,6 +58,7 @@ if(isset($_POST['kembali'])){
     <style>
         body {
             overflow-x: hidden; /* Hides horizontal scrollbar */
+            overflow-y: hidden; /* Hides vertical scrollbar */
             animation: gradient 10s ease infinite; /* Add animation */
             background: linear-gradient(45deg, #ff6b6b, #f7b733, #6a82fb, #fc5c7d); /* Initial gradient */
             background-size: 400% 400%; /* For smooth transition */
@@ -72,6 +73,37 @@ if(isset($_POST['kembali'])){
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        .card {
+            border: none; /* Remove default border */
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Add shadow */
+            transition: transform 0.3s; /* Smooth transition for hover effect */
+        }
+
+        .card:hover {
+            transform: scale(1.05); /* Scale up on hover */
+        }
+
+        .btn-info {
+            background-color: #007bff; /* Custom color */
+            border: none; /* Remove border */
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+
+        .btn-info:hover {
+            background-color: #0056b3; /* Darker shade on hover */
+        }
+
+        .btn-secondary {
+            background-color: #6c757d; /* Custom color */
+            border: none; /* Remove border */
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268; /* Darker shade on hover */
         }
     </style>
 </head>
