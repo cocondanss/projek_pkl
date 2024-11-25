@@ -155,8 +155,8 @@ if(isset($_POST['kembali'])){
                                 </div>
                                 <!-- Tombol aksi -->
                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                    <button class="btn btn-info" name="login">Masuk</button>
-                                    <button class="btn btn-secondary" name="kembali">Kembali</button>
+                                    <button class="btn btn-info btn-sm" name="login" style="position: absolute; bottom: 10px; left: 10px;">Masuk</button>
+                                    <button class="btn btn-secondary btn-sm" name="kembali" style="position: absolute; bottom: 10px; right: 10px;">Kembali</button>
                                 </div>
                             </form>
                         </div>
