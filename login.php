@@ -58,6 +58,15 @@ if(isset($_POST['kembali'])){
     <style>
         body {
             overflow-x: hidden; /* Hides horizontal scrollbar */
+            animation: gradient 10s ease infinite; /* Add animation */
+            background: linear-gradient(45deg, #ff6b6b, #f7b733, #6a82fb, #fc5c7d); /* Initial gradient */
+            background-size: 400% 400%; /* For smooth transition */
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 </head>
