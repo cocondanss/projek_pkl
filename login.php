@@ -65,6 +65,7 @@ if(isset($_POST['kembali'])){
             justify-content: center; /* Center horizontally */
             align-items: center; /* Center vertically */
             height: 100vh; /* Full viewport height */
+            font-family: 'Poppins', sans-serif;
         }
 
         @keyframes gradient {
