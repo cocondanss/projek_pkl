@@ -57,6 +57,7 @@ if(isset($_POST['kembali'])){
     <link href="https://fonts.googleapis.com/css2?family=Helvetica:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
+            overflow: hidden;
             background-color: #f5f5f7; /* Warna latar belakang mirip Apple */
             font-family: 'Helvetica', sans-serif; /* Font mirip Apple */
         }
