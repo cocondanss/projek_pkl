@@ -76,46 +76,36 @@ if(isset($_POST['kembali'])){
         }
 
         .card {
-            width: 500px; /* Perbesar lebar card */
-            height: 400px; /*pertinggi card
-            border: none; /* Remove default border */
-            border-radius: 15px; /* Rounded corners */
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); /* Tambah bayangan yang lebih dalam */
-            transition: transform 0.3s; /* Smooth transition for hover effect */
-        }
+        width: 400px; /* Lebar card yang lebih kecil */
+        padding: 20px; /* Tambahkan padding */
+        border: none; /* Hapus border default */
+        border-radius: 20px; /* Sudut yang lebih bulat */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Bayangan yang lebih halus */
+        background-color: white; /* Latar belakang putih untuk card */
+    }
 
-        .form-control {
-            border-radius: 10px; /* Rounded corners for input fields */
-            border: 1px solid #ced4da; /* Border color */
-            transition: border-color 0.3s; /* Smooth transition for border color */
-        }
+    .card-header {
+        text-align: center; /* Pusatkan teks */
+        margin-bottom: 20px; /* Jarak bawah */
+    }
 
-        .form-control:focus {
-            border-color: #007bff; /* Change border color on focus */
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add shadow on focus */
-        }
+    .form-control {
+        border-radius: 10px; /* Sudut input yang lebih bulat */
+        border: 1px solid #ccc; /* Warna border yang lebih lembut */
+    }
 
-        .btn-info {
-            width: 100%; /* Tombol mengisi lebar penuh */
-            border-radius: 10px; /* Rounded corners for buttons */
-            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
-        }
+    .btn-info, .btn-secondary {
+        border-radius: 10px; /* Sudut tombol yang lebih bulat */
+        transition: background-color 0.3s, transform 0.3s; /* Transisi halus */
+    }
 
-        .btn-info:hover {
-            background-color: #0056b3; /* Darker shade on hover */
-            transform: translateY(-2px); /* Efek angkat saat hover */
-        }
+    .btn-info:hover {
+        background-color: #007aff; /* Warna biru Apple */
+    }
 
-        .btn-secondary {
-            width: 100%; /* Tombol mengisi lebar penuh */
-            border-radius: 10px; /* Rounded corners for buttons */
-            transition: background-color 0.3s, transform 0.3s; /* Smooth transition */
-        }
-
-        .btn-secondary:hover {
-            background-color: #5a6268; /* Darker shade on hover */
-            transform: translateY(-2px); /* Efek angkat saat hover */
-        }
+    .btn-secondary:hover {
+        background-color: #e0e0e0; /* Warna abu-abu saat hover */
+    }
     </style>
 </head>
 <body class="bg-dark">
