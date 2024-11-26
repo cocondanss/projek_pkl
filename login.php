@@ -60,7 +60,7 @@ if(isset($_POST['kembali'])){
             overflow-x: hidden; /* Hides horizontal scrollbar */
             overflow-y: hidden; /* Hides vertical scrollbar */
             animation: gradient 10s ease infinite; /* Add animation */
-            background: linear-gradient(45deg, #1a1a1a, #333333, #4d4d4d, #1a1a1a); /* Dark theme gradient */
+            background: linear-gradient(90deg, #1a1a1a, #333333, #4d4d4d, #1a1a1a); /* Dark theme gradient with right transition */
             background-size: 400% 400%; /* For smooth transition */
             display: flex; /* Use flexbox */
             justify-content: center; /* Center horizontally */
