@@ -76,6 +76,10 @@ if(isset($_POST['kembali'])){
             100% { background-position: 0% 50%; }
         }
 
+        .shadow-lg {
+            background: whitesmoke;
+            padding: 70px;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
