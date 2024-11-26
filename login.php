@@ -56,38 +56,6 @@ if(isset($_POST['kembali'])){
     <!-- <link href="css/style.css" rel="stylesheet" /> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            overflow-x: hidden; /* Hides horizontal scrollbar */
-            overflow-y: hidden; /* Hides vertical scrollbar */
-            animation: gradient 10s ease infinite; /* Add animation */
-            background: linear-gradient(45deg, #1a1a1a, #333333, #4d4d4d, #1a1a1a); /* Dark theme gradient with right transition */
-            background-size: 400% 400%; /* For smooth transition */
-            display: flex; /* Use flexbox */
-            justify-content: center; /* Center horizontally */
-            align-items: center; /* Center vertically */
-            height: 100vh; /* Full viewport height */
-            font-family: 'Poppins', sans-serif;
-        }
-
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .shadow-lg {
-            background: whitesmoke;
-            padding: 50px;
-        }
-
-        .text-center {
-            font-size: x-large;
-            position: relative;
-            bottom: 33px;
-            margin-bottom:30px;
-        }
-    </style>
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
     <div>
