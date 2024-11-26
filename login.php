@@ -86,10 +86,6 @@ if(isset($_POST['kembali'])){
             position: relative;
             bottom: 33px;
         }
-
-        .px-3 {
-            padding-right: 50px;
-        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
