@@ -53,8 +53,9 @@ if(isset($_POST['kembali'])){
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Login</title>
-    <link href="css/style.css" rel="stylesheet" />
+    <!-- <link href="css/style.css" rel="stylesheet" /> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             overflow-x: hidden; /* Hides horizontal scrollbar */
@@ -77,7 +78,7 @@ if(isset($_POST['kembali'])){
 
     </style>
 </head>
-<body class="bg-dark">
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
     <div>
         <main>
             <div class="row justify-content-center">
@@ -93,7 +94,7 @@ if(isset($_POST['kembali'])){
                                 <!-- Input email -->
                                 <div class="form-group">
                                     <label class="small mb-1" for="inputEmailAddress">Email</label>
-                                    <input class="form-control py-4" 
+                                    <input class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300" 
                                            name="email" 
                                            id="inputEmailAddress" 
                                            type="email" 
@@ -102,7 +103,7 @@ if(isset($_POST['kembali'])){
                                 <!-- Input password -->
                                 <div class="form-group">
                                     <label class="small mb-1" for="inputPassword">Password</label>
-                                    <input class="form-control py-4" 
+                                    <input class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300" 
                                            name="password" 
                                            id="inputPassword" 
                                            type="password" 
@@ -110,8 +111,8 @@ if(isset($_POST['kembali'])){
                                 </div>
                                 <!-- Tombol aksi -->
                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                    <button class="btn btn-info" name="login">Masuk</button>
-                                    <button class="btn btn-secondary" name="kembali">Kembali</button>
+                                    <button class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300" name="login">Masuk</button>
+                                    <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" name="kembali">Kembali</button>
                                 </div>
                             </form>
                         </div>
