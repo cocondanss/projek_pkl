@@ -108,7 +108,8 @@ if(isset($_POST['kembali'])){
                                            name="email" 
                                            id="inputEmailAddress" 
                                            type="email" 
-                                           placeholder="Masukan email admin"/>
+                                           placeholder="Masukan email admin"/
+                                           style="margin-right: 100px;">
                                 </div>
                                 <!-- Input password -->
                                 <div class="form-group">
