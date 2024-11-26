@@ -55,7 +55,7 @@ if(isset($_POST['kembali'])){
     <title>Login</title>
     <link href="css/styleL.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
     <style>
         body {
             overflow-x: hidden; /* Hides horizontal scrollbar */
