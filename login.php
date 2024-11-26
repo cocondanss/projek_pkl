@@ -122,7 +122,7 @@ if(isset($_POST['kembali'])){
                                 <!-- Tombol aksi -->
                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
                                     <button class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300" name="login" style="position:relative; top:15px; right:15px;">Masuk</button>
-                                    <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" name="kembali">Kembali</button>
+                                    <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" name="kembali" style="position:relative; top:15px; left:135px;">Kembali</button>
                                 </div>
                             </form>
                         </div>
