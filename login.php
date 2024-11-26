@@ -96,7 +96,7 @@ if(isset($_POST['kembali'])){
                     <!-- Card untuk form login -->
                     <div class="card shadow-lg border-0 rounded-lg mt-5">
                         <div class="card-header">
-                            <h3 class="text-center font-weight-bold my-4">Login As Admin</h3>
+                            <h3 class="text-center font-weight-bold my-4" style="margin-bottom:30px;">Login As Admin</h3>
                         </div>
                         <div class="card-body">
                             <!-- Form login -->
@@ -122,7 +122,7 @@ if(isset($_POST['kembali'])){
                                 </div>
                                 <!-- Tombol aksi -->
                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                    <button class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300" name="login" style="position:relative; top:15px; right:15px;">Masuk</button>
+                                    <button class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300" name="login" style="position:relative; top:15px; right:15px; margin-top:30px;">Masuk</button>
                                     <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" name="kembali" style="position:relative; top:15px; left:200px;">Kembali</button>
                                 </div>
                             </form>
