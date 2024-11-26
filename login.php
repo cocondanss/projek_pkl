@@ -119,8 +119,7 @@ if(isset($_POST['kembali'])){
                                            name="password" 
                                            id="inputPassword" 
                                            type="password" 
-                                           placeholder="Masukan password"/
-                                           style="margin-top: 13px;">
+                                           placeholder="Masukan password"/>
                                 </div>
                                 <!-- Tombol aksi -->
                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
