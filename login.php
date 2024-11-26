@@ -85,6 +85,7 @@ if(isset($_POST['kembali'])){
             font-size: x-large;
             position: relative;
             bottom: 33px;
+            margin-bottom:30px;
         }
     </style>
 </head>
@@ -96,7 +97,7 @@ if(isset($_POST['kembali'])){
                     <!-- Card untuk form login -->
                     <div class="card shadow-lg border-0 rounded-lg mt-5">
                         <div class="card-header">
-                            <h3 class="text-center font-weight-bold my-4" style="margin-bottom:30px;">Login As Admin</h3>
+                            <h3 class="text-center font-weight-bold my-4">Login As Admin</h3>
                         </div>
                         <div class="card-body">
                             <!-- Form login -->
@@ -118,7 +119,8 @@ if(isset($_POST['kembali'])){
                                            name="password" 
                                            id="inputPassword" 
                                            type="password" 
-                                           placeholder="Masukan password"/>
+                                           placeholder="Masukan password"/
+                                           style="margin-top: 13px;">
                                 </div>
                                 <!-- Tombol aksi -->
                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
