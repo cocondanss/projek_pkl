@@ -60,7 +60,7 @@ if(isset($_POST['kembali'])){
             overflow-x: hidden; /* Hides horizontal scrollbar */
             overflow-y: hidden; /* Hides vertical scrollbar */
             animation: gradient 10s ease infinite; /* Add animation */
-            background: linear-gradient(45deg, #ff6b6b, #f7b733, #6a82fb, #fc5c7d); /* Initial gradient */
+            background: linear-gradient(45deg, #1a1a1a, #333333, #4d4d4d, #1a1a1a); /* Dark theme gradient */
             background-size: 400% 400%; /* For smooth transition */
             display: flex; /* Use flexbox */
             justify-content: center; /* Center horizontally */
@@ -76,36 +76,36 @@ if(isset($_POST['kembali'])){
         }
 
         .card {
-        width: 400px; /* Lebar card yang lebih kecil */
-        padding: 20px; /* Tambahkan padding */
-        border: none; /* Hapus border default */
-        border-radius: 20px; /* Sudut yang lebih bulat */
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Bayangan yang lebih halus */
-        background-color: white; /* Latar belakang putih untuk card */
-    }
+            width: 400px; /* Lebar card yang lebih kecil */
+            padding: 20px; /* Tambahkan padding */
+            border: none; /* Hapus border default */
+            border-radius: 20px; /* Sudut yang lebih bulat */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Bayangan yang lebih halus */
+            background-color: white; /* Latar belakang putih untuk card */
+        }
 
-    .card-header {
-        text-align: center; /* Pusatkan teks */
-        margin-bottom: 20px; /* Jarak bawah */
-    }
+        .card-header {
+            text-align: center; /* Pusatkan teks */
+            margin-bottom: 20px; /* Jarak bawah */
+        }
 
-    .form-control {
-        border-radius: 10px; /* Sudut input yang lebih bulat */
-        border: 1px solid #ccc; /* Warna border yang lebih lembut */
-    }
+        .form-control {
+            border-radius: 10px; /* Sudut input yang lebih bulat */
+            border: 1px solid #ccc; /* Warna border yang lebih lembut */
+        }
 
-    .btn-info, .btn-secondary {
-        border-radius: 10px; /* Sudut tombol yang lebih bulat */
-        transition: background-color 0.3s, transform 0.3s; /* Transisi halus */
-    }
+        .btn-info, .btn-secondary {
+            border-radius: 10px; /* Sudut tombol yang lebih bulat */
+            transition: background-color 0.3s, transform 0.3s; /* Transisi halus */
+        }
 
-    .btn-info:hover {
-        background-color: #007aff; /* Warna biru Apple */
-    }
+        .btn-info:hover {
+            background-color: #007aff; /* Warna biru Apple */
+        }
 
-    .btn-secondary:hover {
-        background-color: #e0e0e0; /* Warna abu-abu saat hover */
-    }
+        .btn-secondary:hover {
+            background-color: #e0e0e0; /* Warna abu-abu saat hover */
+        }
     </style>
 </head>
 <body class="bg-dark">
