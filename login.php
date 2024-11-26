@@ -113,7 +113,7 @@ if(isset($_POST['kembali'])){
                                            style="margin-right: 100px;">
                                 </div>
                                 <!-- Input password -->
-                                <div class="form-group">
+                                <div class="form-group" style="margin-top: 13px;">
                                     <label class="small mb-1" for="inputPassword">Password</label>
                                     <input class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300" 
                                            name="password" 
