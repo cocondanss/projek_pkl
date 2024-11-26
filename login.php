@@ -80,6 +80,12 @@ if(isset($_POST['kembali'])){
             background: whitesmoke;
             padding: 70px;
         }
+
+        .text-center {
+            font-size: x-large;
+            position: relative;
+            bottom: 33px;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
