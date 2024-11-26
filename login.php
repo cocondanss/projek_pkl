@@ -102,7 +102,7 @@ if(isset($_POST['kembali'])){
                             <!-- Form login -->
                             <form method="post">
                                 <!-- Input email -->
-                                <div class="form-group">
+                                <div class="form-group" style="position:relative; bottom: 15px;">
                                     <label class="small mb-1" for="inputEmailAddress">Email</label>
                                     <input class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300" 
                                            name="email" 
