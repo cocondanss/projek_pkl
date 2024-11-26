@@ -53,7 +53,7 @@ if(isset($_POST['kembali'])){
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Login</title>
-    <link href="css/styleL.css" rel="stylesheet" />
+    <link src="css/styleL.css" rel="style/css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
