@@ -68,15 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ? ");
             $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
             $updateStmt->execute();
-
-            if ($row['one_time_use'] == 1) {
-                // Simpan informasi diskon ke sesi sebelum menghapus voucher
-                $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
-                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-                $deleteStmt->bind_param("s", $voucherCode);
-                $deleteStmt->execute();
-            }
-
+            
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
