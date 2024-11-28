@@ -429,21 +429,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // Fungsi untuk menangani submit form voucher
             $(document).ready(function() {
                 $('#voucher-form').on('submit', function(e) {
-                    e.preventDefault();
+                    e.preventDefault(); // Mencegah form dari refresh halaman
                     var formData = $(this).serialize();
 
                     $.ajax({
-                        url: 'listproduct.php',
+                        url: 'listproduct.php', // URL untuk mengirim data
                         type: 'POST',
                         data: formData,
                         success: function(response) {
+                            // Proses respons di sini, misalnya memperbarui daftar produk atau menampilkan pesan
                             var $response = $(response);
                             $('#product-list').html($response.find('#product-list').html());
-                            
-                            // Tampilkan pesan
                             var message = $response.find('#voucher-message-container').html();
                             $('#voucher-message-container').html(message).show();
-                            
+
                             // Sembunyikan pesan setelah beberapa detik
                             setTimeout(function() {
                                 $('#voucher-message-container').fadeOut(500, function() {
