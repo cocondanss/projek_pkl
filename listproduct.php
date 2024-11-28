@@ -88,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Product Price after applying voucher: " . $productPrice);
 
         // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
-        if ($productPrice <= 0) {
+        if ($discountedPrice <= 0) {
             // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
             $order_id = 'TRX-' . time() . '-' . uniqid();
             $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
