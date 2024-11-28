@@ -112,11 +112,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Tampilkan pesan voucher
-foreach ($voucherMessages as $message) {
-    echo $message;
-}
-
 // Ambil data produk yang visible
 $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
 if (!$produk) {
