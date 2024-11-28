@@ -44,14 +44,13 @@ $voucherMessages = [];
 $voucherCode = '';
 $originalPrice = 0; // Inisialisasi harga asli
 $discountedPrice = 0; // Inisialisasi harga diskon
-$isVoucherUsed = false;
+$isVoucherUsed = false; // Variabel untuk mengecek apakah voucher sudah digunakan
 
-// Proses pengecekan voucher saat ada POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $voucherCode = trim($_POST['voucher_code']);
     
     // Validasi voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? ");
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -59,17 +58,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     if ($row = $result->fetch_assoc()) {
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            // Jika voucher sudah digunakan, tampilkan pesan error
-            // $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tidak berlaku.</p>";
+            $isVoucherUsed = true; // Tandai bahwa voucher sudah digunakan
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tidak berlaku.</p>";
         } else {
-            // Voucher belum digunakan, update status penggunaan voucher
+            // Update status penggunaan voucher
             date_default_timezone_set('Asia/Jakarta');
             $currentDateTime = date('Y-m-d H:i:s');
-            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ? ");
+            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
             $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
             $updateStmt->execute();
-            
-            $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
+
+            // Hapus voucher setelah digunakan
+            $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+            $deleteStmt->bind_param("s", $voucherCode);
+            $deleteStmt->execute();
+
+            $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan dan telah dihapus.</p>";
         }
     } else {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
