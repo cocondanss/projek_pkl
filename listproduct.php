@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
             $order_id = 'TRX-' . time() . '-' . uniqid();
             $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
-            $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+            $stmt->bind_param("sisd", $order_id, $productId, $productName, $discountedPrice);
             $stmt->execute();
 
             // Arahkan ke halaman transberhasil
