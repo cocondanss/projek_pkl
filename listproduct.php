@@ -58,9 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     if ($row = $result->fetch_assoc()) {
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            $voucherMessages[] = "<p class='voucher-message error'>Voucher hanya dapat digunakan sekali</p>";
+            // Jika voucher sudah digunakan, tampilkan pesan error
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tidak berlaku.</p>";
         } else {
-            // Update status penggunaan voucher
+            // Voucher belum digunakan, update status penggunaan voucher
             date_default_timezone_set('Asia/Jakarta');
             $currentDateTime = date('Y-m-d H:i:s');
             $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ? ");
