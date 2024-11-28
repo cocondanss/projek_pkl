@@ -369,6 +369,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     keyboardDisplay.textContent = '';
                     keyboardDisplay.classList.remove('active');
                 });
+                // Tambahkan event listener untuk keyboard fisik
+                document.addEventListener('keydown', function(event) {
+                    const voucherInput = document.getElementById('voucher-input');
+                    const keyboardDisplay = document.getElementById('keyboard-display');
+
+                    // Cek jika modal keyboard virtual terbuka
+                    if ($('#virtualKeyboardModal').hasClass('show')) {
+                        if (event.key === 'Backspace') {
+                            // Hapus karakter terakhir
+                            voucherInput.value = voucherInput.value.slice(0, -1);
+                            keyboardDisplay.textContent = voucherInput.value;
+                            if (!voucherInput.value) {
+                                keyboardDisplay.classList.remove('active');
+                            }
+                        } else if (event.key.length === 1) { // Hanya untuk karakter tunggal
+                            // Tambah karakter ke input voucher
+                            voucherInput.value += event.key;
+                            keyboardDisplay.textContent = voucherInput.value;
+                        }
+                    }
+                });
             });
 
             // Modifikasi fungsi showVirtualKeyboard
