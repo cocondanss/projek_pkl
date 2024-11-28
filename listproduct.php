@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             $isVoucherUsed = true; // Tandai bahwa voucher sudah digunakan
-            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tidak berlaku.</p>";
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan.</p>";
         } else {
             // Update status penggunaan voucher
             date_default_timezone_set('Asia/Jakarta');
@@ -69,8 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $updateStmt->execute();
 
             // Hapus voucher setelah digunakan
-            $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-            $deleteStmt->bind_param("s", $voucherCode);
+            // $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+            // $deleteStmt->bind_param("s", $voucherCode);
             // $deleteStmt->execute();
 
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan dan telah dihapus.</p>";
@@ -801,26 +801,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             submitButton.innerHTML = originalButtonText;
                         });
                     });
-                }
-            });
-
-            // Tambahkan event listener untuk keyboard fisik
-            document.addEventListener('keydown', function(event) {
-                const key = event.key;
-
-                // Cek apakah tombol yang ditekan adalah karakter yang valid
-                if ((key >= '0' && key <= '9') || (key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z')) {
-                    // Tambahkan karakter ke input voucher
-                    const voucherInput = document.getElementById('voucher-input');
-                    voucherInput.value += isCapsLock ? key.toUpperCase() : key.toLowerCase();
-                    document.getElementById('keyboard-display').textContent = voucherInput.value;
-                } else if (key === 'Backspace') {
-                    // Hapus karakter terakhir
-                    voucherInput.value = voucherInput.value.slice(0, -1);
-                    document.getElementById('keyboard-display').textContent = voucherInput.value;
-                } else if (key === 'Enter') {
-                    // Kirim form voucher
-                    document.getElementById('voucher-form').submit();
                 }
             });
 
