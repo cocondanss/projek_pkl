@@ -69,8 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
 
             // Update waktu penggunaan
-            date_default_timezone_set('Asia/Jakarta');
-            $currentDateTime = date('Y-m-d H:i:s');
+            // date_default_timezone_set('Asia/Jakarta');
+            // $currentDateTime = date('Y-m-d H:i:s');
             
             // Update used_at timestamp
             $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
