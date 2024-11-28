@@ -529,8 +529,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     window.location.href = 'transberhasil.php';
                 } else {
                     // Hapus modal lama jika ada
-                    const existingModal = document.getElementById('qrCodeModal');
-                    if (existingModal) existingModal.remove();
+                    // const existingModal = document.getElementById('qrCodeModal');
+                    // if (existingModal) existingModal.remove();
 
                     // Buat elemen modal baru
                     const modalHTML = `
