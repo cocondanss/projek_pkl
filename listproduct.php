@@ -78,37 +78,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Cek apakah proses pembelian produk
-    if (isset($_POST['buy_product'])) {
-        $productId = $_POST['product_id'];
-        $productName = $_POST['product_name'];
-        $originalPrice = $_POST['product_price']; // Ambil harga asli produk
-        $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
-
-        // Debugging: Cek nilai productPrice
-        error_log("Product Price after applying voucher: " . $productPrice);
-
-        // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
-        if ($productPrice <= 0) {
-            // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
-            $order_id = 'TRX-' . time() . '-' . uniqid();
-            $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
-            $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
-            $stmt->execute();
-
-            // Arahkan ke halaman transberhasil
-            header("Location: transberhasil.php");
-            exit(); // Pastikan untuk menghentikan eksekusi
-        }
-
-        // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
+    if ($productPrice <= 0) {
+        // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
+        $order_id = 'TRX-' . time() . '-' . uniqid();
+        $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
+        $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+        $stmt->execute();
+    
+        // Arahkan ke halaman transberhasil
+        header("Location: transberhasil.php");
+        exit(); // Pastikan untuk menghentikan eksekusi
+    } else {
+        // Jika harga produk lebih dari Rp 0, simpan transaksi
         $order_id = 'TRX-' . time() . '-' . uniqid();
         $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
         $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
         $stmt->execute();
-
-        // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
-        // Contoh: header("Location: payment.php?order_id=" . $order_id);
-        // exit(); // Pastikan untuk menghentikan eksekusi
+    
+        // Arahkan ke halaman pembayaran
+        header("Location: payment.php?order_id=" . $order_id);
+        exit(); // Pastikan untuk menghentikan eksekusi
     }
 }
 
