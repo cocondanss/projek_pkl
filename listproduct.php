@@ -512,13 +512,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
 
             function showPaymentModal(id, name, price, discount = 0) {
+    console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
+
+    // Validasi parameter
+    if (!id || !name || typeof price !== 'number' || price < 0) {
+        console.error('Parameter tidak valid');
+        return;
+    }
 
     // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
     createTransaction(id, name, price, discount)
         .then(response => {
             if (response && response.success) {
                 // Jika harga kurang dari atau sama dengan Rp 0, arahkan ke halaman transberhasil
-                if (price <= 0) {
+                if (price == 0,00) {
                     window.location.href = 'transberhasil.php';
                 } else {
                     // Hapus modal lama jika ada
