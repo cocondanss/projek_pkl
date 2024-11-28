@@ -525,12 +525,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         .then(response => {
             if (response && response.success) {
                 // Jika harga kurang dari atau sama dengan Rp 0, arahkan ke halaman transberhasil
-                if (price == 0,00) {
+                if (price <= 0,00) {
                     window.location.href = 'transberhasil.php';
                 } else {
                     // Hapus modal lama jika ada
-                    // const existingModal = document.getElementById('qrCodeModal');
-                    // if (existingModal) existingModal.remove();
+                    const existingModal = document.getElementById('qrCodeModal');
+                    if (existingModal) existingModal.remove();
 
                     // Buat elemen modal baru
                     const modalHTML = `
