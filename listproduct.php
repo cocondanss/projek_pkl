@@ -70,8 +70,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
             // Hapus voucher setelah digunakan
             $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-            // $deleteStmt->bind_param("s", $voucherCode);
-            $deleteStmt->execute();
+            $deleteStmt->bind_param("s", $voucherCode);
+            // $deleteStmt->execute();
 
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan dan telah dihapus.</p>";
         }
