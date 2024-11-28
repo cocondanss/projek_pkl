@@ -489,42 +489,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 display.textContent = '';
             });
 
-            $(document).ready(function() {
-            // Event listener untuk tombol beli
-            $('.buy-button').on('click', function() {
-                var productId = $(this).data('id');
-                var productName = $(this).data('name');
-                var productPrice = $(this).data('price');
-                var discountValue = $(this).data('discount');
-
-                // Menggunakan AJAX untuk melakukan pembelian
-                $.ajax({
-                    url: 'api.php',
-                    type: 'POST',
-                    data: {
-                        action: 'create_transaction',
-                        product_id: productId,
-                        product_name: productName,
-                        product_price: productPrice,
-                        discount: discountValue
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Jika total_price adalah 0, lakukan pengalihan
-                            window.location.href = response.redirect; // Arahkan ke transberhasil.php
-                        } else {
-                            // Tangani error jika ada
-                            alert(response.message);
-                        }
-                    },
-                    error: function() {
-                        alert('Terjadi kesalahan saat melakukan pembelian.');
-                    }
-                });
-            });
-        });
-            
-
             function showPaymentModal(id, name, price, discount = 0) {
     console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
