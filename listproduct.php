@@ -88,11 +88,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Product Price after applying voucher: " . $productPrice);
 
         // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
-        if ($discountedPrice <= 0) {
+        if ($productPrice <= 0) {
             // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
             $order_id = 'TRX-' . time() . '-' . uniqid();
             $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
-            $stmt->bind_param("sisd", $order_id, $productId, $productName, $discountedPrice);
+            $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
             $stmt->execute();
 
             // Arahkan ke halaman transberhasil
@@ -111,6 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // exit(); // Pastikan untuk menghentikan eksekusi
     }
 }
+
 
 // Ambil data produk yang visible
 $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
