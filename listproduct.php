@@ -44,6 +44,7 @@ $voucherMessages = [];
 $voucherCode = '';
 $originalPrice = 0; // Inisialisasi harga asli
 $discountedPrice = 0; // Inisialisasi harga diskon
+$isVoucherUsed = false;
 
 // Proses pengecekan voucher saat ada POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
