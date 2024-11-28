@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // $deleteStmt->bind_param("s", $voucherCode);
             // $deleteStmt->execute();
 
-            $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan dan telah dihapus.</p>";
+            $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
