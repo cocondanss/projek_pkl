@@ -804,6 +804,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 }
             });
 
+            // Tambahkan event listener untuk keyboard fisik
+            document.addEventListener('keydown', function(event) {
+                const key = event.key;
+
+                // Cek apakah tombol yang ditekan adalah karakter yang valid
+                if ((key >= '0' && key <= '9') || (key >= 'a' && key <= 'z') || (key >= 'A' && key <= 'Z')) {
+                    // Tambahkan karakter ke input voucher
+                    const voucherInput = document.getElementById('voucher-input');
+                    voucherInput.value += isCapsLock ? key.toUpperCase() : key.toLowerCase();
+                    document.getElementById('keyboard-display').textContent = voucherInput.value;
+                } else if (key === 'Backspace') {
+                    // Hapus karakter terakhir
+                    voucherInput.value = voucherInput.value.slice(0, -1);
+                    document.getElementById('keyboard-display').textContent = voucherInput.value;
+                } else if (key === 'Enter') {
+                    // Kirim form voucher
+                    document.getElementById('voucher-form').submit();
+                }
+            });
+
         </script>
 </body>
 </html>
