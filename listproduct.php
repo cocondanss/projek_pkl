@@ -93,6 +93,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
     $originalPrice = $_POST['product_price']; // Ambil harga asli produk
     $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
 
+    // Debugging: Cek nilai productPrice
+    error_log("Product Price after applying voucher: " . $productPrice);
+
     // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
     if ($productPrice <= 0) {
         // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
@@ -103,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
 
         // Arahkan ke halaman transberhasil
         header("Location: transberhasil.php");
-        exit();
+        exit(); // Pastikan untuk menghentikan eksekusi
     }
 
     // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
