@@ -53,14 +53,15 @@ if(isset($_POST['kembali'])){
     <meta name="description" content="" />
     <meta name="author" content="" />
     <title>Login</title>
-    <!-- <link href="css/style.css" rel="stylesheet" /> -->
+    <link href="css/styleL.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             overflow-x: hidden; /* Hides horizontal scrollbar */
             overflow-y: hidden; /* Hides vertical scrollbar */
             animation: gradient 10s ease infinite; /* Add animation */
-            background: linear-gradient(45deg, #ff6b6b, #f7b733, #6a82fb, #fc5c7d); /* Initial gradient */
+            background: linear-gradient(45deg, #1a1a1a, #333333, #4d4d4d, #1a1a1a); /* Dark theme gradient with right transition */
             background-size: 400% 400%; /* For smooth transition */
             display: flex; /* Use flexbox */
             justify-content: center; /* Center horizontally */
@@ -75,40 +76,20 @@ if(isset($_POST['kembali'])){
             100% { background-position: 0% 50%; }
         }
 
-        .card {
-        width: 400px; /* Lebar card yang lebih kecil */
-        padding: 20px; /* Tambahkan padding */
-        border: none; /* Hapus border default */
-        border-radius: 20px; /* Sudut yang lebih bulat */
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Bayangan yang lebih halus */
-        background-color: white; /* Latar belakang putih untuk card */
-    }
+        .shadow-lg {
+            background: whitesmoke;
+            padding: 50px;
+        }
 
-    .card-header {
-        text-align: center; /* Pusatkan teks */
-        margin-bottom: 20px; /* Jarak bawah */
-    }
-
-    .form-control {
-        border-radius: 10px; /* Sudut input yang lebih bulat */
-        border: 1px solid #ccc; /* Warna border yang lebih lembut */
-    }
-
-    .btn-info, .btn-secondary {
-        border-radius: 10px; /* Sudut tombol yang lebih bulat */
-        transition: background-color 0.3s, transform 0.3s; /* Transisi halus */
-    }
-
-    .btn-info:hover {
-        background-color: #007aff; /* Warna biru Apple */
-    }
-
-    .btn-secondary:hover {
-        background-color: #e0e0e0; /* Warna abu-abu saat hover */
-    }
+        .text-center {
+            font-size: x-large;
+            position: relative;
+            bottom: 33px;
+            margin-bottom:30px;
+        }
     </style>
 </head>
-<body class="bg-dark">
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
     <div>
         <main>
             <div class="row justify-content-center">
@@ -122,18 +103,19 @@ if(isset($_POST['kembali'])){
                             <!-- Form login -->
                             <form method="post">
                                 <!-- Input email -->
-                                <div class="form-group">
+                                <div class="form-group" style="position:relative; bottom: 15px;">
                                     <label class="small mb-1" for="inputEmailAddress">Email</label>
-                                    <input class="form-control py-4" 
+                                    <input class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300" 
                                            name="email" 
                                            id="inputEmailAddress" 
                                            type="email" 
-                                           placeholder="Masukan email admin"/>
+                                           placeholder="Masukan email admin"/
+                                           style="margin-right: 100px;">
                                 </div>
                                 <!-- Input password -->
-                                <div class="form-group">
+                                <div class="form-group" style="margin-top: 13px;">
                                     <label class="small mb-1" for="inputPassword">Password</label>
-                                    <input class="form-control py-4" 
+                                    <input class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300" 
                                            name="password" 
                                            id="inputPassword" 
                                            type="password" 
@@ -141,8 +123,8 @@ if(isset($_POST['kembali'])){
                                 </div>
                                 <!-- Tombol aksi -->
                                 <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                    <button class="btn btn-info" name="login">Masuk</button>
-                                    <button class="btn btn-secondary" name="kembali">Kembali</button>
+                                    <button class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300" name="login" style="position:relative; top:15px; right:15px; margin-top:30px;">Masuk</button>
+                                    <button class="px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" name="kembali" style="position:relative; top:15px; left:200px;">Kembali</button>
                                 </div>
                             </form>
                         </div>
