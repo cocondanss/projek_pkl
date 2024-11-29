@@ -107,28 +107,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
 
     // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
     if ($productPrice <= 0) {
-        // Simpan transaksi ke database
+        // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
         $order_id = 'TRX-' . time() . '-' . uniqid();
         $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
         $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
-        
-        if (!$stmt->execute()) {
-            echo "Error: " . $stmt->error; // Tampilkan kesalahan jika ada
-        } else {
-            // Arahkan ke halaman transberhasil
-            header("Location: transberhasil.php");
-            exit();
-        }
+        $stmt->execute();
+
+        // Arahkan ke halaman transberhasil
+        header("Location: transberhasil.php");
+        exit();
     }
-    
-    // Jika harga produk lebih dari Rp 0
+
+    // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
     $order_id = 'TRX-' . time() . '-' . uniqid();
     $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
     $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
-    
-    if (!$stmt->execute()) {
-        echo "Error: " . $stmt->error; // Tampilkan kesalahan jika ada
-    }
+    $stmt->execute();
+
+    // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
+    // ...
 }
 
 // Mulai output buffering untuk request AJAX
