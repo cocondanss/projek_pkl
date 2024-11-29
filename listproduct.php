@@ -58,16 +58,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     if ($row = $result->fetch_assoc()) {
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tetap berlaku.</p>";
-            // Gunakan diskon dari sesi jika voucher sudah digunakan
-            $discountedPrice = isset($_SESSION['lastUsedDiscount']) ? $_SESSION['lastUsedDiscount'] : $originalPrice;
+            // Voucher sudah digunakan, kembalikan harga ke harga asli
+            $discountedPrice = $originalPrice; // Tetap gunakan harga asli
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan. Diskon tidak berlaku.</p>";
         } else {
-            // Hitung diskon
+            // Hitung diskon jika voucher belum digunakan
             $discountedPrice = applyVoucher($voucherCode, $originalPrice);
             
             // Simpan diskon dalam sesi
             $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
-
+    
             // Update waktu penggunaan
             date_default_timezone_set('Asia/Jakarta');
             $currentDateTime = date('Y-m-d H:i:s');
@@ -78,12 +78,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $updateStmt->execute();
             
             // Hapus voucher dari database jika sekali pakai
-            // if ($row['one_time_use'] == 1) {
-            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-            //     $deleteStmt->bind_param("s", $voucherCode);
-            //     $deleteStmt->execute();
-            // }
-
+            if ($row['one_time_use'] == 1) {
+                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+                $deleteStmt->bind_param("s", $voucherCode);
+                $deleteStmt->execute();
+            }
+    
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
