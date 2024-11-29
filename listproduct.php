@@ -13,31 +13,37 @@ require 'function.php';
  * @param float $price - Harga asli produk
  * @return float - Harga setelah penerapan voucher
  */
-function applyVoucher($voucherCode, $price) {
-    global $conn;
+function applyVoucher($voucherCode, $price) { 
+    global $conn; 
 
-    // Persiapkan dan eksekusi query untuk mendapatkan voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? ");
-    $stmt->bind_param("s", $voucherCode);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Persiapkan dan eksekusi query untuk mendapatkan voucher 
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? "); 
+    $stmt->bind_param("s", $voucherCode); 
+    $stmt->execute(); 
+    $result = $stmt->get_result(); 
 
-    // Cek apakah voucher ditemukan
-    if ($row = $result->fetch_assoc()) {
-        $discountAmount = $row['discount_amount'];
+    // Cek apakah voucher ditemukan 
+    if ($row = $result->fetch_assoc()) { 
+        // Cek apakah voucher sudah digunakan 
+        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) { 
+            // Voucher sudah digunakan, kembalikan harga ke harga asli 
+            return $price; // Kembalikan harga asli
+        } 
+        
+        $discountAmount = $row['discount_amount']; 
 
-        // Hitung harga setelah diskon
-        if ($discountAmount <= 100) { // Jika diskon dalam persentase
-            $discountedPrice = $price - ($price * ($discountAmount / 100));
-        } else { // Jika diskon dalam nominal
-            $discountedPrice = $price - $discountAmount;
+        // Hitung harga setelah diskon 
+        if ($discountAmount <= 100) { // Jika diskon dalam persentase 
+            $discountedPrice = $price - ($price * ($discountAmount / 100)); 
+        } else { // Jika diskon dalam nominal 
+            $discountedPrice = $price - $discountAmount; 
         } 
 
-        return max(0, $discountedPrice); // Pastikan harga tidak negatif
-    }
+        return max(0, $discountedPrice); // Pastikan harga tidak negatif 
+    } 
 
-    return $price; // Kembalikan harga asli jika voucher tidak valid
-}
+    return $price; // Kembalikan harga asli jika voucher tidak valid 
+} 
 
 // Inisialisasi variabel untuk sistem voucher
 $voucherMessages = [];
