@@ -107,7 +107,7 @@ function create_transaction($data) {
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
         // Jika total_price adalah 0, langsung arahkan ke halaman sukses
-        if ($total_price == 0) {
+        if ($total_price == 0.00) {
             echo json_encode([
                 'success' => true,
                 'redirect' => 'transberhasil.php' // Kembalikan URL untuk pengalihan
