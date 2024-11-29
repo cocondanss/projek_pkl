@@ -56,6 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
+        // Debugging: Tampilkan nilai yang diambil dari database
+        error_log("one_time_use: " . $row['one_time_use']);
+        error_log("used_at: " . $row['used_at']);
+    
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             // Voucher sudah digunakan, kembalikan harga ke harga asli
@@ -78,11 +82,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $updateStmt->execute();
             
             // Hapus voucher dari database jika sekali pakai
-            // if ($row['one_time_use'] == 1) {
-            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-            //     $deleteStmt->bind_param("s", $voucherCode);
-            //     $deleteStmt->execute();
-            // }
+            if ($row['one_time_use'] == 1) {
+                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+                $deleteStmt->bind_param("s", $voucherCode);
+                $deleteStmt->execute();
+            }
     
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
