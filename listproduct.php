@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
         $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
         $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
         $stmt->execute();
-
+    
         // Arahkan ke halaman transberhasil
         header("Location: transberhasil.php");
         exit();
@@ -500,10 +500,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
                 // Jika harga kurang dari atau sama dengan Rp 0, arahkan ke transberhasil
                 if (price <= 1.00) {
-                    console.log('Price is less than or equal to 0, redirecting to transberhasil.php');
-                    window.location.href = 'transberhasil.php';
-                    return; // Hentikan eksekusi lebih lanjut
-                }
+                console.log('Price is less than or equal to 1, redirecting to transberhasil.php');
+                window.location.href = 'transberhasil.php';
+                return; // Hentikan eksekusi lebih lanjut
+            }
 
                 // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
                 createTransaction(id, name, price, discount)
