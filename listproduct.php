@@ -498,10 +498,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     return;
                 }
 
-                // Cek nilai price
-                console.log('Checking price:', price);
+                // Jika harga kurang dari atau sama dengan Rp 0, arahkan ke transberhasil
                 if (price <= 1.00) {
-                    console.log('Price is less than or equal to 1, redirecting to transberhasil.php');
+                    console.log('Price is less than or equal to 0, redirecting to transberhasil.php');
                     window.location.href = 'transberhasil.php';
                     return; // Hentikan eksekusi lebih lanjut
                 }
