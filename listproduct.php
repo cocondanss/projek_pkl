@@ -13,39 +13,31 @@ require 'function.php';
  * @param float $price - Harga asli produk
  * @return float - Harga setelah penerapan voucher
  */
-function applyVoucher($voucherCode, $price) { 
-    global $conn; 
+function applyVoucher($voucherCode, $price) {
+    global $conn;
 
-    // Persiapkan dan eksekusi query untuk mendapatkan voucher 
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? "); 
-    $stmt->bind_param("s", $voucherCode); 
-    $stmt->execute(); 
-    $result = $stmt->get_result(); 
+    // Persiapkan dan eksekusi query untuk mendapatkan voucher
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? ");
+    $stmt->bind_param("s", $voucherCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
-    // Cek apakah voucher ditemukan 
-    if ($row = $result->fetch_assoc()) { 
-        // Cek apakah voucher sudah digunakan 
-        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) { 
-            // Voucher sudah digunakan, kembalikan harga ke harga asli 
-            return $price; // Kembalikan harga asli
-        } 
-        
-        $discountAmount = $row['discount_amount']; 
+    // Cek apakah voucher ditemukan
+    if ($row = $result->fetch_assoc()) {
+        $discountAmount = $row['discount_amount'];
 
-        // Hitung harga setelah diskon 
-        if ($discountAmount <= 100) { // Jika diskon dalam persentase 
-            $discountedPrice = $price - ($price * ($discountAmount / 100)); 
-        } else { // Jika diskon dalam nominal 
-            $discountedPrice = $price - $discountAmount; 
+        // Hitung harga setelah diskon
+        if ($discountAmount <= 100) { // Jika diskon dalam persentase
+            $discountedPrice = $price - ($price * ($discountAmount / 100));
+        } else { // Jika diskon dalam nominal
+            $discountedPrice = $price - $discountAmount;
         } 
 
-        return max(0, $discountedPrice); // Pastikan harga tidak negatif 
-    } 
+        return max(0, $discountedPrice); // Pastikan harga tidak negatif
+    }
 
-    return $price; // Kembalikan harga asli jika voucher tidak valid 
+    return $price; // Kembalikan harga asli jika voucher tidak valid
 }
-
-
 
 // Inisialisasi variabel untuk sistem voucher
 $voucherMessages = [];
@@ -67,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             // Voucher sudah digunakan, kembalikan harga ke harga asli
-            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan.</p>";
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan lebih dari sekali.</p>";
             $discountedPrice = $originalPrice; // Tetap gunakan harga asli
         } else {
             // Hitung diskon jika voucher belum digunakan
@@ -107,34 +99,34 @@ if (!$produk) {
 }
 
 // Proses pembelian produk
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) { 
-    $productId = $_POST['product_id']; 
-    $productName = $_POST['product_name']; 
-    $originalPrice = $_POST['product_price']; // Ambil harga asli produk 
-    $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
+    $productId = $_POST['product_id'];
+    $productName = $_POST['product_name'];
+    $originalPrice = $_POST['product_price']; // Ambil harga asli produk
+    $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
 
-    // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil 
-    if ($productPrice <= 0) { 
-        // Simpan transaksi ke database (meskipun gratis, untuk pencatatan) 
-        $order_id = 'TRX-' . time() . '-' . uniqid(); 
-        $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')"); 
-        $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice); 
-        $stmt->execute(); 
+    // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
+    if ($productPrice <= 0) {
+        // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
+        $order_id = 'TRX-' . time() . '-' . uniqid();
+        $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
+        $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+        $stmt->execute();
 
-        // Arahkan ke halaman transberhasil 
-        header("Location: transberhasil.php"); 
-        exit(); 
-    } 
+        // Arahkan ke halaman transberhasil
+        header("Location: transberhasil.php");
+        exit();
+    }
 
-    // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran 
-    $order_id = 'TRX-' . time() . '-' . uniqid(); 
-    $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')"); 
-    $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice); 
-    $stmt->execute(); 
+    // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
+    $order_id = 'TRX-' . time() . '-' . uniqid();
+    $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
+    $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+    $stmt->execute();
 
-    // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran) 
-    // ... 
-} 
+    // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
+    // ...
+}
 
 // Mulai output buffering untuk request AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
