@@ -56,18 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
-        // Debugging: Tampilkan nilai one_time_use dan used_at
-        echo "one_time_use: " . $row['one_time_use'] . "<br>";
-        echo "used_at: " . $row['used_at'] . "<br>";
-        
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             // Voucher sudah digunakan, kembalikan harga ke harga asli
-            $discountedPrice = $originalPrice; // Tetap gunakan harga asli
             $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan.</p>";
-            
-            // Debugging: Tampilkan harga yang dikembalikan
-            echo "Harga dikembalikan ke harga asli: " . $discountedPrice . "<br>";
+            $discountedPrice = $originalPrice; // Tetap gunakan harga asli
         } else {
             // Hitung diskon jika voucher belum digunakan
             $discountedPrice = applyVoucher($voucherCode, $originalPrice);
@@ -83,6 +76,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
             $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
             $updateStmt->execute();
+            
+            // Hapus voucher dari database jika sekali pakai
+            // if ($row['one_time_use'] == 1) {
+            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+            //     $deleteStmt->bind_param("s", $voucherCode);
+            //     $deleteStmt->execute();
+            // }
     
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
@@ -90,9 +90,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
         $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
     }
-    
-    // Debugging: Tampilkan harga akhir
-    echo "Harga akhir: " . $discountedPrice . "<br>";
 }
 
 // Ambil data produk yang visible
