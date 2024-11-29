@@ -490,7 +490,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
 
             function showPaymentModal(id, name, price, discount = 0) {
-                console.log('showPaymentModal called with ID:', id, 'Name:', name, 'Price:', price);
+                console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
                 // Validasi parameter
                 if (!id || !name || typeof price !== 'number' || price < 0) {
