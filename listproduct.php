@@ -506,18 +506,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     return; // Hentikan eksekusi lebih lanjut
                 }
 
-                // Simpan transaksi ke database
-                createTransaction(id, name, price, discount)
-                    .then(response => {
-                        console.log('Create Transaction Response:', response); // Log respons
-                        // ...
-                    })
-                    .catch(error => {
-                        console.error('Error in createTransaction:', error);
-                        alert('Terjadi kesalahan saat membuat transaksi.');
-                    });
-            }
-
                 // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
                 createTransaction(id, name, price, discount)
                     .then(response => {
