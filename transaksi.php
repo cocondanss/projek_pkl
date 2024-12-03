@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
 
         // Arahkan ke halaman transberhasil
         header("Location: transberhasil.php");
-        exit();
+        exit(); 
     }
 
     // Jika harga produk lebih dari Rp 0, simpan transaksi dengan status 'pending'
