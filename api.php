@@ -99,6 +99,11 @@ function create_transaction($data) {
         $product_price = intval($data['product_price']);
         $discount = isset($data['discount']) ? intval($data['discount']) : 0;
 
+        // Validasi harga produk dan diskon
+        if ($product_price < 0 || $discount < 0) {
+            throw new Exception("Harga produk dan diskon harus berupa angka positif");
+        }
+
         // Hitung total harga
         $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
