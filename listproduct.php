@@ -825,6 +825,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 }
             });
 
+            function applyVoucher(voucherCode, price) {
+    // Panggil API untuk memeriksa voucher
+    fetch('/api/check_voucher.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ code: voucherCode })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Jika voucher valid dan belum digunakan
+            const discountAmount = data.discount_amount;
+            const discountedPrice = price - discountAmount;
+            console.log('Harga setelah diskon:', discountedPrice);
+            // Tampilkan harga diskon
+            document.getElementById('discountedPrice').innerText = `Harga setelah diskon: Rp ${discountedPrice}`;
+        } else {
+            // Jika voucher sudah digunakan
+            alert('Voucher sudah digunakan atau tidak valid.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Terjadi kesalahan saat memeriksa voucher.');
+    });
+}
         </script>
 </body>
 </html>
