@@ -23,7 +23,8 @@ function applyVoucher($voucherCode, $price) {
     $result = $stmt->get_result();
 
     // Cek apakah voucher ditemukan
-    if ($row = $result->fetch_assoc()) {
+    if ($result->num_rows > 0) { // Periksa apakah ada hasil
+        $row = $result->fetch_assoc(); // Ambil data dari hasil
         $discountAmount = $row['discount_amount'];
 
         // Hitung harga setelah diskon
@@ -34,6 +35,8 @@ function applyVoucher($voucherCode, $price) {
         }
 
         return max(0, $discountedPrice); // Pastikan harga tidak negatif
+    } else {
+        echo "Voucher tidak ditemukan."; // Pesan jika voucher tidak ada
     }
 
     return $price; // Kembalikan harga asli jika voucher tidak valid
