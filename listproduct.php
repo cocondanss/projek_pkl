@@ -505,7 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             console.log('Create Transaction Response:', response); // Log respons
             if (response && response.success) {
                 // Jika harga setelah diskon adalah Rp 0 atau kurang, arahkan ke transberhasil
-                if (price <= 0) { // Ubah kondisi ini untuk memeriksa apakah harga adalah Rp 0
+                if (price <= 0,) { // Ubah kondisi ini untuk memeriksa apakah harga adalah Rp 0
                     console.log('Price is 0 or less, redirecting to transberhasil.php');
                     window.location.href = 'transberhasil.php'; // Arahkan ke halaman sukses
                 } else {
