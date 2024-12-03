@@ -490,7 +490,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
 
             function showPaymentModal(id, name, price, discount = 0) {
-                console.log('showPaymentModal called with ID:', id, 'Name:', name, 'Price:', price);
+                console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
                 // Validasi parameter
                 if (!id || !name || typeof price !== 'number' || price < 0) {
@@ -498,26 +498,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     return;
                 }
 
-                // Jika harga kurang dari atau sama dengan Rp 0, simpan transaksi dan arahkan ke transberhasil
-                if (price <= 0) {
-                    console.log('Price is 0, saving transaction and redirecting to transberhasil.php');
-                    createTransaction(id, name, price, discount) // Simpan transaksi
-                        .then(response => {
-                            if (response && response.success) {
-                                window.location.href = 'transberhasil.php'; // Arahkan ke halaman sukses
-                            } else {
-                                alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error in createTransaction:', error);
-                            alert('Terjadi kesalahan saat membuat transaksi.');
-                        });
-                    return; // Hentikan eksekusi lebih lanjut
-                }
-
-                // Lanjutkan dengan proses pembayaran untuk harga lebih dari Rp 0
-                // ...
+                // Jika harga kurang dari atau sama dengan Rp 0, arahkan ke transberhasil
+                if (price <= 1.00) {
+                console.log('Price is less than or equal to 1, redirecting to transberhasil.php');
+                window.location.href = 'transberhasil.php';
+                return; // Hentikan eksekusi lebih lanjut
             }
 
                 // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
