@@ -20,31 +20,16 @@ require_once 'vendor/autoload.php';
 function applyVoucher($voucherCode, $price) {
     global $conn;
 
-    if (!$conn) {
-        die("Koneksi database gagal: " . mysqli_connect_error());
-    }
-
     // Persiapkan dan eksekusi query untuk mendapatkan voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
-
-    if (!$stmt->execute()) {
-        error_log("Query error: " . $stmt->error);
-        return $price; // Kembalikan harga asli jika ada error
-    }
-
+    $stmt->execute();
     $result = $stmt->get_result();
 
     // Cek apakah voucher ditemukan
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $discountAmount = $row['discount_amount'];
-
-        // Validasi diskon
-        if ($discountAmount > 100) {
-            error_log("Discount amount exceeds 100%: " . $discountAmount);
-            return $price; // Kembalikan harga asli jika diskon tidak valid
-        }
 
         // Hitung harga setelah diskon
         if ($discountAmount <= 100) { // Jika diskon dalam persentase
@@ -56,7 +41,6 @@ function applyVoucher($voucherCode, $price) {
         return max(0, $discountedPrice); // Pastikan harga tidak negatif
     }
 
-    error_log("No voucher found for code: " . $voucherCode);
     return $price; // Kembalikan harga asli jika voucher tidak valid
 }
 
