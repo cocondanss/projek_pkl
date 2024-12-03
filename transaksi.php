@@ -1,6 +1,28 @@
 <?php
 require 'function.php';
 require 'cek.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $product_id = $_POST['product_id'];
+    $product_name = $_POST['product_name'];
+    $price = $_POST['price'];
+    $discount = $_POST['discount'];
+    $status = 'completed'; // Status untuk transaksi gratis
+
+    // Simpan transaksi ke database
+    $stmt = $conn->prepare("INSERT INTO transaksi (product_id, product_name, price, discount, status) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssdds", $product_id, $product_name, $price, $discount, $status);
+
+    if ($stmt->execute()) {
+        // Berhasil menyimpan
+        echo json_encode(['success' => true, 'order_id' => $stmt->insert_id]);
+    } else {
+        // Gagal menyimpan
+        echo json_encode(['success' => false, 'message' => 'Gagal menyimpan transaksi.']);
+    }
+
+    $stmt->close();
+}
 ?>
 <html lang="en">
     <head>

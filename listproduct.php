@@ -490,7 +490,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
 
             function showPaymentModal(id, name, price, discount = 0) {
-                console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
+                console.log('showPaymentModal called with ID:', id, 'Name:', name, 'Price:', price);
 
                 // Validasi parameter
                 if (!id || !name || typeof price !== 'number' || price < 0) {
@@ -498,69 +498,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     return;
                 }
 
-                // Jika harga kurang dari atau sama dengan Rp 0, arahkan ke transberhasil
-                if (price <= 1.00) {
-                console.log('Price is less than or equal to 1, redirecting to transberhasil.php');
-                window.location.href = 'transberhasil.php';
-                return; // Hentikan eksekusi lebih lanjut
+                // Jika harga kurang dari atau sama dengan Rp 0, simpan transaksi dan arahkan ke transberhasil
+                if (price <= 0) {
+                    console.log('Price is 0, saving transaction and redirecting to transberhasil.php');
+                    createTransaction(id, name, price, discount) // Simpan transaksi
+                        .then(response => {
+                            if (response && response.success) {
+                                window.location.href = 'transberhasil.php'; // Arahkan ke halaman sukses
+                            } else {
+                                alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error in createTransaction:', error);
+                            alert('Terjadi kesalahan saat membuat transaksi.');
+                        });
+                    return; // Hentikan eksekusi lebih lanjut
+                }
+
+                // Lanjutkan dengan proses pembayaran untuk harga lebih dari Rp 0
+                // ...
             }
 
                 // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
-                createTransaction(id, name, price, discount)
-                    .then(response => {
-                        console.log('Create Transaction Response:', response); // Log respons
-                        if (response && response.success) {
-                            // Hapus modal lama jika ada
-                            const existingModal = document.getElementById('qrCodeModal');
-                            if (existingModal) existingModal.remove();
-
-                            // Buat elemen modal baru
-                            const modalHTML = `
-                                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="qr-code-container">
-                                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
-                                                </div>
-                                                <div id="countdown"></div>
-                                                <div class="status-message"></div>
-                                                <div class="button-container">
-                                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
-                                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-
-                            // Tambahkan modal ke body
-                            document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-                            // Set transaction ID
-                            const qrCodeModal = document.getElementById('qrCodeModal');
-                            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
-
-                            // Start the countdown timer
-                            startCountdown(30 * 60); // 30 minutes in seconds
-
-                            // Tampilkan modal
-                            const bootstrapModal = new bootstrap.Modal(qrCodeModal);
-                            bootstrapModal.show();
-                        } else {
-                            alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error in createTransaction:', error);
-                        alert('Terjadi kesalahan saat membuat transaksi.');
-                    });
+                function createTransaction(id, name, price, discount) {
+    return new Promise((resolve, reject) => {
+        // Lakukan AJAX request untuk menyimpan transaksi
+        $.ajax({
+            url: 'transaksi.php', // Ganti dengan URL yang sesuai
+            type: 'POST',
+            data: {
+                product_id: id,
+                product_name: name,
+                price: price,
+                discount: discount,
+                status: 'completed' // Atur status transaksi
+            },
+            success: function(response) {
+                resolve(response); // Resolusi promise dengan respons dari server
+            },
+            error: function(xhr, status, error) {
+                reject(error); // Tolak promise jika terjadi kesalahan
             }
+        });
+    });
+}
 
 
             // Add countdown timer function
