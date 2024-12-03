@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
     $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
 
     // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
-    if ($productPrice == 0.00) {
+    if ($productPrice == 0) {
         // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
         $order_id = 'TRX-' . time() . '-' . uniqid();
         $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
