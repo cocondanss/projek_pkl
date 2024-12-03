@@ -302,7 +302,7 @@ function midtrans_notification() {
 
 /**
  * Membuat transaksi gratis
- * @param array $data Data transaksi yang diperlukan
+ * @param array $data Data transaksi gratis yang diperlukan
  * @return void Output JSON dengan detail transaksi atau pesan error
  */
 function create_free_transaction($data) {
@@ -321,12 +321,12 @@ function create_free_transaction($data) {
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, 0, 'settlement')");
         $stmt->execute([$order_id, $product_id, $product_name]);
 
-        // Simpan ke session
+        // Simpan ke session dengan waktu yang benar
         $_SESSION['successful_transaction'] = [
             'transaction_id' => $order_id,
             'product_name' => $product_name,
             'amount' => 0,
-            'created_at' => date('Y-m-d H:i:s')
+            'created_at' => date('Y-m-d H:i:s') // Menggunakan waktu server saat ini
         ];
 
         echo json_encode([
