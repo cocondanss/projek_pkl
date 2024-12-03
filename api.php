@@ -107,13 +107,13 @@ function create_transaction($data) {
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
 
         // Jika total_price adalah 0, langsung arahkan ke halaman sukses
-        if ($total_price == 0) {
-            echo json_encode([
-                'success' => true,
-                'redirect' => 'transberhasil.php' // Kembalikan URL untuk pengalihan
-            ]);
-            return; // Keluar dari fungsi
-        }
+        // if ($total_price == 0) {
+        //     echo json_encode([
+        //         'success' => true,
+        //         'redirect' => 'transberhasil.php' // Kembalikan URL untuk pengalihan
+        //     ]);
+        //     return; // Keluar dari fungsi
+        // }
 
         // Siapkan parameter Midtrans
         $transaction_params = [
