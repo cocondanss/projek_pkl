@@ -79,11 +79,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $updateStmt->execute();
             
             // Hapus voucher dari database jika sekali pakai
-            if ($row['one_time_use'] == 1) {
-                $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-                $deleteStmt->bind_param("s", $voucherCode);
-                $deleteStmt->execute();
-            }
+            // if ($row['one_time_use'] == 1) {
+            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+            //     $deleteStmt->bind_param("s", $voucherCode);
+            //     $deleteStmt->execute();
+            // }
     
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
@@ -160,7 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <?php foreach ($produk as $item): 
                     $originalPrice = $item['price'];
                     // Hitung harga diskon berdasarkan voucher yang ada
-                    $discountedPrice = isset($_SESSION['discountedPrice']) ? $_SESSION['discountedPrice'] : applyVoucher($voucherCode, $originalPrice);                ?>
+                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
+                ?>
                     <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                         <div class="card-body"> 
                             <h2><?php echo htmlspecialchars($item['name']); ?></h2>
@@ -823,35 +824,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     });
                 }
             });
-
-            function applyVoucher(voucherCode, price) {
-    // Panggil API untuk memeriksa voucher
-    fetch('/api/check_voucher.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ code: voucherCode })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Jika voucher valid dan belum digunakan
-            const discountAmount = data.discount_amount;
-            const discountedPrice = price - discountAmount;
-            console.log('Harga setelah diskon:', discountedPrice);
-            // Tampilkan harga diskon
-            document.getElementById('discountedPrice').innerText = `Harga setelah diskon: Rp ${discountedPrice}`;
-        } else {
-            // Jika voucher sudah digunakan
-            alert('Voucher sudah digunakan atau tidak valid.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('Terjadi kesalahan saat memeriksa voucher.');
-    });
-}
+            
         </script>
 </body>
 </html>
