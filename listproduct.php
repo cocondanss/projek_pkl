@@ -17,14 +17,14 @@ function applyVoucher($voucherCode, $price) {
     global $conn;
 
     // Persiapkan dan eksekusi query untuk mendapatkan voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? ");
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
 
     // Cek apakah voucher ditemukan
-    if ($result->num_rows > 0) { // Periksa apakah ada hasil
-        $row = $result->fetch_assoc(); // Ambil data dari hasil
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
         $discountAmount = $row['discount_amount'];
 
         // Hitung harga setelah diskon
@@ -35,7 +35,7 @@ function applyVoucher($voucherCode, $price) {
         }
 
         return max(0, $discountedPrice); // Pastikan harga tidak negatif
-    } 
+    }
 
     return $price; // Kembalikan harga asli jika voucher tidak valid
 }
