@@ -15,20 +15,27 @@ require 'function.php';
  */
 function applyVoucher($voucherCode, $price) {
     global $conn;
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
+
+    // Persiapkan dan eksekusi query untuk mendapatkan voucher
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? ");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // Cek apakah voucher ditemukan
     if ($row = $result->fetch_assoc()) {
         $discountAmount = $row['discount_amount'];
-        if ($discountAmount <= 100) {
+
+        // Hitung harga setelah diskon
+        if ($discountAmount <= 100) { // Jika diskon dalam persentase
             $discountedPrice = $price - ($price * ($discountAmount / 100));
-        } else {
+        } else { // Jika diskon dalam nominal
             $discountedPrice = $price - $discountAmount;
-        }
+        } 
+
         return max(0, $discountedPrice); // Pastikan harga tidak negatif
     }
+
     return $price; // Kembalikan harga asli jika voucher tidak valid
 }
 
@@ -96,19 +103,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
     $productId = $_POST['product_id'];
     $productName = $_POST['product_name'];
     $originalPrice = $_POST['product_price']; // Ambil harga asli produk
-    $voucherCode = isset($_POST['voucher_code']) ? trim($_POST['voucher_code']) : null; // Ambil kode voucher jika ada
-
-    // Terapkan voucher jika ada
-    $productPrice = applyVoucher($voucherCode, $originalPrice);
+    $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
 
     // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
     if ($productPrice == 0) {
         // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
         $order_id = 'TRX-' . time() . '-' . uniqid();
         $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
-        $stmt->bind_param("sssd", $order_id, $productId, $productName, $productPrice);
+        $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
         $stmt->execute();
-
+    
         // Arahkan ke halaman transberhasil
         header("Location: transberhasil.php");
         exit();
@@ -117,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
     // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
     $order_id = 'TRX-' . time() . '-' . uniqid();
     $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
-    $stmt->bind_param("sssd", $order_id, $productId, $productName, $productPrice);
+    $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
     $stmt->execute();
 
     // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
