@@ -31,7 +31,7 @@ function applyVoucher($voucherCode, $price) {
             $discountedPrice = $price - ($price * ($discountAmount / 100));
         } else { // Jika diskon dalam nominal
             $discountedPrice = $price - $discountAmount;
-        } 
+        }
 
         return max(0, $discountedPrice); // Pastikan harga tidak negatif
     }
