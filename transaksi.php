@@ -2,26 +2,34 @@
 require 'function.php';
 require 'cek.php';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $product_id = $_POST['product_id'];
-    $product_name = $_POST['product_name'];
-    $price = $_POST['price'];
-    $discount = $_POST['discount'];
-    $status = 'completed'; // Status untuk transaksi gratis
+// Proses pembelian produk
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
+    $productId = $_POST['product_id'];
+    $productName = $_POST['product_name'];
+    $originalPrice = $_POST['product_price']; // Ambil harga asli produk
+    $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
 
-    // Simpan transaksi ke database
-    $stmt = $conn->prepare("INSERT INTO transaksi (product_id, product_name, price, discount, status) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("ssdds", $product_id, $product_name, $price, $discount, $status);
+    // Jika harga produk adalah Rp 0, langsung simpan dengan status 'completed'
+    if ($productPrice == 0) {
+        // Simpan transaksi ke database dengan status 'completed'
+        $order_id = 'TRX-' . time() . '-' . uniqid(); 
+        $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
+        $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+        $stmt->execute();
 
-    if ($stmt->execute()) {
-        // Berhasil menyimpan
-        echo json_encode(['success' => true, 'order_id' => $stmt->insert_id]);
-    } else {
-        // Gagal menyimpan
-        echo json_encode(['success' => false, 'message' => 'Gagal menyimpan transaksi.']);
+        // Arahkan ke halaman transberhasil
+        header("Location: transberhasil.php");
+        exit();
     }
 
-    $stmt->close();
+    // Jika harga produk lebih dari Rp 0, simpan transaksi dengan status 'pending'
+    $order_id = 'TRX-' . time() . '-' . uniqid(); 
+    $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
+    $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+    $stmt->execute();
+
+    // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
+    // ...
 }
 ?>
 <html lang="en">
