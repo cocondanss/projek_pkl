@@ -3,10 +3,12 @@ require 'function.php';
 require 'cek.php';
 
 // Proses pembelian produk
+// Proses pembelian produk
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
     $productId = $_POST['product_id'];
     $productName = $_POST['product_name'];
     $originalPrice = $_POST['product_price']; // Ambil harga asli produk
+    $voucherCode = isset($_POST['voucher_code']) ? trim($_POST['voucher_code']) : null; // Ambil kode voucher jika ada
     $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
 
     // Jika harga produk adalah Rp 0, langsung simpan dengan status 'completed'
