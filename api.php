@@ -48,9 +48,6 @@ try {
                 case 'cancel_transaction':
                     cancel_transaction($data);
                     break;
-                case 'create_free_transaction':
-                    create_free_transaction($data);
-                    break;
                 default:
                     throw new Exception("Action tidak valid");
             }
@@ -299,47 +296,25 @@ function midtrans_notification() {
         echo json_encode(["error" => $e->getMessage()]);
     }
 }
-
-/**
- * Membuat transaksi gratis
- * @param array $data Data transaksi gratis yang diperlukan
- * @return void Output JSON dengan detail transaksi atau pesan error
- */
-function create_free_transaction($data) {
-    global $db;
-
-    if (!isset($data['product_id']) || !isset($data['product_name'])) {
-        throw new Exception("Data produk tidak lengkap");
-    }
-
-    try {
-        $order_id = 'FREE-' . time() . '-' . uniqid();
-        $product_id = $data['product_id'];
-        $product_name = $data['product_name'];
-
-        // Simpan transaksi ke database dengan status 'settlement'
-        $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, 0, 'settlement')");
-        $stmt->execute([$order_id, $product_id, $product_name]);
-
-        // Simpan ke session dengan waktu yang benar
-        $_SESSION['successful_transaction'] = [
-            'transaction_id' => $order_id,
-            'product_name' => $product_name,
-            'amount' => 0,
-            'created_at' => date('Y-m-d H:i:s') // Menggunakan waktu server saat ini
-        ];
-
+if ($_POST['action'] === 'create_free_transaction') {
+    $order_id = 'FREE-' . time() . '-' . uniqid();
+    $product_id = $_POST['product_id'];
+    $product_name = $_POST['product_name'];
+    
+    // Insert transaksi dengan status 'settlement' (berhasil)
+    $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, 0, 'settlement')");
+    $stmt->bind_param("sis", $order_id, $product_id, $product_name);
+    
+    if ($stmt->execute()) {
         echo json_encode([
             'success' => true,
             'message' => 'Transaksi gratis berhasil diproses',
-            'order_id' => $order_id,
-            'redirect' => 'transberhasil.php'
+            'order_id' => $order_id
         ]);
-
-    } catch (Exception $e) {
+    } else {
         echo json_encode([
             'success' => false,
-            'message' => $e->getMessage()
+            'message' => 'Gagal memproses transaksi gratis'
         ]);
     }
 }
