@@ -99,34 +99,34 @@ if (!$produk) {
 }
 
 // Proses pembelian produk
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
-    $productId = $_POST['product_id'];
-    $productName = $_POST['product_name'];
-    $originalPrice = $_POST['product_price']; // Ambil harga asli produk
-    $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
+// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
+//     $productId = $_POST['product_id'];
+//     $productName = $_POST['product_name'];
+//     $originalPrice = $_POST['product_price']; // Ambil harga asli produk
+//     $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
 
-    // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
-    if ($productPrice == 0) {
-        // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
-        $order_id = 'TRX-' . time() . '-' . uniqid();
-        $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
-        $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
-        $stmt->execute();
+//     // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
+//     if ($productPrice == 0) {
+//         // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
+//         $order_id = 'TRX-' . time() . '-' . uniqid();
+//         $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
+//         $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+//         $stmt->execute();
     
-        // Arahkan ke halaman transberhasil
-        header("Location: transberhasil.php");
-        exit();
-    }
+//         // Arahkan ke halaman transberhasil
+//         header("Location: transberhasil.php");
+//         exit();
+//     }
 
-    // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
-    $order_id = 'TRX-' . time() . '-' . uniqid();
-    $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
-    $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
-    $stmt->execute();
+//     // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
+//     $order_id = 'TRX-' . time() . '-' . uniqid();
+//     $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
+//     $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+//     $stmt->execute();
 
-    // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
-    // ...
-}
+//     // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
+//     // ...
+// }
 
 // Mulai output buffering untuk request AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
@@ -489,78 +489,78 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 display.textContent = '';
             });
 
-            // function showPaymentModal(id, name, price, discount = 0) {
-            //     console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
+            function showPaymentModal(id, name, price, discount = 0) {
+                console.log('ID:', id, 'Name:', name, 'Price:', price); // Log untuk debugging
 
-            //     // Validasi parameter
-            //     if (!id || !name || typeof price !== 'number' || price < 0) {
-            //         console.error('Parameter tidak valid');
-            //         return;
-            //     }
+                // Validasi parameter
+                if (!id || !name || typeof price !== 'number' || price < 0) {
+                    console.error('Parameter tidak valid');
+                    return;
+                }
 
-            //     // Jika harga kurang dari atau sama dengan Rp 0, arahkan ke transberhasil
-            //     if (price <= 1.00) {
-            //     console.log('Price is less than or equal to 1, redirecting to transberhasil.php');
-            //     window.location.href = 'transberhasil.php';
-            //     return; // Hentikan eksekusi lebih lanjut
-            // }
+                // Jika harga kurang dari atau sama dengan Rp 0, arahkan ke transberhasil
+                if (price <= 1.00) {
+                console.log('Price is less than or equal to 1, redirecting to transberhasil.php');
+                window.location.href = 'transberhasil.php';
+                return; // Hentikan eksekusi lebih lanjut
+            }
 
-            //     // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
-            //     createTransaction(id, name, price, discount)
-            //         .then(response => {
-            //             console.log('Create Transaction Response:', response); // Log respons
-            //             if (response && response.success) {
-            //                 // Hapus modal lama jika ada
-            //                 const existingModal = document.getElementById('qrCodeModal');
-            //                 if (existingModal) existingModal.remove();
+                // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
+                createTransaction(id, name, price, discount)
+                    .then(response => {
+                        console.log('Create Transaction Response:', response); // Log respons
+                        if (response && response.success) {
+                            // Hapus modal lama jika ada
+                            const existingModal = document.getElementById('qrCodeModal');
+                            if (existingModal) existingModal.remove();
 
-            //                 // Buat elemen modal baru
-            //                 const modalHTML = `
-            //                     <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
-            //                         <div class="modal-dialog modal-dialog-centered">
-            //                             <div class="modal-content">
-            //                                 <div class="modal-header">
-            //                                     <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
-            //                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            //                                 </div>
-            //                                 <div class="modal-body">
-            //                                     <div class="qr-code-container">
-            //                                         <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
-            //                                     </div>
-            //                                     <div id="countdown"></div>
-            //                                     <div class="status-message"></div>
-            //                                     <div class="button-container">
-            //                                         <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
-            //                                         <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
-            //                                     </div>
-            //                                 </div>
-            //                             </div>
-            //                         </div>
-            //                     </div>
-            //                 `;
+                            // Buat elemen modal baru
+                            const modalHTML = `
+                                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="qr-code-container">
+                                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
+                                                </div>
+                                                <div id="countdown"></div>
+                                                <div class="status-message"></div>
+                                                <div class="button-container">
+                                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
+                                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
 
-            //                 // Tambahkan modal ke body
-            //                 document.body.insertAdjacentHTML('beforeend', modalHTML);
+                            // Tambahkan modal ke body
+                            document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-            //                 // Set transaction ID
-            //                 const qrCodeModal = document.getElementById('qrCodeModal');
-            //                 qrCodeModal.setAttribute('data-transaction-id', response.order_id);
+                            // Set transaction ID
+                            const qrCodeModal = document.getElementById('qrCodeModal');
+                            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
 
-            //                 // Start the countdown timer
-            //                 startCountdown(30 * 60); // 30 minutes in seconds
+                            // Start the countdown timer
+                            startCountdown(30 * 60); // 30 minutes in seconds
 
-            //                 // Tampilkan modal
-            //                 const bootstrapModal = new bootstrap.Modal(qrCodeModal);
-            //                 bootstrapModal.show();
-            //             } else {
-            //                 alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
-            //             }
-            //         })
-            //         .catch(error => {
-            //             console.error('Error in createTransaction:', error);
-            //             alert('Terjadi kesalahan saat membuat transaksi.');
-            //         });
-            // }
+                            // Tampilkan modal
+                            const bootstrapModal = new bootstrap.Modal(qrCodeModal);
+                            bootstrapModal.show();
+                        } else {
+                            alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error in createTransaction:', error);
+                        alert('Terjadi kesalahan saat membuat transaksi.');
+                    });
+            }
 
 
             // Add countdown timer function
