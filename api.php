@@ -296,4 +296,25 @@ function midtrans_notification() {
         echo json_encode(["error" => $e->getMessage()]);
     }
 }
-
+if ($_POST['action'] === 'create_free_transaction') {
+    $order_id = 'FREE-' . time() . '-' . uniqid();
+    $product_id = $_POST['product_id'];
+    $product_name = $_POST['product_name'];
+    
+    // Insert transaksi dengan status 'settlement' (berhasil)
+    $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, 0, 'settlement')");
+    $stmt->bind_param("sis", $order_id, $product_id, $product_name);
+    
+    if ($stmt->execute()) {
+        echo json_encode([
+            'success' => true,
+            'message' => 'Transaksi gratis berhasil diproses',
+            'order_id' => $order_id
+        ]);
+    } else {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Gagal memproses transaksi gratis'
+        ]);
+    }
+}
