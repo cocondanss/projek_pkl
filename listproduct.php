@@ -35,10 +35,7 @@ function applyVoucher($voucherCode, $price) {
         }
 
         return max(0, $discountedPrice); // Pastikan harga tidak negatif
-    } else {
-        echo "Voucher tidak ditemukan."; // Pesan jika voucher tidak ada
-    }
-
+    } 
     return $price; // Kembalikan harga asli jika voucher tidak valid
 }
 
