@@ -109,7 +109,7 @@ function create_transaction($data) {
         // Jika total_price adalah 0, langsung arahkan ke halaman sukses
         if ($total_price == 0) {
             echo json_encode([
-                'settlement' => true,
+                'pending' => true,
                 'redirect' => 'transberhasil.php' // Kembalikan URL untuk pengalihan
             ]);
             return; // Keluar dari fungsi
