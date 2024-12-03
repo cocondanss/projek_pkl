@@ -17,8 +17,7 @@ require_once 'vendor/autoload.php';
 \Midtrans\Config::$is3ds = true;
 
 // Fungsi untuk menerapkan voucher pada harga produk
-function applyVoucher($voucherCode, $price) {
-    global $conn;
+
 
     // Persiapkan dan eksekusi query untuk mendapatkan voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
@@ -42,7 +41,7 @@ function applyVoucher($voucherCode, $price) {
     }
 
     return $price; // Kembalikan harga asli jika voucher tidak valid
-}
+
 
 // Fungsi untuk mengupdate tampilan detail produk
 if (isset($_POST['id'])) {
