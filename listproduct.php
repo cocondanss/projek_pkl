@@ -532,7 +532,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 createTransaction(id, name, price, discount)
                     .then(response => {
                         if (response && response.success) {
-                            showQRCodeModal(response.qr_code_url, response.order_id);
+                            // Tambahkan modal QR code ke body jika belum ada
+                            if (!document.getElementById('qrCodeModal')) {
+                                document.body.insertAdjacentHTML('beforeend', modalHTML);
+                            }
+                            
+                            // Tampilkan QR code
+                            const modal = new bootstrap.Modal(document.getElementById('qrCodeModal'));
+                            const qrCodeImage = document.getElementById('qrCodeImage');
+                            qrCodeImage.src = response.qr_code_url;
+                            
+                            // Set transaction ID ke modal untuk referensi
+                            document.getElementById('qrCodeModal').setAttribute('data-transaction-id', response.order_id);
+                            
+                            // Mulai countdown
+                            startCountdown(900); // 15 menit dalam detik
+                            
+                            modal.show();
                         } else {
                             alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
                         }
