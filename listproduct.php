@@ -8,9 +8,9 @@
 require 'function.php';
 
 // Mulai session
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// if (session_status() === PHP_SESSION_NONE) {
+//     session_start();
+// }
 
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
