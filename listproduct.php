@@ -7,6 +7,11 @@
 
 require 'function.php';
 
+// Inisialisasi variabel untuk sistem voucher
+$voucherMessages = [];
+$voucherCode = '';
+$originalPrice = 0; // Inisialisasi harga asli
+$discountedPrice = 0; // Inisialisasi harga diskon
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
@@ -40,11 +45,7 @@ function applyVoucher($voucherCode, $price) {
     return $price; // Kembalikan harga asli jika voucher tidak valid
 }
 
-// Inisialisasi variabel untuk sistem voucher
-$voucherMessages = [];
-$voucherCode = '';
-$originalPrice = 0; // Inisialisasi harga asli
-$discountedPrice = 0; // Inisialisasi harga diskon
+
 
 // Proses pengecekan voucher saat ada POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
