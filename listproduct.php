@@ -16,6 +16,10 @@ require 'function.php';
 function applyVoucher($voucherCode, $price) {
     global $conn;
 
+    if (empty($voucherCode)) {
+        return $price; // Kembalikan harga asli jika tidak ada voucher
+    }
+    
     // Persiapkan dan eksekusi query untuk mendapatkan voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
