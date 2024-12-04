@@ -490,121 +490,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 display.textContent = '';
             });
 
-            function createTransaction(id, name, price, discount) {
-                console.log('Creating transaction:', { id, name, price, discount }); // Debug log
-
-                return fetch('api.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        action: 'create_transaction',
-                        product_id: id,
-                        product_name: name,
-                        product_price: parseInt(price), // Pastikan price adalah integer
-                        discount: parseInt(discount || 0)
-                    })
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Transaction response:', data); // Debug log
-                    return data;
-                })
-                .catch(error => {
-                    console.error('Error in createTransaction:', error);
-                    throw error;
-                });
-            }
-
-            function showPaymentModal(id, name, price, discount = 0) {
-                console.log('ShowPaymentModal called with:', { id, name, price, discount }); // Debug log
-
-                // Validasi parameter
-                if (!id || !name || isNaN(price)) {
-                    console.error('Parameter tidak valid:', { id, name, price });
-                    return;
-                }
-
-                // Convert price to number if it's a string
-                price = Number(price);
-
-                // Jika harga adalah 0 atau kurang, langsung proses sebagai transaksi gratis
-                if (price <= 0) {
-                    fetch('api.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            action: 'create_free_transaction',
-                            product_id: id,
-                            product_name: name,
-                            product_price: 0
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.location.href = 'transberhasil.php';
-                        } else {
-                            alert('Error: ' + (data.message || 'Gagal memproses transaksi gratis.'));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan saat memproses transaksi.');
-                    });
-                    return;
-                }
-
-                // Jika harga lebih dari 0, lanjutkan dengan proses normal
-                createTransaction(id, name, price, discount)
-                    .then(response => {
-                        console.log('Create transaction response:', response); // Debug log
-
-                        if (response && response.success) {
-                            // Tambahkan modal QR code ke body jika belum ada
-                            let qrModal = document.getElementById('qrCodeModal');
-                            if (!qrModal) {
-                                document.body.insertAdjacentHTML('beforeend', modalHTML);
-                                qrModal = document.getElementById('qrCodeModal');
-                            }
-                            
-                            // Tampilkan QR code
-                            const qrCodeImage = document.getElementById('qrCodeImage');
-                            if (qrCodeImage && response.qr_code_url) {
-                                qrCodeImage.src = response.qr_code_url;
-                            } else {
-                                console.error('QR code URL missing or invalid:', response);
-                                throw new Error('QR code URL missing or invalid');
-                            }
-                            
-                            // Set transaction ID ke modal untuk referensi
-                            qrModal.setAttribute('data-transaction-id', response.order_id);
-                            
-                            // Mulai countdown
-                            startCountdown(900); // 15 menit dalam detik
-                            
-                            // Tampilkan modal menggunakan Bootstrap
-                            const modal = new bootstrap.Modal(qrModal);
-                            modal.show();
-                        } else {
-                            throw new Error(response ? response.message : 'Transaksi gagal');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error in payment process:', error);
-                        alert('Terjadi kesalahan saat memproses pembayaran: ' + error.message);
-                    });
-            }
-
-            // Definisi modalHTML
+            // Definisi modalHTML harus berada di ATAS sebelum fungsi-fungsi lainnya
             const modalHTML = `
                 <div class="modal fade" id="qrCodeModal" tabindex="-1" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
@@ -632,6 +518,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     </div>
                 </div>
             `;
+
+            function createTransaction(id, name, price, discount) {
+                return fetch('api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'create_transaction',
+                        product_id: id,
+                        product_name: name,
+                        product_price: price,
+                        discount: discount
+                    })
+                })
+                    .then(response => response.json())
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat memproses permintaan.');
+                    });
+            }
+
+            function showPaymentModal(id, name, price, discount = 0) {
+                // Validasi parameter
+                if (!id || !name || typeof price !== 'number') {
+                    console.error('Parameter tidak valid');
+                    return;
+                }
+
+                // Jika harga adalah 0 atau kurang, langsung proses sebagai transaksi berhasil
+                if (price <= 0) {
+                    fetch('api.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'create_free_transaction', // Aksi khusus untuk transaksi gratis
+                            product_id: id,
+                            product_name: name,
+                            product_price: 0,
+                            status: 'settlement' // Langsung set status sebagai selesai
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Langsung redirect ke halaman sukses
+                            window.location.href = 'transberhasil.php';
+                        } else {
+                            alert('Error: ' + (data.message || 'Gagal memproses transaksi gratis.'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat memproses transaksi.');
+                    });
+                    return;
+                }
+
+                // Jika harga lebih dari 0, lanjutkan dengan proses normal
+                createTransaction(id, name, price, discount)
+                    .then(response => {
+                        if (response && response.success) {
+                            showQRCodeModal(response.qr_code_url, response.order_id);
+                        } else {
+                            alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error in createTransaction:', error);
+                        alert('Terjadi kesalahan saat membuat transaksi.');
+                    });
+            }
+
+
+
 
             // Add countdown timer function
             function startCountdown(duration) {
