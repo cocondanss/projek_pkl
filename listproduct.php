@@ -16,11 +16,6 @@ require 'function.php';
 function applyVoucher($voucherCode, $price) {
     global $conn;
 
-    // Jika tidak ada kode voucher, kembalikan harga asli
-    if (empty($voucherCode)) {
-        return $price;
-    }
-
     // Persiapkan dan eksekusi query untuk mendapatkan voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
@@ -30,13 +25,6 @@ function applyVoucher($voucherCode, $price) {
     // Cek apakah voucher ditemukan
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        
-        // Cek apakah voucher adalah tipe sekali pakai dan sudah digunakan
-        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            // Voucher sudah digunakan, kembalikan harga asli
-            return $price;
-        }
-
         $discountAmount = $row['discount_amount'];
 
         // Hitung harga setelah diskon
@@ -172,25 +160,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <?php foreach ($produk as $item): 
                     $originalPrice = $item['price'];
                     // Hitung harga diskon berdasarkan voucher yang ada
-                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                    
-                    // Cek apakah voucher valid dan belum digunakan (untuk voucher sekali pakai)
-                    $voucherValid = false;
-                    if (!empty($voucherCode)) {
-                        $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
-                        $stmt->bind_param("s", $voucherCode);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        if ($row = $result->fetch_assoc()) {
-                            $voucherValid = !($row['one_time_use'] == 1 && $row['used_at'] !== null);
-                        }
-                    }
+                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
                 ?>
-                    <div class="product" data-product-id="<?php echo $item['id']; ?>">
+                    <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                         <div class="card-body"> 
                             <h2><?php echo htmlspecialchars($item['name']); ?></h2>
                             <div class="price-container">
-                                <?php if ($voucherValid && $discountedPrice < $originalPrice): ?>
+                                <?php if ($discountedPrice < $originalPrice): ?>
                                     <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
                                     <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
                                 <?php else: ?>
@@ -198,11 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                 <?php endif; ?>
                             </div>
                             <p><?php echo htmlspecialchars($item['description']); ?></p>
-                            <button onclick="showPaymentModal(
-                                <?php echo $item['id']; ?>, 
-                                '<?php echo htmlspecialchars($item['name']); ?>', 
-                                <?php echo $voucherValid ? $discountedPrice : $originalPrice; ?>
-                            )">Buy</button>
+                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">Buy</button>                            
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -519,13 +491,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
 
             function showPaymentModal(id, name, price, discount = 0) {
+                console.log('ShowPaymentModal called with:', { id, name, price, discount }); // Debug log
+
                 // Validasi parameter
-                if (!id || !name || typeof price !== 'number') {
-                    console.error('Parameter tidak valid');
+                if (!id || !name || price === undefined) {
+                    console.error('Parameter tidak valid:', { id, name, price });
                     return;
                 }
 
-                // Jika harga adalah 0 atau kurang, langsung proses sebagai transaksi berhasil
+                // Pastikan price adalah number dan valid
+                price = parseFloat(price);
+                if (isNaN(price)) {
+                    console.error('Harga tidak valid:', price);
+                    return;
+                }
+
+                // Jika harga adalah 0 atau kurang, langsung proses sebagai transaksi gratis
                 if (price <= 0) {
                     fetch('api.php', {
                         method: 'POST',
@@ -533,17 +514,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            action: 'create_free_transaction', // Aksi khusus untuk transaksi gratis
+                            action: 'create_free_transaction',
                             product_id: id,
                             product_name: name,
-                            product_price: 0,
-                            status: 'settlement' // Langsung set status sebagai selesai
+                            product_price: 0
                         })
                     })
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            // Langsung redirect ke halaman sukses
                             window.location.href = 'transberhasil.php';
                         } else {
                             alert('Error: ' + (data.message || 'Gagal memproses transaksi gratis.'));
@@ -559,8 +538,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 // Jika harga lebih dari 0, lanjutkan dengan proses normal
                 createTransaction(id, name, price, discount)
                     .then(response => {
+                        console.log('Create Transaction Response:', response); // Log respons
                         if (response && response.success) {
-                            showQRCodeModal(response.qr_code_url, response.order_id);
+                            // Hapus modal lama jika ada
+                            const existingModal = document.getElementById('qrCodeModal');
+                            if (existingModal) existingModal.remove();
+
+                            // Buat elemen modal baru
+                            const modalHTML = `
+                                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="qr-code-container">
+                                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
+                                                </div>
+                                                <div id="countdown"></div>
+                                                <div class="status-message"></div>
+                                                <div class="button-container">
+                                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
+                                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+
+                            // Tambahkan modal ke body
+                            document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                            // Set transaction ID
+                            const qrCodeModal = document.getElementById('qrCodeModal');
+                            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
+
+                            // Start the countdown timer
+                            startCountdown(900); // 15 menit dalam detik
+
+                            // Tampilkan modal
+                            const bootstrapModal = new bootstrap.Modal(qrCodeModal);
+                            bootstrapModal.show();
                         } else {
                             alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
                         }
