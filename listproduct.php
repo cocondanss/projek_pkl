@@ -560,7 +560,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                         Batal
                                                     </button>
                                                     <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
-                                                        Cek Status
+                                                        Cek
                                                     </button>
                                                 </div>
                                             </div>
