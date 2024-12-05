@@ -7,11 +7,6 @@
 
 require 'function.php';
 
-// Pastikan session sudah dimulai di awal file
-// if (session_status() === PHP_SESSION_NONE) {
-//     session_start();
-// }
-
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
@@ -20,30 +15,33 @@ require 'function.php';
  */
 function applyVoucher($voucherCode, $price) {
     global $conn;
-    
-    if (empty($voucherCode) || (isset($_SESSION['voucher_invalid']) && $_SESSION['voucher_invalid'])) {
-        return $price;
+
+    if (empty($voucherCode)) {
+        return $price; // Kembalikan harga asli jika tidak ada voucher
     }
     
+    // Persiapkan dan eksekusi query untuk mendapatkan voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // Cek apakah voucher ditemukan
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         $discountAmount = $row['discount_amount'];
-        
-        if ($discountAmount <= 100) {
+
+        // Hitung harga setelah diskon
+        if ($discountAmount <= 100) { // Jika diskon dalam persentase
             $discountedPrice = $price - ($price * ($discountAmount / 100));
-        } else {
+        } else { // Jika diskon dalam nominal
             $discountedPrice = $price - $discountAmount;
         }
-        
-        return max(0, $discountedPrice);
+
+        return max(0, $discountedPrice); // Pastikan harga tidak negatif
     }
 
-    return $price;
+    return $price; // Kembalikan harga asli jika voucher tidak valid
 }
 
 // Inisialisasi variabel untuk sistem voucher
@@ -72,15 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $_SESSION['voucher_code'] = $voucherCode;
             $_SESSION['voucher_invalid'] = false;
             
-            // Update used_at timestamp untuk voucher sekali pakai
-            if ($row['one_time_use'] == 1) {
-                date_default_timezone_set('Asia/Jakarta');
-                $currentDateTime = date('Y-m-d H:i:s');
-                $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-                $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-                $updateStmt->execute();
-            }
-            
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
@@ -97,34 +86,31 @@ if (!$produk) {
 }
 
 // Proses pembelian produk
-// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
-//     $productId = $_POST['product_id'];
-//     $productName = $_POST['product_name'];
-//     $originalPrice = $_POST['product_price']; // Ambil harga asli produk
-//     $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
-
-//     // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
-//     if ($productPrice == 0) {
-//         // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
-//         $order_id = 'TRX-' . time() . '-' . uniqid();
-//         $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
-//         $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
-//         $stmt->execute();
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
+    $productId = $_POST['product_id'];
+    $productName = $_POST['product_name'];
+    $originalPrice = $_POST['product_price'];
+    $voucherCode = isset($_SESSION['voucher_code']) ? $_SESSION['voucher_code'] : '';
     
-//         // Arahkan ke halaman transberhasil
-//         header("Location: transberhasil.php");
-//         exit();
-//     }
-
-//     // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
-//     $order_id = 'TRX-' . time() . '-' . uniqid();
-//     $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
-//     $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
-//     $stmt->execute();
-
-//     // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
-//     // ...
-// }
+    // Jika ada voucher yang digunakan, update timestamp
+    if (!empty($voucherCode)) {
+        $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
+        $stmt->bind_param("s", $voucherCode);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        
+        if ($row && $row['one_time_use'] == 1 && $row['used_at'] === null) {
+            date_default_timezone_set('Asia/Jakarta');
+            $currentDateTime = date('Y-m-d H:i:s');
+            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+            $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+            $updateStmt->execute();
+        }
+    }
+    
+    // Lanjutkan dengan proses pembelian...
+}
 
 // Mulai output buffering untuk request AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
@@ -156,14 +142,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="product-list" style="background: none;" id="product-list">
                 <?php foreach ($produk as $item): 
                     $originalPrice = $item['price'];
-                    $voucherCode = isset($_SESSION['voucher_code']) ? $_SESSION['voucher_code'] : '';
-                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                    // Hitung harga diskon berdasarkan voucher yang ada
+                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
                 ?>
-                    <div class="product" data-product-id="<?php echo $item['id']; ?>">
+                    <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                         <div class="card-body"> 
                             <h2><?php echo htmlspecialchars($item['name']); ?></h2>
                             <div class="price-container">
-                                <?php if ($discountedPrice < $originalPrice && !isset($_SESSION['voucher_invalid'])): ?>
+                                <?php if ($discountedPrice < $originalPrice): ?>
                                     <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
                                     <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
                                 <?php else: ?>
@@ -171,9 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                 <?php endif; ?>
                             </div>
                             <p><?php echo htmlspecialchars($item['description']); ?></p>
-                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">
-                                Buy
-                            </button>
+                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">Buy</button>                            
                         </div>
                     </div>
                 <?php endforeach; ?>
