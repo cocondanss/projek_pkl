@@ -28,9 +28,9 @@ function applyVoucher($voucherCode, $price) {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         
-        // Cek apakah voucher one-time use dan sudah digunakan sebelumnya
+        // Jika voucher sudah digunakan, kembalikan harga asli
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            return $price; // Kembalikan harga asli jika sudah digunakan
+            return $price;
         }
 
         $discountAmount = $row['discount_amount'];
