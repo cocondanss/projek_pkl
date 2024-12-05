@@ -17,9 +17,9 @@
  function applyVoucher($voucherCode, $price) {
      global $conn;
  
-     if (empty($voucherCode)) {
-         return $price;
-     }
+    //  if (empty($voucherCode)) {
+    //      return $price;
+    //  }
      
      $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
      $stmt->bind_param("s", $voucherCode);
