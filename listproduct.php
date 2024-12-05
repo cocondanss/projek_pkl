@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             // Voucher sudah digunakan, kembalikan harga ke harga asli
-            $voucherMessages[] = "<p class='voucher-message error'>Voucher inihanya bisa digunakan sekali.</p>";
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher ini hanya bisa digunakan sekali.</p>";
             $discountedPrice = $originalPrice; // Tetap gunakan harga asli
         } else {
             // Hitung diskon jika voucher belum digunakan
