@@ -17,31 +17,33 @@ function applyVoucher($voucherCode, $price) {
     global $conn;
 
     if (empty($voucherCode)) {
-        return $price; // Kembalikan harga asli jika tidak ada voucher
+        return $price;
     }
     
-    // Persiapkan dan eksekusi query untuk mendapatkan voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Cek apakah voucher ditemukan
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $discountAmount = $row['discount_amount'];
+        
+        // Cek apakah voucher one-time use dan sudah digunakan
+        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
+            return $price; // Kembalikan harga asli jika voucher sudah digunakan
+        }
 
-        // Hitung harga setelah diskon
-        if ($discountAmount <= 100) { // Jika diskon dalam persentase
+        $discountAmount = $row['discount_amount'];
+        if ($discountAmount <= 100) {
             $discountedPrice = $price - ($price * ($discountAmount / 100));
-        } else { // Jika diskon dalam nominal
+        } else {
             $discountedPrice = $price - $discountAmount;
         }
 
-        return max(0, $discountedPrice); // Pastikan harga tidak negatif
+        return max(0, $discountedPrice);
     }
 
-    return $price; // Kembalikan harga asli jika voucher tidak valid
+    return $price;
 }
 
 // Inisialisasi variabel untuk sistem voucher
