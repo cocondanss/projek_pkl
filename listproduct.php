@@ -28,9 +28,9 @@ function applyVoucher($voucherCode, $price) {
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
         
-        // Cek apakah voucher one-time use dan sudah digunakan
+        // Cek apakah voucher one-time use dan sudah digunakan sebelumnya
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            return $price; // Kembalikan harga asli jika voucher sudah digunakan
+            return $price; // Kembalikan harga asli jika sudah digunakan
         }
 
         $discountAmount = $row['discount_amount'];
@@ -44,6 +44,26 @@ function applyVoucher($voucherCode, $price) {
     }
 
     return $price;
+}
+
+function isVoucherUsed($voucherCode) {
+    global $conn;
+    
+    if (empty($voucherCode)) {
+        return false;
+    }
+
+    $stmt = $conn->prepare("SELECT used_at, one_time_use FROM vouchers2 WHERE code = ?");
+    $stmt->bind_param("s", $voucherCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        return ($row['one_time_use'] == 1 && $row['used_at'] !== null);
+    }
+    
+    return false;
 }
 
 // Inisialisasi variabel untuk sistem voucher
