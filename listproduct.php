@@ -6,7 +6,7 @@
  */
 
  require 'function.php';
- session_start(); // Pastikan session dimulai
+//  session_start(); // Pastikan session dimulai
  
  /**
   * Fungsi untuk menerapkan voucher pada harga produk
