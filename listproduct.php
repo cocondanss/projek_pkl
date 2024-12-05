@@ -6,7 +6,6 @@
  */
 
 require 'function.php';
-session_start();
 
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
@@ -18,45 +17,44 @@ function applyVoucher($voucherCode, $price) {
     global $conn;
 
     if (empty($voucherCode)) {
-        return $price;
+        return $price; // Kembalikan harga asli jika tidak ada voucher
     }
     
+    // Persiapkan dan eksekusi query untuk mendapatkan voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
 
+    // Cek apakah voucher ditemukan
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        
-        // Cek apakah voucher sudah digunakan dalam transaksi
-        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            return $price; // Kembalikan harga asli jika voucher sudah digunakan
-        }
-
         $discountAmount = $row['discount_amount'];
-        if ($discountAmount <= 100) {
+
+        // Hitung harga setelah diskon
+        if ($discountAmount <= 100) { // Jika diskon dalam persentase
             $discountedPrice = $price - ($price * ($discountAmount / 100));
-        } else {
+        } else { // Jika diskon dalam nominal
             $discountedPrice = $price - $discountAmount;
         }
 
-        return max(0, $discountedPrice);
+        return max(0, $discountedPrice); // Pastikan harga tidak negatif
     }
 
-    return $price;
+    return $price; // Kembalikan harga asli jika voucher tidak valid
 }
 
-// Inisialisasi variabel
+// Inisialisasi variabel untuk sistem voucher
 $voucherMessages = [];
-$voucherCode = isset($_SESSION['voucher_code']) ? $_SESSION['voucher_code'] : '';
-$originalPrice = 0;
-$discountedPrice = 0;
+$voucherCode = '';
+$originalPrice = 0; // Inisialisasi harga asli
+$discountedPrice = 0; // Inisialisasi harga diskon
 
-// Proses pengecekan voucher
+// Proses pengecekan voucher saat ada POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $voucherCode = trim($_POST['voucher_code']);
     
+    // Validasi voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
@@ -65,53 +63,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     if ($row = $result->fetch_assoc()) {
         // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
+            // Voucher sudah digunakan, kembalikan harga ke harga asli
             $voucherMessages[] = "<p class='voucher-message error'>Voucher ini hanya bisa digunakan sekali.</p>";
-            unset($_SESSION['voucher_code']);
-            $voucherCode = '';
-            $discountedPrice = $originalPrice;
+            $discountedPrice = $originalPrice; // Tetap gunakan harga asli
         } else {
-            $_SESSION['voucher_code'] = $voucherCode;
-            $_SESSION['voucher_data'] = [
-                'code' => $voucherCode,
-                'one_time_use' => $row['one_time_use'],
-                'discount_amount' => $row['discount_amount']
-            ];
+            // Hitung diskon jika voucher belum digunakan
+            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+            
+            // Simpan diskon dalam sesi
+            $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
+    
+            // Update waktu penggunaan
+            date_default_timezone_set('Asia/Jakarta');
+            $currentDateTime = date('Y-m-d H:i:s');
+            
+            // Update used_at timestamp
+            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+            $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+            $updateStmt->execute();
+            
+            // Hapus voucher dari database jika sekali pakai
+            // if ($row['one_time_use'] == 1) {
+            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+            //     $deleteStmt->bind_param("s", $voucherCode);
+            //     $deleteStmt->execute();
+            // }
+    
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
-        unset($_SESSION['voucher_code']);
-        $voucherCode = '';
-        $discountedPrice = $originalPrice;
+        $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
     }
 }
 
-// Setelah transaksi berhasil (tambahkan ini di bagian proses transaksi)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['transaction_success'])) {
-    if (isset($_SESSION['voucher_code'])) {
-        $voucherCode = $_SESSION['voucher_code'];
-        
-        // Update used_at timestamp untuk voucher
-        date_default_timezone_set('Asia/Jakarta');
-        $currentDateTime = date('Y-m-d H:i:s');
-        
-        $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ? AND one_time_use = 1");
-        $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-        $updateStmt->execute();
-        
-        // Hapus voucher dari session
-        unset($_SESSION['voucher_code']);
-        unset($_SESSION['voucher_data']);
-    }
-}
-
-// Ambil data produk
+// Ambil data produk yang visible
 $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
 if (!$produk) {
     die("Query gagal: " . mysqli_error($conn));
 }
 
-// Output buffering untuk AJAX
+// Proses pembelian produk
+// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
+//     $productId = $_POST['product_id'];
+//     $productName = $_POST['product_name'];
+//     $originalPrice = $_POST['product_price']; // Ambil harga asli produk
+//     $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
+
+//     // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
+//     if ($productPrice == 0) {
+//         // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
+//         $order_id = 'TRX-' . time() . '-' . uniqid();
+//         $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
+//         $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+//         $stmt->execute();
+    
+//         // Arahkan ke halaman transberhasil
+//         header("Location: transberhasil.php");
+//         exit();
+//     }
+
+//     // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
+//     $order_id = 'TRX-' . time() . '-' . uniqid();
+//     $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
+//     $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
+//     $stmt->execute();
+
+//     // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
+//     // ...
+// }
+
+// Mulai output buffering untuk request AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
