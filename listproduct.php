@@ -89,10 +89,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             $voucherCode = ''; // Reset voucher code jika sudah digunakan
         } else {
             // Voucher valid dan belum digunakan
+            if ($row['one_time_use'] == 1) {
+                // Update used_at timestamp untuk voucher sekali pakai
+                $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = NOW() WHERE code = ?");
+                $updateStmt->bind_param("s", $voucherCode);
+                $updateStmt->execute();
+            }
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
-            
-            // Update waktu penggunaan hanya jika transaksi berhasil
-            // (kode update timestamp dipindahkan ke bagian setelah pembayaran berhasil)
         }
     } else {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
