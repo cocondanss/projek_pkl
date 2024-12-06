@@ -135,8 +135,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         $voucherData = $result->fetch_assoc();
                         
                         if ($voucherData) {
-                            // Terapkan diskon jika voucher valid
-                            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                            // Cek apakah voucher sekali pakai dan sudah digunakan
+                            if ($voucherData['one_time_use'] == 1 && $voucherData['used_at'] !== null) {
+                                // Jika sudah digunakan, gunakan harga asli
+                                $discountedPrice = $originalPrice;
+                            } else {
+                                // Terapkan diskon jika voucher valid dan belum digunakan
+                                $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                            }
                         }
                     }
                 ?>
