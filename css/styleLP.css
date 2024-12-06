@@ -609,3 +609,43 @@ h1.product-list-title {
 .keyboard-display.active:empty::before {
     content: '';
 }
+
+.voucher-alert {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    border-radius: 8px;
+    padding: 15px 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.voucher-alert.show {
+    opacity: 1;
+}
+
+.voucher-alert.hide {
+    opacity: 0;
+}
+
+.alert-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.alert-content i {
+    color: #856404;
+    font-size: 20px;
+}
+
+.alert-content p {
+    color: #856404;
+    margin: 0;
+    font-size: 14px;
+}

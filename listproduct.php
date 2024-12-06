@@ -134,8 +134,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="product-list" style="background: none;" id="product-list">
                 <?php foreach ($produk as $item): 
                     $originalPrice = $item['price'];
-                    // Hitung harga diskon berdasarkan voucher yang ada
-                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
+                    $discountedPrice = $originalPrice;
+                    
+                    if (!empty($_SESSION['active_voucher'])) {
+                        $voucherCode = $_SESSION['active_voucher'];
+                        
+                        // Cek voucher sekali pakai
+                        $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? AND one_time_use = 1");
+                        $stmt->bind_param("s", $voucherCode);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        $voucherData = $result->fetch_assoc();
+                        
+                        if ($voucherData) {
+                            if ($voucherData['used_at'] === null) {
+                                // Voucher belum digunakan
+                                $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                            } else {
+                                // Voucher sudah digunakan - tampilkan pesan peringatan
+                                unset($_SESSION['active_voucher']);
+                                echo "<div class='voucher-alert' id='voucherAlert'>
+                                        <div class='alert-content'>
+                                            <i class='fas fa-exclamation-circle'></i>
+                                            <p>Maaf, voucher ini sudah pernah digunakan sebelumnya.</p>
+                                        </div>
+                                    </div>";
+                                
+                                // Tambahkan script untuk menampilkan dan menyembunyikan alert
+                                echo "<script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        const alert = document.getElementById('voucherAlert');
+                                        if (alert) {
+                                            // Tampilkan alert dengan animasi
+                                            setTimeout(() => {
+                                                alert.classList.add('show');
+                                            }, 100);
+                                            
+                                            // Sembunyikan alert setelah 3 detik
+                                            setTimeout(() => {
+                                                alert.classList.add('hide');
+                                                setTimeout(() => {
+                                                    alert.remove();
+                                                }, 500);
+                                            }, 3000);
+                                        }
+                                    });
+                                </script>";
+                            }
+                        }
+                    }
                 ?>
                     <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                         <div class="card-body"> 
@@ -826,6 +873,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 }
             });
             
+            $(document).ready(function() {
+    $('#voucher-form').on('submit', function(e) {
+        e.preventDefault();
+        var formData = $(this).serialize();
+
+        $.ajax({
+            url: 'listproduct.php',
+            type: 'POST',
+            data: formData,
+            success: function(response) {
+                var $response = $(response);
+                $('#product-list').html($response.find('#product-list').html());
+                
+                // Cek apakah ada alert dalam response
+                if ($response.find('.voucher-alert').length) {
+                    // Tambahkan alert ke body
+                    $('body').append($response.find('.voucher-alert'));
+                }
+                
+                // Reset form
+                $('#voucher-input').val('');
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX error:', status, error);
+            }
+        });
+    });
+});
         </script>
 </body>
 </html>
