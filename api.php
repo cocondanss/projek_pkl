@@ -387,4 +387,5 @@ if (isset($_SESSION['active_voucher'])) {
     
     // Hapus session voucher
     unset($_SESSION['active_voucher']);
+    unset($_SESSION['lastUsedDiscount']);
 }
