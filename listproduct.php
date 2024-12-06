@@ -61,42 +61,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
-        // Cek apakah voucher sekali pakai dan sudah digunakan
+        // Cek apakah voucher sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            // Voucher sudah digunakan
-            $voucherMessages[] = "<p class='voucher-message.error'>Maaf, voucher <strong>{$voucherCode}</strong> sudah pernah digunakan sebelumnya.</p>";
-            $_SESSION['voucher_status'] = 'used'; // Tambahkan status ke session
-            $discountedPrice = $originalPrice; // Gunakan harga asli
+            // Voucher sudah digunakan, kembalikan harga ke harga asli
+            $voucherMessages[] = "<p class='voucher-message error'>Voucher ini hanya bisa digunakan sekali.</p>";
+            $discountedPrice = $originalPrice; // Tetap gunakan harga asli
         } else {
-            // Cek apakah voucher masih berlaku (jika ada tanggal expired)
-            $currentDate = date('Y-m-d H:i:s');
-            if (isset($row['expired_at']) && $row['expired_at'] !== null && $currentDate > $row['expired_at']) {
-                $voucherMessages[] = "<p class='voucher-message.error'>Maaf, voucher <strong>{$voucherCode}</strong> sudah kedaluwarsa.</p>";
-                $_SESSION['voucher_status'] = 'expired';
-                $discountedPrice = $originalPrice;
-            } else {
-                // Voucher valid dan belum digunakan
-                $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                
-                // Update waktu penggunaan untuk voucher sekali pakai
-                if ($row['one_time_use'] == 1) {
-                    date_default_timezone_set('Asia/Jakarta');
-                    $currentDateTime = date('Y-m-d H:i:s');
-                    
-                    $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-                    $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-                    $updateStmt->execute();
-                }
-                
-                $_SESSION['voucher_status'] = 'success';
-                $_SESSION['lastUsedDiscount'] = $discountedPrice;
-                $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan!</p>";
-            }
+            // Hitung diskon jika voucher belum digunakan
+            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+            
+            // Simpan diskon dalam sesi
+            $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
+    
+            // Update waktu penggunaan
+            date_default_timezone_set('Asia/Jakarta');
+            $currentDateTime = date('Y-m-d H:i:s');
+            
+            // Update used_at timestamp
+            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+            $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+            $updateStmt->execute();
+            
+            // Hapus voucher dari database jika sekali pakai
+            // if ($row['one_time_use'] == 1) {
+            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
+            //     $deleteStmt->bind_param("s", $voucherCode);
+            //     $deleteStmt->execute();
+            // }
+    
+            $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
-        $voucherMessages[] = "<p class='voucher-message error'>Kode voucher tidak valid.</p>";
-        $_SESSION['voucher_status'] = 'invalid';
-        $discountedPrice = $originalPrice;
+        $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
+        $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
     }
 }
 
@@ -105,6 +102,7 @@ $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
 if (!$produk) {
     die("Query gagal: " . mysqli_error($conn));
 }
+
 
 // Mulai output buffering untuk request AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
