@@ -368,12 +368,23 @@ if (isset($_SESSION['pending_one_time_voucher'])) {
 // Setelah pembayaran berhasil
 if (isset($_SESSION['active_voucher'])) {
     $voucherCode = $_SESSION['active_voucher'];
-    $transactionId = 'TRX-' . time() . '-' . uniqid(); // Tidak perlu fungsi terpisah
     
-    // Catat penggunaan voucher sebagai pending
-    $stmt = $db->prepare("INSERT INTO transaction_vouchers (voucher_code, transaction_id, payment_status) VALUES (?, ?, 'pending')");
-    $stmt->execute([$voucherCode, $transactionId]);
+    // Update status voucher untuk voucher sekali pakai
+    $stmt = $conn->prepare("SELECT one_time_use FROM vouchers2 WHERE code = ?");
+    $stmt->bind_param("s", $voucherCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $voucherData = $result->fetch_assoc();
     
-    // Simpan ID transaksi di session
-    $_SESSION['current_transaction'] = $transactionId;
+    if ($voucherData && $voucherData['one_time_use'] == 1) {
+        date_default_timezone_set('Asia/Jakarta');
+        $currentDateTime = date('Y-m-d H:i:s');
+        
+        $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+        $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+        $updateStmt->execute();
+    }
+    
+    // Hapus session voucher
+    unset($_SESSION['active_voucher']);
 }

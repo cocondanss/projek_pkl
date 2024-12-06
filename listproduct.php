@@ -139,46 +139,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     if (!empty($_SESSION['active_voucher'])) {
                         $voucherCode = $_SESSION['active_voucher'];
                         
-                        // Cek status voucher
-                        $stmt = $conn->prepare("SELECT v.*, t.payment_status 
-                            FROM vouchers2 v 
-                            LEFT JOIN transaction_vouchers t ON t.voucher_code = v.code 
-                            WHERE v.code = ? AND v.one_time_use = 1 
-                            ORDER BY t.created_at DESC 
-                            LIMIT 1");
+                        // Cek voucher sekali pakai
+                        $stmt = $conn->prepare("SELECT * FROM vouchers2 
+                            WHERE code = ? AND one_time_use = 1");
                         $stmt->bind_param("s", $voucherCode);
                         $stmt->execute();
                         $result = $stmt->get_result();
                         $voucherData = $result->fetch_assoc();
                         
                         if ($voucherData) {
-                            // Tampilkan diskon jika:
-                            // 1. Voucher belum pernah digunakan sama sekali
-                            // 2. ATAU Voucher sedang dalam proses pembayaran untuk transaksi ini
-                            if ($voucherData['used_at'] === null || 
-                                ($voucherData['payment_status'] === 'pending' && isset($_SESSION['current_transaction']))) {
+                            // Tampilkan diskon jika voucher belum digunakan
+                            if ($voucherData['used_at'] === null) {
                                 $discountedPrice = applyVoucher($voucherCode, $originalPrice);
                             } else {
-                                // Hapus session hanya jika pembayaran sudah selesai
-                                if ($voucherData['payment_status'] === 'completed') {
-                                    unset($_SESSION['active_voucher']);
-                                    $voucherMessages[] = "<p class='voucher-message info'>Voucher ini sudah digunakan.</p>";
-                                }
+                                // Voucher sudah digunakan
+                                unset($_SESSION['active_voucher']);
+                                $voucherMessages[] = "<p class='voucher-message warning'>Voucher ini sudah pernah digunakan.</p>";
                             }
                         }
                     }
                 ?>
-                    <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
+                    <div class="product">
                         <div class="card-body"> 
                             <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+                            <p><?php echo htmlspecialchars($item['description']); ?></p>
                             <div class="price-container">
                                 <?php if ($discountedPrice < $originalPrice): ?>
-                                    <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
-                                    <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
+                                    <p class="original-price">Rp <?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</p>
+                                    <p class="discounted-price">Rp <?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</p>
                                 <?php else: ?>
-                                    <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                    <p>Rp <?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</p>
                                 <?php endif; ?>
                             </div>
+                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
                             <p><?php echo htmlspecialchars($item['description']); ?></p>
                             <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">Buy</button>                            
                         </div>
