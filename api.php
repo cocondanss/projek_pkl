@@ -349,3 +349,19 @@ function create_free_transaction($data) {
         ]);
     }
 }
+
+if (isset($_SESSION['pending_one_time_voucher'])) {
+    $voucherCode = $_SESSION['pending_one_time_voucher'];
+    
+    // Update status voucher
+    date_default_timezone_set('Asia/Jakarta');
+    $currentDateTime = date('Y-m-d H:i:s');
+    
+    $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ? AND one_time_use = 1");
+    $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+    $updateStmt->execute();
+    
+    // Bersihkan session
+    unset($_SESSION['pending_one_time_voucher']);
+    unset($_SESSION['active_voucher']);
+}
