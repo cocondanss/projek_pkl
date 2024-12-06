@@ -814,25 +814,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     });
                 }
             });
-            $(document).ready(function() {
-    $('#voucher-form').on('submit', function(e) {
-        e.preventDefault();
-        var formData = $(this).serialize();
-
-        $.ajax({
-            url: window.location.href,
-            type: 'POST',
-            data: formData,
-            success: function(response) {
-                // Refresh halaman untuk menampilkan alert
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                console.error('AJAX error:', status, error);
-            }
-        });
-    });
-});
+            
         </script>
 </body>
 </html>
