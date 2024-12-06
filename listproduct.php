@@ -64,14 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         // Cek apakah voucher sekali pakai dan sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             // Voucher sudah digunakan
-            $voucherMessages[] = "<p class='voucher-message warning'>Maaf, voucher <strong>{$voucherCode}</strong> sudah pernah digunakan sebelumnya.</p>";
+            $voucherMessages[] = "<p class='voucher-message.error'>Maaf, voucher <strong>{$voucherCode}</strong> sudah pernah digunakan sebelumnya.</p>";
             $_SESSION['voucher_status'] = 'used'; // Tambahkan status ke session
             $discountedPrice = $originalPrice; // Gunakan harga asli
         } else {
             // Cek apakah voucher masih berlaku (jika ada tanggal expired)
             $currentDate = date('Y-m-d H:i:s');
             if (isset($row['expired_at']) && $row['expired_at'] !== null && $currentDate > $row['expired_at']) {
-                $voucherMessages[] = "<p class='voucher-message warning'>Maaf, voucher <strong>{$voucherCode}</strong> sudah kedaluwarsa.</p>";
+                $voucherMessages[] = "<p class='voucher-message.error'>Maaf, voucher <strong>{$voucherCode}</strong> sudah kedaluwarsa.</p>";
                 $_SESSION['voucher_status'] = 'expired';
                 $discountedPrice = $originalPrice;
             } else {
