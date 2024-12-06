@@ -134,8 +134,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="product-list" style="background: none;" id="product-list">
                 <?php foreach ($produk as $item): 
                     $originalPrice = $item['price'];
-                    // Hitung harga diskon berdasarkan voucher yang ada
-                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
+                    $discountedPrice = $originalPrice;
+                    
+                    if (!empty($_SESSION['active_voucher'])) {
+                        $voucherCode = $_SESSION['active_voucher'];
+                        
+                        // Cek status voucher
+                        $stmt = $conn->prepare("SELECT v.*, t.payment_status 
+                            FROM vouchers2 v 
+                            LEFT JOIN transaction_vouchers t ON t.voucher_code = v.code 
+                            WHERE v.code = ? AND v.one_time_use = 1 
+                            ORDER BY t.created_at DESC 
+                            LIMIT 1");
+                        $stmt->bind_param("s", $voucherCode);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+                        $voucherData = $result->fetch_assoc();
+                        
+                        if ($voucherData) {
+                            // Tampilkan diskon jika:
+                            // 1. Voucher belum pernah digunakan sama sekali
+                            // 2. ATAU Voucher sedang dalam proses pembayaran untuk transaksi ini
+                            if ($voucherData['used_at'] === null || 
+                                ($voucherData['payment_status'] === 'pending' && isset($_SESSION['current_transaction']))) {
+                                $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                            } else {
+                                // Hapus session hanya jika pembayaran sudah selesai
+                                if ($voucherData['payment_status'] === 'completed') {
+                                    unset($_SESSION['active_voucher']);
+                                    $voucherMessages[] = "<p class='voucher-message info'>Voucher ini sudah digunakan.</p>";
+                                }
+                            }
+                        }
+                    }
                 ?>
                     <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                         <div class="card-body"> 
