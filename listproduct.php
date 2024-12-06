@@ -103,36 +103,6 @@ if (!$produk) {
     die("Query gagal: " . mysqli_error($conn));
 }
 
-// Proses pembelian produk
-// if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
-//     $productId = $_POST['product_id'];
-//     $productName = $_POST['product_name'];
-//     $originalPrice = $_POST['product_price']; // Ambil harga asli produk
-//     $productPrice = applyVoucher($voucherCode, $originalPrice); // Terapkan voucher jika ada
-
-//     // Jika harga produk adalah Rp 0, langsung arahkan ke halaman transberhasil
-//     if ($productPrice == 0) {
-//         // Simpan transaksi ke database (meskipun gratis, untuk pencatatan)
-//         $order_id = 'TRX-' . time() . '-' . uniqid();
-//         $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'completed')");
-//         $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
-//         $stmt->execute();
-    
-//         // Arahkan ke halaman transberhasil
-//         header("Location: transberhasil.php");
-//         exit();
-//     }
-
-//     // Jika harga produk lebih dari Rp 0, simpan transaksi dan lanjutkan ke proses pembayaran
-//     $order_id = 'TRX-' . time() . '-' . uniqid();
-//     $stmt = $conn->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
-//     $stmt->bind_param("sisd", $order_id, $productId, $productName, $productPrice);
-//     $stmt->execute();
-
-//     // Lanjutkan ke proses pembayaran (misalnya, panggil API Midtrans atau arahkan ke halaman pembayaran)
-//     // ...
-// }
-
 // Mulai output buffering untuk request AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
