@@ -7,6 +7,11 @@
 
 require 'function.php';
 
+session_start();
+$showAlert = false;
+$alertMessage = '';
+$alertType = '';
+
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
@@ -54,46 +59,31 @@ $discountedPrice = 0; // Inisialisasi harga diskon
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $voucherCode = trim($_POST['voucher_code']);
     
-    // Validasi voucher
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
+    // Validasi khusus voucher sekali pakai
+    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ? AND one_time_use = 1");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    if ($row = $result->fetch_assoc()) {
-        // Cek apakah voucher sudah digunakan
-        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            // Voucher sudah digunakan, kembalikan harga ke harga asli
-            $voucherMessages[] = "<p class='voucher-message error'>Voucher ini hanya bisa digunakan sekali.</p>";
-            $discountedPrice = $originalPrice; // Tetap gunakan harga asli
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if ($row['used_at'] === null) {
+            // Voucher valid dan belum digunakan
+            $_SESSION['active_voucher'] = $voucherCode;
+            $showAlert = true;
+            $alertMessage = "Voucher berhasil digunakan!";
+            $alertType = "success";
         } else {
-            // Hitung diskon jika voucher belum digunakan
-            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-            
-            // Simpan diskon dalam sesi
-            $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
-    
-            // Update waktu penggunaan
-            date_default_timezone_set('Asia/Jakarta');
-            $currentDateTime = date('Y-m-d H:i:s');
-            
-            // Update used_at timestamp
-            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-            $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-            $updateStmt->execute();
-            
-            // Hapus voucher dari database jika sekali pakai
-            // if ($row['one_time_use'] == 1) {
-            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-            //     $deleteStmt->bind_param("s", $voucherCode);
-            //     $deleteStmt->execute();
-            // }
-    
-            $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
+            // Voucher sudah digunakan
+            $showAlert = true;
+            $alertMessage = "Voucher ini sudah pernah digunakan sebelumnya.";
+            $alertType = "warning";
+            unset($_SESSION['active_voucher']);
         }
     } else {
-        $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
-        $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
+        $showAlert = true;
+        $alertMessage = "Voucher tidak valid atau bukan voucher sekali pakai.";
+        $alertType = "error";
     }
 }
 
@@ -827,5 +817,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             });
             
         </script>
+<?php if ($showAlert): ?>
+    <div class="alert-popup <?php echo $alertType; ?>" id="alertPopup">
+        <i class="fas <?php echo $alertType === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'; ?>"></i>
+        <p><?php echo $alertMessage; ?></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const alert = document.getElementById('alertPopup');
+            setTimeout(() => alert.classList.add('show'), 100);
+            setTimeout(() => {
+                alert.classList.remove('show');
+                setTimeout(() => alert.remove(), 300);
+            }, 3000);
+        });
+    </script>
+<?php endif; ?>
 </body>
 </html>
