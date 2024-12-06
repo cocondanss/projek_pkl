@@ -172,8 +172,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                 <?php endif; ?>
                             </div>
                             <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo $discountedPrice; ?>)">Buy</button>
-                            <p><?php echo htmlspecialchars($item['description']); ?></p>
-                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">Buy</button>                            
                         </div>
                     </div>
                 <?php endforeach; ?>
