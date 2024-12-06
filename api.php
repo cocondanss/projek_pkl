@@ -110,22 +110,6 @@ function create_transaction($data) {
         // Hitung total harga
         $total_price = max(0, $product_price - $discount); // Mengizinkan total_price menjadi 0
 
-        // Jika ada voucher sekali pakai yang aktif
-        if (isset($_SESSION['active_voucher'])) {
-            $voucherCode = $_SESSION['active_voucher'];
-            
-            // Cek apakah ini voucher sekali pakai
-            $stmt = $db->prepare("SELECT one_time_use FROM vouchers2 WHERE code = ?");
-            $stmt->execute([$voucherCode]);
-            $voucherData = $stmt->fetch();
-            
-            if ($voucherData && $voucherData['one_time_use'] == 1) {
-                // Catat penggunaan voucher dengan status pending
-                $stmt = $db->prepare("INSERT INTO transactions (order_id, voucher_code, status) VALUES (?, ?, 'pending')");
-                $stmt->execute([$order_id, $voucherCode]);
-            }
-        }
-
         // Simpan transaksi ke database
         $stmt = $db->prepare("INSERT INTO transaksi (order_id, product_id, product_name, price, status) VALUES (?, ?, ?, ?, 'pending')");
         $stmt->execute([$order_id, $product_id, $product_name, $total_price]);
@@ -237,37 +221,6 @@ function check_payment_status($data) {
                     'amount' => $transaction['price'],
                     'created_at' => $transaction['created_at']
                 ];
-            }
-
-            // Update status voucher sekali pakai
-            if (isset($_SESSION['active_voucher'])) {
-                $voucherCode = $_SESSION['active_voucher'];
-                
-                // Pastikan ini voucher sekali pakai
-                $stmt = $db->prepare("SELECT one_time_use FROM vouchers2 WHERE code = ? AND one_time_use = 1");
-                $stmt->execute([$voucherCode]);
-                $voucherData = $stmt->fetch();
-                
-                if ($voucherData) {
-                    // Update used_at timestamp
-                    $currentDateTime = date('Y-m-d H:i:s');
-                    $updateStmt = $db->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-                    $updateStmt->execute([$currentDateTime, $voucherCode]);
-                    
-                    // Update status transaksi voucher
-                    $updateStmt = $db->prepare("UPDATE transactions SET status = 'completed' WHERE voucher_code = ? AND order_id = ?");
-                    $updateStmt->execute([$voucherCode, $data['transaction_id']]);
-                    
-                    // Hapus session voucher
-                    unset($_SESSION['active_voucher']);
-                }
-            }
-        } elseif ($transaction_status === 'cancel' || $transaction_status === 'expire') {
-            // Jika pembayaran dibatalkan/expired, hapus catatan penggunaan voucher
-            if (isset($_SESSION['active_voucher'])) {
-                $voucherCode = $_SESSION['active_voucher'];
-                $updateStmt = $db->prepare("DELETE FROM transactions WHERE voucher_code = ? AND order_id = ?");
-                $updateStmt->execute([$voucherCode, $data['transaction_id']]);
             }
         }
 
@@ -395,4 +348,44 @@ function create_free_transaction($data) {
             'message' => $e->getMessage()
         ]);
     }
+}
+
+if (isset($_SESSION['pending_one_time_voucher'])) {
+    $voucherCode = $_SESSION['pending_one_time_voucher'];
+    
+    // Update status voucher
+    date_default_timezone_set('Asia/Jakarta');
+    $currentDateTime = date('Y-m-d H:i:s');
+    
+    $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ? AND one_time_use = 1");
+    $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+    $updateStmt->execute();
+    
+    // Bersihkan session
+    unset($_SESSION['pending_one_time_voucher']);
+    unset($_SESSION['active_voucher']);
+}
+// Setelah pembayaran berhasil
+if (isset($_SESSION['active_voucher'])) {
+    $voucherCode = $_SESSION['active_voucher'];
+    
+    // Update status voucher untuk voucher sekali pakai
+    $stmt = $conn->prepare("SELECT one_time_use FROM vouchers2 WHERE code = ?");
+    $stmt->bind_param("s", $voucherCode);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $voucherData = $result->fetch_assoc();
+    
+    if ($voucherData && $voucherData['one_time_use'] == 1) {
+        date_default_timezone_set('Asia/Jakarta');
+        $currentDateTime = date('Y-m-d H:i:s');
+        
+        $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+        $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+        $updateStmt->execute();
+    }
+    
+    // Hapus session voucher
+    unset($_SESSION['active_voucher']);
+    unset($_SESSION['lastUsedDiscount']);
 }
