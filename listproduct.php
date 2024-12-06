@@ -125,26 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <?php foreach ($produk as $item): 
                     $originalPrice = $item['price'];
                     $discountedPrice = $originalPrice;
-                    
-                    if (!empty($_SESSION['active_voucher'])) {
-                        $voucherCode = $_SESSION['active_voucher'];
-                        $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
-                        $stmt->bind_param("s", $voucherCode);
-                        $stmt->execute();
-                        $result = $stmt->get_result();
-                        $voucherData = $result->fetch_assoc();
-                        
-                        if ($voucherData) {
-                            // Cek apakah voucher sekali pakai dan sudah digunakan
-                            if ($voucherData['one_time_use'] == 1 && $voucherData['used_at'] !== null) {
-                                // Jika sudah digunakan, gunakan harga asli
-                                $discountedPrice = $originalPrice;
-                            } else {
-                                // Terapkan diskon jika voucher valid dan belum digunakan
-                                $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                            }
-                        }
-                    }
                 ?>
                     <div class="product" data-product-id="<?php echo $item['id']; ?>">
                         <div class="card-body"> 
