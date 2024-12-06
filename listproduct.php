@@ -163,6 +163,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     <div class="product">
                         <div class="card-body"> 
                             <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+                            <?php if (!empty($item['description'])): ?>
+                                <p class="product-description"><?php echo htmlspecialchars($item['description']); ?></p>
+                            <?php endif; ?>
                             <div class="price-container">
                                 <?php if ($discountedPrice < $originalPrice): ?>
                                     <p class="original-price">Rp <?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</p>
