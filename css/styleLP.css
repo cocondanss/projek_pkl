@@ -609,4 +609,3 @@ h1.product-list-title {
 .keyboard-display.active:empty::before {
     content: '';
 }
-
