@@ -17,31 +17,41 @@ function applyVoucher($voucherCode, $price) {
     global $conn;
 
     if (empty($voucherCode)) {
-        return $price; // Kembalikan harga asli jika tidak ada voucher
+        return $price;
     }
     
-    // Persiapkan dan eksekusi query untuk mendapatkan voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
 
-    // Cek apakah voucher ditemukan
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        $discountAmount = $row['discount_amount'];
+        
+        // Jika voucher sekali pakai, cek apakah sudah digunakan
+        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
+            // Tambahkan buffer waktu 30 detik untuk memastikan transaksi bisa selesai
+            $bufferTime = 30; // dalam detik
+            $usedTime = strtotime($row['used_at']);
+            
+            if (time() - $usedTime > $bufferTime) {
+                return $price; // Voucher sudah expired
+            }
+        }
 
-        // Hitung harga setelah diskon
-        if ($discountAmount <= 100) { // Jika diskon dalam persentase
+        // Jika sampai di sini, berarti voucher masih valid
+        $discountAmount = $row['discount_amount'];
+        
+        if ($discountAmount <= 100) {
             $discountedPrice = $price - ($price * ($discountAmount / 100));
-        } else { // Jika diskon dalam nominal
+        } else {
             $discountedPrice = $price - $discountAmount;
         }
 
-        return max(0, $discountedPrice); // Pastikan harga tidak negatif
+        return max(0, $discountedPrice);
     }
 
-    return $price; // Kembalikan harga asli jika voucher tidak valid
+    return $price;
 }
 
 // Inisialisasi variabel untuk sistem voucher
@@ -54,46 +64,35 @@ $discountedPrice = 0; // Inisialisasi harga diskon
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $voucherCode = trim($_POST['voucher_code']);
     
-    // Validasi voucher
     $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
     $stmt->bind_param("s", $voucherCode);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
-        // Cek apakah voucher sudah digunakan
-        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
-            // Voucher sudah digunakan, kembalikan harga ke harga asli
-            $voucherMessages[] = "<p class='voucher-message error'>Voucher ini hanya bisa digunakan sekali.</p>";
-            $discountedPrice = $originalPrice; // Tetap gunakan harga asli
+        if ($row['one_time_use'] == 1) {
+            if ($row['used_at'] === null) {
+                // Update used_at timestamp
+                date_default_timezone_set('Asia/Jakarta');
+                $currentDateTime = date('Y-m-d H:i:s');
+                
+                $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+                $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+                $updateStmt->execute();
+                
+                $_SESSION['active_voucher'] = $voucherCode;
+                $_SESSION['voucher_applied_time'] = $currentDateTime;
+                
+                $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
+            } else {
+                $voucherMessages[] = "<p class='voucher-message error'>Voucher ini sudah digunakan.</p>";
+            }
         } else {
-            // Hitung diskon jika voucher belum digunakan
-            $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-            
-            // Simpan diskon dalam sesi
-            $_SESSION['lastUsedDiscount'] = $discountedPrice; // Simpan diskon yang diperoleh
-    
-            // Update waktu penggunaan
-            date_default_timezone_set('Asia/Jakarta');
-            $currentDateTime = date('Y-m-d H:i:s');
-            
-            // Update used_at timestamp
-            $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-            $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-            $updateStmt->execute();
-            
-            // Hapus voucher dari database jika sekali pakai
-            // if ($row['one_time_use'] == 1) {
-            //     $deleteStmt = $conn->prepare("DELETE FROM vouchers2 WHERE code = ?");
-            //     $deleteStmt->bind_param("s", $voucherCode);
-            //     $deleteStmt->execute();
-            // }
-    
+            $_SESSION['active_voucher'] = $voucherCode;
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
         }
     } else {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
-        $discountedPrice = $originalPrice; // Jika voucher tidak valid, tampilkan harga asli
     }
 }
 
@@ -134,17 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="product-list" style="background: none;" id="product-list">
                 <?php foreach ($produk as $item): 
                     $originalPrice = $item['price'];
-                    $discountedPrice = $originalPrice;
-                    
-                    // Cek apakah ada voucher aktif di session
-                    if (isset($_SESSION['active_voucher'])) {
-                        $activeVoucher = $_SESSION['active_voucher'];
-                        // Jika voucher masih dalam waktu buffer atau bukan one-time-use
-                        if ($activeVoucher['used_at'] === null || 
-                            (time() - strtotime($activeVoucher['used_at']) <= 5)) {
-                            $discountedPrice = applyVoucher($activeVoucher['code'], $originalPrice);
-                        }
-                    }
+                    // Hitung harga diskon berdasarkan voucher yang ada
+                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
                 ?>
                     <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                         <div class="card-body"> 
