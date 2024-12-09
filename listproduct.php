@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 
                 $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
             } else {
-                $voucherMessages[] = "<p class='voucher-message error'>Voucher ini sudah digunakan.</p>";
+                $voucherMessages[] = "<p class='voucher-message error'>Voucher ini hanya sekali pakai.</p>";
             }
         } else {
             $_SESSION['active_voucher'] = $voucherCode;
