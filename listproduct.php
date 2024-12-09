@@ -134,8 +134,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="product-list" style="background: none;" id="product-list">
                 <?php foreach ($produk as $item): 
                     $originalPrice = $item['price'];
-                    // Hitung harga diskon berdasarkan voucher yang ada
-                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
+                    $discountedPrice = $originalPrice;
+                    
+                    // Cek apakah ada voucher aktif di session
+                    if (isset($_SESSION['active_voucher'])) {
+                        $activeVoucher = $_SESSION['active_voucher'];
+                        // Jika voucher masih dalam waktu buffer atau bukan one-time-use
+                        if ($activeVoucher['used_at'] === null || 
+                            (time() - strtotime($activeVoucher['used_at']) <= 5)) {
+                            $discountedPrice = applyVoucher($activeVoucher['code'], $originalPrice);
+                        }
+                    }
                 ?>
                     <div class="product" data-product-id="<?php echo $item['id']; ?>" style="">
                         <div class="card-body"> 
