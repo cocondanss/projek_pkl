@@ -387,27 +387,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     var formData = $(this).serialize();
 
                     $.ajax({
-                        url: 'listproduct.php',
+                        url: window.location.href,
                         type: 'POST',
                         data: formData,
                         success: function(response) {
                             var $response = $(response);
+                            
+                            // Update product list
                             $('#product-list').html($response.find('#product-list').html());
                             
-                            // Tampilkan pesan
-                            var message = $response.find('#voucher-message-container').html();
-                            $('#voucher-message-container').html(message).show();
+                            // Show alert message
+                            if ($response.find('.alert-popup').length) {
+                                var alert = $($response.find('.alert-popup')[0]);
+                                $('body').append(alert);
+                                
+                                setTimeout(() => alert.addClass('show'), 100);
+                                setTimeout(() => {
+                                    alert.removeClass('show');
+                                    setTimeout(() => alert.remove(), 300);
+                                }, 3000);
+                            }
                             
-                            // Sembunyikan pesan setelah beberapa detik
-                            setTimeout(function() {
-                                $('#voucher-message-container').fadeOut(500, function() {
-                                    $(this).html('');
-                                });
-                            }, 3000); // Pesan akan menghilang setelah 3 detik (3000 ms)
+                            // Reset form
+                            $('#voucher-input').val('');
+                            $('#virtualKeyboardModal').modal('hide');
                         },
                         error: function(xhr, status, error) {
                             console.error('AJAX error:', status, error);
-                            alert('Terjadi kesalahan saat memproses voucher. Silakan coba lagi.');
                         }
                     });
                 });
