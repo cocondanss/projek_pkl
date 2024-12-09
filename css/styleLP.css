@@ -609,3 +609,21 @@ h1.product-list-title {
 .keyboard-display.active:empty::before {
     content: '';
 }
+.progress {
+    height: 20px;
+    border-radius: 10px;
+    background-color: #f0f0f0;
+}
+
+.progress-bar {
+    transition: width 0.5s ease;
+}
+
+#status-text {
+    margin-top: 10px;
+    font-weight: 500;
+}
+
+.button-container {
+    margin-top: 15px;
+}
