@@ -532,6 +532,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                     <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
                                                 </div>
                                                 <div id="countdown"></div>
+                                                <div class="progress">
+                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                                         role="progressbar" 
+                                                         style="width: 0%" 
+                                                         aria-valuenow="0" 
+                                                         aria-valuemin="0" 
+                                                         aria-valuemax="100">
+                                                    </div>
+                                                </div>
                                                 <div class="status-message"></div>
                                                 <div class="button-container">
                                                     <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
@@ -684,6 +693,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                     <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
                                 </div>
                                 <div id="countdown"></div>
+                                <div class="progress">
+                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                         role="progressbar" 
+                                         style="width: 0%" 
+                                         aria-valuenow="0" 
+                                         aria-valuemin="0" 
+                                         aria-valuemax="100">
+                                    </div>
+                                </div>
                                 <div class="status-message"></div>
                                 <div class="button-container">
                                     <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
