@@ -627,15 +627,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // Tambahkan fungsi untuk membatalkan transaksi
             function cancelTransaction() {
                 const modal = document.getElementById('qrCodeModal');
+                const statusMessage = modal.querySelector('.status-message');
                 const cancelButton = modal.querySelector('#btn-cancel');
-                const progressBar = modal.querySelector('.progress-bar');
+                const checkButton = modal.querySelector('#btn-check');
                 
-                // Disable tombol dan ubah teksnya
                 cancelButton.disabled = true;
-                cancelButton.innerHTML = 'Membatalkan...';
+                cancelButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Membatalkan...';
+                checkButton.disabled = true;
                 
-                // Hentikan animasi progress bar
-                progressBar.classList.remove('progress-bar-animated');
+                const transactionId = getCurrentTransactionId();
                 
                 fetch('api.php', {
                     method: 'POST',
@@ -644,27 +644,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     },
                     body: JSON.stringify({
                         action: 'cancel_transaction',
-                        transaction_id: getCurrentTransactionId()
+                        transaction_id: transactionId
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Langsung redirect tanpa delay
-                        window.location.href = 'transbatal.php';
+                        statusMessage.innerHTML = '<div class="alert alert-warning" role="alert">Transaksi dibatalkan</div>';
+                        setTimeout(() => {
+                            window.location.href = 'transbatal.php';
+                        }, 1500);
                     } else {
-                        // Jika gagal, enable kembali tombol
                         cancelButton.disabled = false;
                         cancelButton.innerHTML = 'Batal';
-                        progressBar.classList.add('progress-bar-animated');
+                        checkButton.disabled = false;
+                        statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Gagal membatalkan transaksi: ' + data.message + '</div>';
                     }
                 })
                 .catch(error => {
-                    console.error('Error:', error);
-                    // Jika error, enable kembali tombol
                     cancelButton.disabled = false;
                     cancelButton.innerHTML = 'Batal';
-                    progressBar.classList.add('progress-bar-animated');
+                    checkButton.disabled = false;
+                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat membatalkan transaksi.</div>';
+                    console.error('Error:', error);
                 });
             }
 
