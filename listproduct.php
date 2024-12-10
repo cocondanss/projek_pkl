@@ -484,7 +484,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 <div id="countdown" class="mb-3"></div>
                                                 
                                                 <div class="loading-bar mb-3" style="display: flex; justify-content: center;">
-                                                    <div class="progress" style="height: 100px; width: 80%; max-width: 400px;">
+                                                    <div class="progress" style="height: 80px; width: 100%; max-width: 400px;">
                                                         <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark" 
                                                             role="progressbar" 
                                                             style="width: 100%" 
