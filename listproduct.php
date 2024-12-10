@@ -483,14 +483,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 </div>
                                                 <div id="countdown" class="mb-3"></div>
                                                 
-                                                <div class="loading-bar mb-3">
-                                                    <div class="progress" style="height: 40px;width: 150%;">
-                                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark mr-2" 
-                                                             role="progressbar" 
-                                                             style="width: 100%" 
-                                                             aria-valuenow="100" 
-                                                             aria-valuemin="0" 
-                                                             aria-valuemax="100">
+                                                <div class="loading-bar mb-3" style="display: flex; justify-content: center;">
+                                                    <div class="progress" style="height: 40px; width: 80%; max-width: 400px;">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark" 
+                                                            role="progressbar" 
+                                                            style="width: 100%" 
+                                                            aria-valuenow="100" 
+                                                            aria-valuemin="0" 
+                                                            aria-valuemax="100">
                                                             Mengecek pembayaran...
                                                         </div>
                                                     </div>
