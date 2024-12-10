@@ -118,6 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/styleLP.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container-index" style="max-width: 100%;">
@@ -264,6 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
         <script>
             let pinCode = '';
             let display = document.getElementById('display');
@@ -527,15 +529,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <div class="modal-body">
-                                                <div class="qr-code-container">
+                                            <div class="modal-body text-center">
+                                                <div class="qr-code-container mb-3">
                                                     <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
                                                 </div>
-                                                <div id="countdown"></div>
-                                                <div class="status-message"></div>
+                                                <div id="countdown" class="mb-3"></div>
+                                                
+                                                <!-- Progress bar sederhana dari Bootstrap -->
+                                                <div class="loading-bar mb-3">
+                                                    <div class="progress" style="height: 20px;">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+                                                             role="progressbar" 
+                                                             style="width: 100%" 
+                                                             aria-valuenow="100" 
+                                                             aria-valuemin="0" 
+                                                             aria-valuemax="100">
+                                                            Mengecek pembayaran...
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="status-message mb-3"></div>
                                                 <div class="button-container">
-                                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
-                                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
+                                                    <button type="button" class="btn btn-danger" id="btn-cancel" onclick="cancelTransaction()">
+                                                        Batal
+                                                    </button>
                                                 </div>
                                             </div>
                                         </div>
@@ -679,18 +697,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                 <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
-                                <div class="qr-code-container">
-                                    <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
+                            <div class="modal-body text-center">
+                                <div class="qr-code-container mb-3">
+                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
                                 </div>
-                                <div id="countdown"></div>
-                                <div class="status-message"></div>
+                                <div id="countdown" class="mb-3"></div>
+                                
+                                <!-- Progress bar sederhana dari Bootstrap -->
+                                <div class="loading-bar mb-3">
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+                                             role="progressbar" 
+                                             style="width: 100%" 
+                                             aria-valuenow="100" 
+                                             aria-valuemin="0" 
+                                             aria-valuemax="100">
+                                            Mengecek pembayaran...
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="status-message mb-3"></div>
                                 <div class="button-container">
-                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
+                                    <button type="button" class="btn btn-danger" id="btn-cancel" onclick="cancelTransaction()">
                                         Batal
-                                    </button>
-                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
-                                        Cek
                                     </button>
                                 </div>
                             </div>
