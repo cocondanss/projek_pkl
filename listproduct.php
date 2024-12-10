@@ -527,28 +527,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <div class="modal-body text-center">
-                                                <div class="qr-code-container mb-3">
+                                            <div class="modal-body">
+                                                <div class="qr-code-container">
                                                     <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
                                                 </div>
-                                                
-                                                <!-- Progress bar yang lebih transparan -->
-                                                <div class="loading-bar mb-3">
-                                                    <div class="progress" style="height: 15px;">
-                                                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                                             role="progressbar" 
-                                                             style="width: 100%; opacity: 0.5; background-color: #28a745;" 
-                                                             aria-valuenow="100" 
-                                                             aria-valuemin="0" 
-                                                             aria-valuemax="100">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
+                                                <div id="countdown"></div>
+                                                <div class="status-message"></div>
                                                 <div class="button-container">
-                                                    <button type="button" class="btn btn-danger" id="btn-cancel" onclick="cancelTransaction()">
-                                                        Batal
-                                                    </button>
+                                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
+                                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -682,6 +669,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     console.error('Error:', error);
                 });
             }
+
+            // Update modal HTML untuk menambahkan tombol batal
+            const modalHTML = `
+                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="qr-code-container">
+                                    <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
+                                </div>
+                                <div id="countdown"></div>
+                                <div class="status-message"></div>
+                                <div class="button-container">
+                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
+                                        Batal
+                                    </button>
+                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
+                                        Cek
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
 
             function checkPaymentStatus() {
                 // console.log(transactionId);
