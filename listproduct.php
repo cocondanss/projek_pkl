@@ -484,8 +484,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 <div id="countdown" class="mb-3"></div>
                                                 
                                                 <div class="loading-bar mb-3">
-                                                    <div class="progress" style="height: 80px; width: 80%;">
-                                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
+                                                    div class="progress" style="height: 40px; width: 80%; max-width: 400px;">
+                                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark" 
                                                              role="progressbar" 
                                                              style="width: 100%" 
                                                              aria-valuenow="100" 
@@ -498,7 +498,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 
                                                 <div class="status-message mb-3"></div>
                                                 <div class="button-container">
-                                                    <button type="button" class="btn btn-danger" id="btn-cancel" onclick="cancelTransaction()">
+                                                    <button type="button" class="btn btn-dark mr-2" id="btn-cancel" onclick="cancelTransaction()">
                                                         Batal
                                                     </button>
                                                 </div>
