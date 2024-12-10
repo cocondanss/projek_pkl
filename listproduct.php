@@ -514,44 +514,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     .then(response => {
                         console.log('Create Transaction Response:', response); // Log respons
                         if (response && response.success) {
-                            // Hapus modal lama jika ada
-                            const existingModal = document.getElementById('qrCodeModal');
-                            if (existingModal) existingModal.remove();
-
-                            // Buat elemen modal baru
+                            // Buat modal HTML
                             const modalHTML = `
-                                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1" data-transaction-id="${response.order_id}">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
-                                            <div class="modal-body text-center">
-                                                <div class="qr-code-container mb-3">
+                                            <div class="modal-body">
+                                                <div class="qr-code-container">
                                                     <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
                                                 </div>
-                                                <div id="countdown" class="mb-3"></div>
-                                                
-                                                <!-- Progress bar sederhana dari Bootstrap -->
-                                                <div class="loading-bar mb-3">
-                                                    <div class="progress" style="height: 20px;">
-                                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" 
-                                                             role="progressbar" 
-                                                             style="width: 100%" 
-                                                             aria-valuenow="100" 
-                                                             aria-valuemin="0" 
-                                                             aria-valuemax="100">
-                                                            Mengecek pembayaran...
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="status-message mb-3"></div>
+                                                <div id="countdown"></div>
+                                                <div class="status-message"></div>
                                                 <div class="button-container">
-                                                    <button type="button" class="btn btn-danger" id="btn-cancel" onclick="cancelTransaction()">
-                                                        Batal
-                                                    </button>
+                                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
+                                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -559,18 +539,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                 </div>
                             `;
 
+                            // Hapus modal lama jika ada
+                            const existingModal = document.getElementById('qrCodeModal');
+                            if (existingModal) existingModal.remove();
+
                             // Tambahkan modal ke body
                             document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-                            // Set transaction ID
-                            const qrCodeModal = document.getElementById('qrCodeModal');
-                            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
 
                             // Start the countdown timer
                             startCountdown(900); // 15 menit dalam detik
 
                             // Tampilkan modal
-                            const bootstrapModal = new bootstrap.Modal(qrCodeModal);
+                            const bootstrapModal = new bootstrap.Modal(document.getElementById('qrCodeModal'));
                             bootstrapModal.show();
                         } else {
                             alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
@@ -640,18 +620,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     });
             }
 
-            // Tambahkan fungsi untuk membatalkan transaksi
+            function getCurrentTransactionId() {
+                const modal = document.getElementById('qrCodeModal');
+                if (!modal) {
+                    console.error('Modal tidak ditemukan');
+                    return null;
+                }
+                const transactionId = modal.getAttribute('data-transaction-id');
+                if (!transactionId) {
+                    console.error('Transaction ID tidak ditemukan');
+                    return null;
+                }
+                return transactionId;
+            }
+
             function cancelTransaction() {
                 const modal = document.getElementById('qrCodeModal');
-                const statusMessage = modal.querySelector('.status-message');
                 const cancelButton = modal.querySelector('#btn-cancel');
-                const checkButton = modal.querySelector('#btn-check');
-                
-                cancelButton.disabled = true;
-                cancelButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Membatalkan...';
-                checkButton.disabled = true;
-                
+                const progressBar = modal.querySelector('.progress-bar');
                 const transactionId = getCurrentTransactionId();
+
+                if (!transactionId) {
+                    console.error('Tidak dapat membatalkan: Transaction ID tidak ditemukan');
+                    return;
+                }
+                
+                // Disable tombol dan ubah teksnya
+                cancelButton.disabled = true;
+                cancelButton.innerHTML = 'Membatalkan...';
+                
+                // Hentikan animasi progress bar
+                progressBar.classList.remove('progress-bar-animated');
                 
                 fetch('api.php', {
                     method: 'POST',
@@ -666,23 +665,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        statusMessage.innerHTML = '<div class="alert alert-warning" role="alert">Transaksi dibatalkan</div>';
-                        setTimeout(() => {
-                            window.location.href = 'transbatal.php';
-                        }, 1500);
+                        window.location.href = 'transbatal.php';
                     } else {
-                        cancelButton.disabled = false;
-                        cancelButton.innerHTML = 'Batal';
-                        checkButton.disabled = false;
-                        statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Gagal membatalkan transaksi: ' + data.message + '</div>';
+                        throw new Error(data.message || 'Gagal membatalkan transaksi');
                     }
                 })
                 .catch(error => {
+                    console.error('Error:', error);
+                    alert('Gagal membatalkan transaksi: ' + error.message);
+                    // Reset tombol
                     cancelButton.disabled = false;
                     cancelButton.innerHTML = 'Batal';
-                    checkButton.disabled = false;
-                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat membatalkan transaksi.</div>';
-                    console.error('Error:', error);
+                    progressBar.classList.add('progress-bar-animated');
                 });
             }
 
@@ -747,26 +741,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat memeriksa status. Silakan coba lagi.</div>';
                         console.error('Error:', error);
                     });
-            }
-
-            function getCurrentTransactionId() {
-                // Mencari modal QR code
-                const modal = document.getElementById('qrCodeModal');
-
-                if (!modal) {
-                    console.error('Modal QR code tidak ditemukan');
-                    return null;
-                }
-
-                // Mencoba mendapatkan ID transaksi dari atribut data
-                const transactionId = modal.getAttribute('data-transaction-id');
-
-                if (!transactionId) {
-                    console.error('ID transaksi tidak ditemukan pada modal');
-                    return null;
-                }
-                return modal.getAttribute('data-transaction-id');
-                return transactionId;
             }
 
             document.addEventListener('DOMContentLoaded', function() {
