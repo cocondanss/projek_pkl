@@ -498,7 +498,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 
                                                 <div class="status-message mb-3"></div>
                                                 <div class="button-container">
-                                                    <button type="button" class="btn btn-danger" id="btn-cancel" onclick="cancelTransaction()">
+                                                    <button type="button" class="btn btn-dark mr-2" id="btn-cancel" onclick="cancelTransaction()">
                                                         Batal
                                                     </button>
                                                 </div>
