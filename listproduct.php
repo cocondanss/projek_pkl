@@ -598,7 +598,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                     progressBar.classList.remove('progress-bar-animated', 'progress-bar-striped');
                                     progressBar.classList.add('bg-success');
                                     progressBar.textContent = 'Pembayaran Berhasil!';
-                                    statusMessage.innerHTML = '<div class="alert alert-success" role="alert">Pembayaran berhasil!</div>';
+                                    // statusMessage.innerHTML = '<div class="alert alert-success" role="alert">Pembayaran berhasil!</div>';
                                     clearInterval(checkInterval);
                                     setTimeout(() => {
                                         window.location.href = 'transberhasil.php';
