@@ -616,7 +616,7 @@ h1.product-list-title {
 }
 
 .progress {
-    height: 35px !important;
+    height: 50px !important;
     background-color: #f0f0f0;
     border-radius: 15px;
     overflow: hidden;
