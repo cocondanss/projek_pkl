@@ -512,9 +512,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 // Jika harga lebih dari 0, lanjutkan dengan proses normal
                 createTransaction(id, name, price, discount)
                     .then(response => {
-                        console.log('Create Transaction Response:', response); // Log respons
+                        console.log('Create Transaction Response:', response);
                         if (response && response.success) {
-                            // Hapus modal lama jika ada
                             const existingModal = document.getElementById('qrCodeModal');
                             if (existingModal) existingModal.remove();
 
