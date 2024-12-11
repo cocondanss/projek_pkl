@@ -520,34 +520,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
                             // Buat elemen modal baru
                             const modalHTML = `
-                                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="qr-code-container">
-                                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
-                                                </div>
-                                                <div id="countdown"></div>
-                                                <div class="progress" style="margin: 15px 0;">
-                                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                                         role="progressbar" 
-                                                         style="width: 0%" 
-                                                         id="payment-progress">
-                                                    </div>
-                                                </div>
-                                                <div class="status-message"></div>
-                                                <div class="button-container">
-                                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
+        <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="qr-code-container">
+                            <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
+                        </div>
+                        <div id="countdown" class="text-center mb-3"></div>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                 role="progressbar" 
+                                 aria-valuenow="0"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100"
+                                 style="width: 0%">
+                            </div>
+                        </div>
+                        <div class="status-message mt-3"></div>
+                        <div class="button-container text-center mt-3">
+                            <button type="button" class="btn btn-danger" id="btn-cancel" onclick="cancelTransaction()">
+                                Batal
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
 
                             // Tambahkan modal ke body
                             document.body.insertAdjacentHTML('beforeend', modalHTML);
@@ -562,9 +566,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                             // Tampilkan modal
                             const bootstrapModal = new bootstrap.Modal(qrCodeModal);
                             bootstrapModal.show();
-                            
-                            // Start automatic payment checking
-                            startPaymentCheck();
                         } else {
                             alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
                         }
@@ -638,9 +639,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 const modal = document.getElementById('qrCodeModal');
                 const statusMessage = modal.querySelector('.status-message');
                 const cancelButton = modal.querySelector('#btn-cancel');
+                const checkButton = modal.querySelector('#btn-check');
                 
                 cancelButton.disabled = true;
                 cancelButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Membatalkan...';
+                checkButton.disabled = true;
                 
                 const transactionId = getCurrentTransactionId();
                 
@@ -664,12 +667,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     } else {
                         cancelButton.disabled = false;
                         cancelButton.innerHTML = 'Batal';
+                        checkButton.disabled = false;
                         statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Gagal membatalkan transaksi: ' + data.message + '</div>';
                     }
                 })
                 .catch(error => {
                     cancelButton.disabled = false;
                     cancelButton.innerHTML = 'Batal';
+                    checkButton.disabled = false;
                     statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat membatalkan transaksi.</div>';
                     console.error('Error:', error);
                 });
@@ -689,17 +694,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                     <img id="qrCodeImage" src="" alt="QR Code" class="qr-code-image">
                                 </div>
                                 <div id="countdown"></div>
-                                <div class="progress" style="margin: 15px 0;">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                         role="progressbar" 
-                                         style="width: 0%" 
-                                         id="payment-progress">
-                                    </div>
-                                </div>
                                 <div class="status-message"></div>
                                 <div class="button-container">
                                     <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">
                                         Batal
+                                    </button>
+                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">
+                                        Cek
                                     </button>
                                 </div>
                             </div>
@@ -708,88 +709,68 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 </div>
             `;
 
-            // Replace the checkPaymentStatus function with automatic checking
-            function startPaymentCheck() {
+            function checkPaymentStatus() {
+                // console.log(transactionId);
                 const modal = document.getElementById('qrCodeModal');
                 const statusMessage = modal.querySelector('.status-message');
-                const progressBar = modal.querySelector('.progress-bar');
-                const transactionId = getCurrentTransactionId();
-                let checkCount = 0;
-                const maxChecks = 20; // Will check for about 1 minute (3s * 20)
-                
-                function updateProgress() {
-                    const progress = (checkCount / maxChecks) * 100;
-                    progressBar.style.width = `${progress}%`;
-                }
+                const checkButton = modal.querySelector('#btn-check');
 
-                function checkStatus() {
-                    checkCount++;
-                    updateProgress();
+                // Disable the check button and show loading state
+                checkButton.disabled = true;
+                checkButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memeriksa...';
 
-                    fetch('api.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            action: 'check_payment_status',
-                            transaction_id: transactionId
-                        })
+                // Assuming you have a way to get the current transaction ID
+                 
+                const transactionId = getCurrentTransactionId(); 
+                console.log(transactionId);
+                fetch('api.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'check_payment_status',
+                        transaction_id: transactionId
                     })
-                    .then(response => response.json())
-                    .then(data => {
+                })
+                .then(response => response.json())
+                .then(data => {
+                        
+                        checkButton.disabled = false;
+                        checkButton.innerHTML = 'Cek';
+
                         if (data.success) {
                             switch (data.status) {
                                 case 'settlement':
                                     statusMessage.innerHTML = '<div class="alert alert-success" role="alert">Pembayaran berhasil!</div>';
-                                    clearInterval(checkInterval);
                                     setTimeout(() => {
-                                        window.location.href = 'transberhasil.php';
+                                        window.location.href = 'transberhasil.php'; // Redirect ke halaman sukses
                                     }, 2000);
                                     break;
-                                case 'expire':
-                                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran telah kedaluwarsa.</div>';
-                                    clearInterval(checkInterval);
-                                    break;
-                                case 'cancel':
-                                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran dibatalkan.</div>';
-                                    clearInterval(checkInterval);
                                     break;
                                 case 'pending':
-                                    if (checkCount >= maxChecks) {
-                                        clearInterval(checkInterval);
-                                        statusMessage.innerHTML = '<div class="alert alert-warning" role="alert">Pembayaran masih dalam proses. Silakan cek kembali nanti.</div>';
-                                    }
+                                    statusMessage.innerHTML = '<div class="alert alert-warning" role="alert">Pembayaran masih dalam proses. Silakan coba cek lagi nanti.</div>';
                                     break;
+                                case 'expire':
+                                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran telah kedaluwarsa. Silakan lakukan pemesanan ulang.</div>';
+                                    break;
+                                case 'cancel':
+                                    statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Pembayaran dibatalkan. Silakan lakukan pemesanan ulang jika diperlukan.</div>';
+                                    break;
+                                default:
+                                    statusMessage.innerHTML = '<div class="alert alert-info" role="alert">Status pembayaran: ' + data.status + '</div>';
                             }
+                        } else {
+                            statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan: ' + data.message + '</div>';
                         }
                     })
                     .catch(error => {
+                        checkButton.disabled = false;
+                        checkButton.innerHTML = 'Cek';
+                        statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat memeriksa status. Silakan coba lagi.</div>';
                         console.error('Error:', error);
-                        if (checkCount >= maxChecks) {
-                            clearInterval(checkInterval);
-                            statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">Terjadi kesalahan saat memeriksa status.</div>';
-                        }
                     });
-                }
-
-                // Check every 3 seconds
-                const checkInterval = setInterval(checkStatus, 3000);
-                
-                // Store interval ID in modal for cleanup
-                modal.setAttribute('data-check-interval', checkInterval);
-                
-                // Initial check
-                checkStatus();
             }
-
-            // Clean up intervals when modal is closed
-            $('#qrCodeModal').on('hidden.bs.modal', function () {
-                const checkInterval = parseInt(this.getAttribute('data-check-interval'));
-                if (checkInterval) {
-                    clearInterval(checkInterval);
-                }
-            });
 
             function getCurrentTransactionId() {
                 // Mencari modal QR code
