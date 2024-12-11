@@ -51,20 +51,6 @@ try {
                 case 'create_free_transaction':
                     create_free_transaction($data);
                     break;
-                case 'update_transaction_status':
-                    $transactionId = $data['transaction_id'];
-                    $status = $data['status'];
-                    
-                    // Update status transaksi di database
-                    $stmt = $conn->prepare("UPDATE transaksi SET status = ? WHERE order_id = ?");
-                    $stmt->bind_param("ss", $status, $transactionId);
-                    
-                    if ($stmt->execute()) {
-                        echo json_encode(['success' => true]);
-                    } else {
-                        echo json_encode(['success' => false, 'message' => 'Failed to update status']);
-                    }
-                    exit;
                 default:
                     throw new Exception("Action tidak valid");
             }
@@ -402,4 +388,35 @@ if (isset($_SESSION['active_voucher'])) {
     // Hapus session voucher
     unset($_SESSION['active_voucher']);
     unset($_SESSION['lastUsedDiscount']);
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $data = json_decode(file_get_contents('php://input'), true);
+    
+    if ($data['action'] === 'cancel_transaction') {
+        $transactionId = $data['transaction_id'];
+        
+        // Langsung update status menjadi cancelled
+        $status = 'cancelled';
+        $stmt = $conn->prepare("UPDATE transaksi SET status = ? WHERE order_id = ?");
+        $stmt->bind_param("ss", $status, $transactionId);
+        
+        if ($stmt->execute()) {
+            // Tambahkan timestamp pembatalan
+            $updateTimestamp = $conn->prepare("UPDATE transaksi SET updated_at = CURRENT_TIMESTAMP WHERE order_id = ?");
+            $updateTimestamp->bind_param("s", $transactionId);
+            $updateTimestamp->execute();
+            
+            echo json_encode([
+                'success' => true,
+                'message' => 'Transaction cancelled successfully'
+            ]);
+        } else {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Failed to cancel transaction'
+            ]);
+        }
+        exit;
+    }
 }

@@ -648,6 +648,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 const modal = document.getElementById('qrCodeModal');
                 const progressBar = modal.querySelector('#payment-progress-bar');
                 
+                // Ubah tampilan progress bar saat proses pembatalan
+                progressBar.classList.remove('progress-bar-animated', 'progress-bar-striped');
+                progressBar.classList.add('bg-danger');
+                progressBar.textContent = 'Membatalkan Transaksi...';
+
+                // Hentikan semua interval yang sedang berjalan
+                clearAllIntervals(modal);
+                
+                // Kirim request pembatalan ke server
                 fetch('api.php', {
                     method: 'POST',
                     headers: {
@@ -655,46 +664,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     },
                     body: JSON.stringify({
                         action: 'cancel_transaction',
-                        transaction_id: transactionId
+                        transaction_id: transactionId,
+                        status: 'cancelled' // Tambahkan status cancelled
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Update status di database menjadi 'cancelled'
-                        fetch('api.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                action: 'update_transaction_status',
-                                transaction_id: transactionId,
-                                status: 'cancelled'
-                            })
-                        })
-                        .then(() => {
-                            // Stop countdown timer jika ada
-                            const countdownInterval = modal.getAttribute('data-countdown-id');
-                            if (countdownInterval) {
-                                clearInterval(parseInt(countdownInterval));
-                            }
-                            
-                            // Stop payment check interval
-                            const checkInterval = modal.getAttribute('data-check-interval');
-                            if (checkInterval) {
-                                clearInterval(parseInt(checkInterval));
-                            }
-
-                            // Langsung redirect ke transbatal.php
-                            window.location.href = 'transbatal.php';
-                        });
+                        // Langsung redirect ke transbatal.php
+                        window.location.href = 'transbatal.php';
+                    } else {
+                        throw new Error('Gagal membatalkan transaksi');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
+                    // Tetap redirect meskipun ada error
                     window.location.href = 'transbatal.php';
                 });
+            }
+
+            // Fungsi untuk menghentikan semua interval
+            function clearAllIntervals(modal) {
+                // Clear countdown interval
+                const countdownInterval = modal.getAttribute('data-countdown-id');
+                if (countdownInterval) {
+                    clearInterval(parseInt(countdownInterval));
+                }
+                
+                // Clear payment check interval
+                const checkInterval = modal.getAttribute('data-check-interval');
+                if (checkInterval) {
+                    clearInterval(parseInt(checkInterval));
+                }
             }
 
             // Add countdown timer function

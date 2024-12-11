@@ -340,18 +340,18 @@ if (isset($_POST['hapus_voucher_digunakan'])) {
     }
 }
 
-// Fungsi untuk update status transaksi ke 'cancelled'
-function updateTransactionStatus($orderId, $status) {
-    global $conn;
-    
-    $stmt = $conn->prepare("UPDATE transaksi SET status = ? WHERE order_id = ?");
-    $stmt->bind_param("ss", $status, $orderId);
-    
-    return $stmt->execute();
-}
-
 // Mengambil data produk
 $query = "SELECT * FROM products";
 $result = mysqli_query($conn, $query);
 $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
 $products = mysqli_query($conn, "SELECT * FROM products");
+
+function cancelTransaction($orderId) {
+    global $conn;
+    
+    $status = 'cancelled';
+    $stmt = $conn->prepare("UPDATE transaksi SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE order_id = ?");
+    $stmt->bind_param("ss", $status, $orderId);
+    
+    return $stmt->execute();
+}
