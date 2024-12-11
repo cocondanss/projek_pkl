@@ -645,6 +645,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // Update fungsi cancelTransaction untuk redirect langsung
             function cancelTransaction() {
                 const transactionId = getCurrentTransactionId();
+                const modal = document.getElementById('qrCodeModal');
+                const progressBar = modal.querySelector('#payment-progress-bar');
                 
                 fetch('api.php', {
                     method: 'POST',
@@ -659,13 +661,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Langsung redirect ke transbatal.php
-                        window.location.href = 'transbatal.php';
+                        // Update status di database menjadi 'cancelled'
+                        fetch('api.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                action: 'update_transaction_status',
+                                transaction_id: transactionId,
+                                status: 'cancelled'
+                            })
+                        })
+                        .then(() => {
+                            // Stop countdown timer jika ada
+                            const countdownInterval = modal.getAttribute('data-countdown-id');
+                            if (countdownInterval) {
+                                clearInterval(parseInt(countdownInterval));
+                            }
+                            
+                            // Stop payment check interval
+                            const checkInterval = modal.getAttribute('data-check-interval');
+                            if (checkInterval) {
+                                clearInterval(parseInt(checkInterval));
+                            }
+
+                            // Langsung redirect ke transbatal.php
+                            window.location.href = 'transbatal.php';
+                        });
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    // Tetap redirect meskipun ada error
                     window.location.href = 'transbatal.php';
                 });
             }

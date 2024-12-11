@@ -51,6 +51,20 @@ try {
                 case 'create_free_transaction':
                     create_free_transaction($data);
                     break;
+                case 'update_transaction_status':
+                    $transactionId = $data['transaction_id'];
+                    $status = $data['status'];
+                    
+                    // Update status transaksi di database
+                    $stmt = $conn->prepare("UPDATE transaksi SET status = ? WHERE order_id = ?");
+                    $stmt->bind_param("ss", $status, $transactionId);
+                    
+                    if ($stmt->execute()) {
+                        echo json_encode(['success' => true]);
+                    } else {
+                        echo json_encode(['success' => false, 'message' => 'Failed to update status']);
+                    }
+                    exit;
                 default:
                     throw new Exception("Action tidak valid");
             }
