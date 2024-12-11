@@ -512,60 +512,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 // Jika harga lebih dari 0, lanjutkan dengan proses normal
                 createTransaction(id, name, price, discount)
                     .then(response => {
-                        console.log('Create Transaction Response:', response);
+                        console.log('Create Transaction Response:', response); // Log respons
                         if (response && response.success) {
+                            // Hapus modal lama jika ada
                             const existingModal = document.getElementById('qrCodeModal');
                             if (existingModal) existingModal.remove();
 
                             // Buat elemen modal baru
                             const modalHTML = `
-                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="qr-code-container">
-                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
-                                </div>
-                                <div id="countdown" class="text-center mb-3"></div>
-                                <div class="payment-status-container">
-                                    <div class="progress mb-3">
-                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" 
-                                             role="progressbar" 
-                                             style="width: 50%" 
-                                             id="payment-progress-bar">
+                                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="qr-code-container">
+                                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
+                                                </div>
+                                                <div id="countdown"></div>
+                                                <div class="status-message"></div>
+                                                <div class="button-container">
+                                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
+                                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="status-message text-center"></div>
                                 </div>
-                                <div class="button-container text-center mt-3">
-                                    <button type="button" class="btn btn-danger" id="btn-cancel" onclick="cancelTransaction()">
-                                        Batal
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
+                            `;
 
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
+                            // Tambahkan modal ke body
+                            document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-            const qrCodeModal = document.getElementById('qrCodeModal');
-            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
+                            // Set transaction ID
+                            const qrCodeModal = document.getElementById('qrCodeModal');
+                            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
 
-            startCountdown(900);
-            const bootstrapModal = new bootstrap.Modal(qrCodeModal);
-            bootstrapModal.show();
+                            // Start the countdown timer
+                            startCountdown(900); // 15 menit dalam detik
 
-            // Mulai pengecekan status pembayaran
-            startPaymentCheck();
-        }
-    })
-}
+                            // Tampilkan modal
+                            const bootstrapModal = new bootstrap.Modal(qrCodeModal);
+                            bootstrapModal.show();
+                        } else {
+                            alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error in createTransaction:', error);
+                        alert('Terjadi kesalahan saat membuat transaksi.');
+                    });
+            }
 
 
 
