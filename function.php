@@ -345,13 +345,3 @@ $query = "SELECT * FROM products";
 $result = mysqli_query($conn, $query);
 $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
 $products = mysqli_query($conn, "SELECT * FROM products");
-
-function cancelTransaction($orderId) {
-    global $conn;
-    
-    $status = 'cancelled';
-    $stmt = $conn->prepare("UPDATE transaksi SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE order_id = ?");
-    $stmt->bind_param("ss", $status, $orderId);
-    
-    return $stmt->execute();
-}

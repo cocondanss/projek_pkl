@@ -645,18 +645,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
             // Update fungsi cancelTransaction untuk redirect langsung
             function cancelTransaction() {
                 const transactionId = getCurrentTransactionId();
-                const modal = document.getElementById('qrCodeModal');
-                const progressBar = modal.querySelector('#payment-progress-bar');
                 
-                // Ubah tampilan progress bar saat proses pembatalan
-                progressBar.classList.remove('progress-bar-animated', 'progress-bar-striped');
-                progressBar.classList.add('bg-danger');
-                progressBar.textContent = 'Membatalkan Transaksi...';
-
-                // Hentikan semua interval yang sedang berjalan
-                clearAllIntervals(modal);
-                
-                // Kirim request pembatalan ke server
                 fetch('api.php', {
                     method: 'POST',
                     headers: {
@@ -664,8 +653,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     },
                     body: JSON.stringify({
                         action: 'cancel_transaction',
-                        transaction_id: transactionId,
-                        status: 'cancelled' // Tambahkan status cancelled
+                        transaction_id: transactionId
                     })
                 })
                 .then(response => response.json())
@@ -673,8 +661,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     if (data.success) {
                         // Langsung redirect ke transbatal.php
                         window.location.href = 'transbatal.php';
-                    } else {
-                        throw new Error('Gagal membatalkan transaksi');
                     }
                 })
                 .catch(error => {
@@ -682,21 +668,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                     // Tetap redirect meskipun ada error
                     window.location.href = 'transbatal.php';
                 });
-            }
-
-            // Fungsi untuk menghentikan semua interval
-            function clearAllIntervals(modal) {
-                // Clear countdown interval
-                const countdownInterval = modal.getAttribute('data-countdown-id');
-                if (countdownInterval) {
-                    clearInterval(parseInt(countdownInterval));
-                }
-                
-                // Clear payment check interval
-                const checkInterval = modal.getAttribute('data-check-interval');
-                if (checkInterval) {
-                    clearInterval(parseInt(checkInterval));
-                }
             }
 
             // Add countdown timer function
