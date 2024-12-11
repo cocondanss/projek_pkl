@@ -520,51 +520,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
                             // Buat elemen modal baru
                             const modalHTML = `
-                                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="qr-code-container">
-                                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
-                                                </div>
-                                                <div id="countdown"></div>
-                                                <div class="status-message"></div>
-                                                <div class="button-container">
-                                                    <button type="button" class="btn btn-cancel" id="btn-cancel" onclick="cancelTransaction()">Batal</button>
-                                                    <button type="button" class="btn" id="btn-check" onclick="checkPaymentStatus()">Cek</button>
-                                                </div>
-                                            </div>
+                <div class="modal fade qr-modal" id="qrCodeModal" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Scan QR Code untuk Pembayaran</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="qr-code-container">
+                                    <img id="qrCodeImage" src="${response.qr_code_url}" alt="QR Code" class="qr-code-image">
+                                </div>
+                                <div id="countdown" class="text-center mb-3"></div>
+                                <div class="payment-status-container">
+                                    <div class="progress mb-3">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" 
+                                             role="progressbar" 
+                                             style="width: 50%" 
+                                             id="payment-progress-bar">
                                         </div>
                                     </div>
+                                    <div class="status-message text-center"></div>
                                 </div>
-                            `;
+                                <div class="button-container text-center mt-3">
+                                    <button type="button" class="btn btn-danger" id="btn-cancel" onclick="cancelTransaction()">
+                                        Batal
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
 
-                            // Tambahkan modal ke body
-                            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-                            // Set transaction ID
-                            const qrCodeModal = document.getElementById('qrCodeModal');
-                            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
+            const qrCodeModal = document.getElementById('qrCodeModal');
+            qrCodeModal.setAttribute('data-transaction-id', response.order_id);
 
-                            // Start the countdown timer
-                            startCountdown(900); // 15 menit dalam detik
+            startCountdown(900);
+            const bootstrapModal = new bootstrap.Modal(qrCodeModal);
+            bootstrapModal.show();
 
-                            // Tampilkan modal
-                            const bootstrapModal = new bootstrap.Modal(qrCodeModal);
-                            bootstrapModal.show();
-                        } else {
-                            alert('Error: ' + (response ? response.message : 'Transaksi gagal.'));
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error in createTransaction:', error);
-                        alert('Terjadi kesalahan saat membuat transaksi.');
-                    });
-            }
+            // Mulai pengecekan status pembayaran
+            startPaymentCheck();
+        }
+    })
+}
 
 
 
