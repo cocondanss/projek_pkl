@@ -2,7 +2,7 @@
 require 'function.php';
 require 'cek.php';
 
-// Proses pembelian produk
+
 // Proses pembelian produk
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['buy_product'])) {
     $productId = $_POST['product_id'];
