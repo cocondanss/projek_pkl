@@ -60,39 +60,33 @@ $voucherCode = '';
 $originalPrice = 0; // Inisialisasi harga asli
 $discountedPrice = 0; // Inisialisasi harga diskon
 
-// Proses pengecekan voucher saat ada POST request
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
+// Fungsi untuk memproses voucher
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['voucher_code'])) {
     $voucherCode = trim($_POST['voucher_code']);
     
-    $stmt = $conn->prepare("SELECT * FROM vouchers2 WHERE code = ?");
-    $stmt->bind_param("s", $voucherCode);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($row = $result->fetch_assoc()) {
-        if ($row['one_time_use'] == 1) {
-            if ($row['used_at'] === null) {
-                // Update used_at timestamp
-                date_default_timezone_set('Asia/Jakarta');
-                $currentDateTime = date('Y-m-d H:i:s');
-                
-                $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-                $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-                $updateStmt->execute();
-                
-                $_SESSION['active_voucher'] = $voucherCode;
-                $_SESSION['voucher_applied_time'] = $currentDateTime;
-                
-                $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
-            } else {
-                $voucherMessages[] = "<p class='voucher-message error'>Voucher ini hanya sekali pakai.</p>";
-            }
+    // Validasi voucher
+    $validationResult = validateVoucher($voucherCode);
+    
+    if ($validationResult['valid']) {
+        $voucher = $validationResult['voucher'];
+        
+        // Catat penggunaan voucher
+        if (useVoucher($voucherCode)) {
+            // Update waktu penggunaan di database
+            $currentTime = date('Y-m-d H:i:s');
+            $updateQuery = "UPDATE vouchers2 SET used_at = ? WHERE code = ?";
+            $stmt = $conn->prepare($updateQuery);
+            $stmt->bind_param("ss", $currentTime, $voucherCode);
+            $stmt->execute();
+            
+            // Set pesan sukses
+            $voucherMessages[] = "<div class='alert alert-success'>Voucher berhasil digunakan pada: $currentTime</div>";
+            $_SESSION['discount_amount'] = $voucher['discount_amount'];
         } else {
-            $_SESSION['active_voucher'] = $voucherCode;
-            $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
+            $voucherMessages[] = "<div class='alert alert-danger'>Gagal mencatat penggunaan voucher</div>";
         }
     } else {
-        $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
+        $voucherMessages[] = "<div class='alert alert-danger'>" . $validationResult['message'] . "</div>";
     }
 }
 
