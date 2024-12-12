@@ -532,7 +532,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 </div>
                                                 <div id="countdown" class="text-center mb-3"></div>
                                                 <div class="payment-status-container">
-                                                    <div class="progress mb-3" style="height: 20px; max-width: 80%; margin: 0 auto;">
+                                                    <div class="progress mb-3" style="height: 20px; max-width: 95%; margin: 0 auto;">
                                                         <div class="progress-bar progress-bar-striped progress-bar-animated" 
                                                              role="progressbar" 
                                                              style="width: 100%; font-size: 14px;" 
