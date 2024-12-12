@@ -532,10 +532,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 </div>
                                                 <div id="countdown" class="text-center mb-3"></div>
                                                 <div class="payment-status-container">
-                                                    <div class="progress mb-3">
+                                                    <div class="progress mb-3" style="height: 15px;">
                                                         <div class="progress-bar progress-bar-striped progress-bar-animated" 
                                                              role="progressbar" 
-                                                             style="width: 100%" 
+                                                             style="width: 100%; font-size: 14px;"
                                                              id="payment-progress-bar">
                                                              Menunggu Pembayaran...
                                                         </div>
@@ -685,35 +685,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                         clearInterval(countdown);
                         const modal = document.getElementById('qrCodeModal');
                         const statusMessage = modal.querySelector('.status-message');
-                        const progressBar = modal.querySelector('#payment-progress-bar');
-                        const transactionId = getCurrentTransactionId();
-
-                        // Update status transaksi menjadi 'expire'
-                        fetch('api.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                action: 'expire_transaction',
-                                transaction_id: transactionId
-                            })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                progressBar.classList.remove('progress-bar-animated', 'progress-bar-striped');
-                                progressBar.classList.add('bg-danger');
-                                progressBar.textContent = 'Pembayaran Kedaluwarsa';
-                                
-                                setTimeout(() => {
-                                    window.location.href = 'transbatal.php';
-                                }, 1000);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
+                        statusMessage.innerHTML = '<div class="alert alert-danger" role="alert">QR Code telah kadaluarsa. Silakan lakukan pemesanan ulang.</div>';
+                        
+                        setTimeout(() => {
+                            const qrCodeModal = bootstrap.Modal.getInstance(modal);
+                            qrCodeModal.hide();
+                        }, 3000);
                     }
                 }, 1000);
 
