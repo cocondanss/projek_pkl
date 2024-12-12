@@ -131,25 +131,8 @@ function useVoucher($code) {
     global $conn;
     
     try {
-        // Cek apakah voucher ada dan apakah itu voucher gratis
-        $checkQuery = "SELECT * FROM vouchers2 WHERE code = ?";
-        $checkStmt = $conn->prepare($checkQuery);
-        $checkStmt->bind_param("s", $code);
-        $checkStmt->execute();
-        $result = $checkStmt->get_result();
-        $voucher = $result->fetch_assoc();
-
-        if (!$voucher) {
-            return false;
-        }
-
         $currentTime = date('Y-m-d H:i:s');
-        
-        // Update query yang memperhitungkan voucher gratis
-        $query = "UPDATE vouchers2 SET used_at = ? 
-                 WHERE code = ? 
-                 AND (used_at IS NULL OR one_time_use = 0 OR is_free = 1)";
-        
+        $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ? AND (used_at IS NULL OR one_time_use = 0)";
         $stmt = $conn->prepare($query);
         if (!$stmt) {
             error_log("Error preparing statement: " . $conn->error);
@@ -278,7 +261,7 @@ function useVoucher($code) {
                                             $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers2");
 
                                             if (!$ambilsemuadatavoucher) {
-                                                die("Query failed: " . mysqli_error($conn)); // Periksa apakah query berhasil
+                                                die("Query failed: " . mysqli_error($conn));
                                             }
 
                                             $i = 1;
@@ -288,22 +271,14 @@ function useVoucher($code) {
                                                 $is_free = $data['is_free'];
                                                 $one_time_use = $data['one_time_use'];
                                                 $id = $data['id'];
-                                                $created_at = $data['created_at']; // UTC
-                                                $used_at = $data['used_at']; // UTC
+                                                $created_at = $data['created_at'];
+                                                $used_at = $data['used_at'];
 
                                                 // Tentukan status berdasarkan used_at
                                                 $status_used = !empty($used_at) ? "Sudah digunakan" : "Belum digunakan";
 
                                                 $isFreeDisplay = ($is_free == 1) ? "Ya" : "Tidak";
                                                 $oneTimeUse = ($one_time_use == 1) ? "Ya" : "Tidak";
-
-                                                // Jika voucher gratis, set discount_amount menjadi 0
-                                                if ($is_free == 1) {
-                                                    $discount_amount = 0;
-                                                }
-
-                                                // Tentukan jenis voucher (diskon atau rupiah)
-                                                $voucherType = ($discount_amount > 100) ? 'rupiah' : 'diskon';
                                             ?>
                                                 <tr>
                                                     <td><?= $i++; ?></td>
@@ -311,7 +286,7 @@ function useVoucher($code) {
                                                     <td>
                                                         <?php if ($is_free == 1): ?>
                                                             Gratis
-                                                        <?php elseif ($voucherType == 'diskon'): ?>
+                                                        <?php elseif ($discount_amount <= 100): ?>
                                                             <?= htmlspecialchars($discount_amount) . '%' ?>
                                                         <?php else: ?>
                                                             <?= 'Rp ' . number_format($discount_amount, 0, ',', '.') . ',00' ?>
@@ -320,26 +295,11 @@ function useVoucher($code) {
                                                     <td><?= htmlspecialchars($status_used); ?></td>
                                                     <td><?= htmlspecialchars($oneTimeUse); ?></td>
                                                     <td>
-                                                        <script>
-                                                            // Mengonversi waktu UTC ke waktu lokal untuk created_at
-                                                            var createdAtUTC = '<?= $created_at; ?>';
-                                                            var createdAtLocal = new Date(createdAtUTC + 'Z').toLocaleString('id-ID', { 
-                                                                year: 'numeric', 
-                                                                month: '2-digit', 
-                                                                day: '2-digit', 
-                                                                hour: '2-digit', 
-                                                                minute: '2-digit', 
-                                                                second: '2-digit', 
-                                                                hour12: false // untuk format 24 jam
-                                                            });
-
-                                                            // Menghapus bagian zona waktu dan mengganti '/' dengan '-'
-                                                            createdAtLocal = createdAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
-                                                            createdAtLocal = createdAtLocal.replace(/\//g, '-'); // Mengganti '/' dengan '-'
-                                                            document.write(createdAtLocal);
-                                                        </script>
+                                                        <?= !empty($created_at) ? date('d-m-Y H:i:s', strtotime($created_at)) : '-'; ?>
                                                     </td>
-                                                    <td><?= !empty($used_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($used_at))) : '-'; ?></td>
+                                                    <td>
+                                                        <?= !empty($used_at) ? date('d-m-Y H:i:s', strtotime($used_at)) : '-'; ?>
+                                                    </td>
                                                     <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
                                                 </tr>
                                             <?php
