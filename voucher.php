@@ -132,8 +132,9 @@ function useVoucher($code) {
     
     try {
         $currentTime = date('Y-m-d H:i:s');
-        $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ? AND (used_at IS NULL OR one_time_use = 0)";
+        $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ?";
         $stmt = $conn->prepare($query);
+        
         if (!$stmt) {
             error_log("Error preparing statement: " . $conn->error);
             return false;
@@ -144,12 +145,6 @@ function useVoucher($code) {
         
         if (!$result) {
             error_log("Error executing statement: " . $stmt->error);
-            return false;
-        }
-
-        // Cek apakah ada baris yang terupdate
-        if ($stmt->affected_rows === 0) {
-            error_log("No rows updated for voucher code: " . $code);
             return false;
         }
 
