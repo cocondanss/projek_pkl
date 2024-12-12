@@ -340,6 +340,96 @@ if (isset($_POST['hapus_voucher_digunakan'])) {
     }
 }
 
+// Fungsi untuk memproses voucher
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['voucher_code'])) {
+    $voucherCode = trim($_POST['voucher_code']);
+    
+    // Validasi voucher
+    $validationResult = validateVoucher($voucherCode);
+    
+    if ($validationResult['valid']) {
+        $voucher = $validationResult['voucher'];
+        
+        // Catat penggunaan voucher
+        if (useVoucher($voucherCode)) {
+            // Update waktu penggunaan di database
+            $currentTime = date('Y-m-d H:i:s');
+            $updateQuery = "UPDATE vouchers2 SET used_at = ? WHERE code = ?";
+            $stmt = $conn->prepare($updateQuery);
+            $stmt->bind_param("ss", $currentTime, $voucherCode);
+            $stmt->execute();
+            
+            // Set pesan sukses
+            $voucherMessages[] = "<div class='alert alert-success'>Voucher berhasil digunakan pada: $currentTime</div>";
+            $_SESSION['discount_amount'] = $voucher['discount_amount'];
+        } else {
+            $voucherMessages[] = "<div class='alert alert-danger'>Gagal mencatat penggunaan voucher</div>";
+        }
+    } else {
+        $voucherMessages[] = "<div class='alert alert-danger'>" . $validationResult['message'] . "</div>";
+    }
+}
+
+function validateVoucher($code) {
+    global $conn;
+    
+    try {
+        $query = "SELECT * FROM vouchers2 WHERE code = ?";
+        $stmt = $conn->prepare($query);
+        
+        if (!$stmt) {
+            error_log("Error preparing statement: " . $conn->error);
+            return ["valid" => false, "message" => "Database error"];
+        }
+
+        $stmt->bind_param("s", $code);
+        if (!$stmt->execute()) {
+            error_log("Error executing statement: " . $stmt->error);
+            return ["valid" => false, "message" => "Database error"];
+        }
+
+        $result = $stmt->get_result();
+        $voucher = $result->fetch_assoc();
+        
+        if (!$voucher) {
+            return ["valid" => false, "message" => "Voucher tidak ditemukan"];
+        }
+        
+        // Cek apakah voucher sekali pakai dan sudah digunakan
+        if ($voucher['one_time_use'] == 1 && $voucher['used_at'] !== null) {
+            return ["valid" => false, "message" => "Voucher sudah digunakan"];
+        }
+        
+        return ["valid" => true, "voucher" => $voucher];
+    } catch (Exception $e) {
+        error_log("Error in validateVoucher: " . $e->getMessage());
+        return ["valid" => false, "message" => "Terjadi kesalahan sistem"];
+    }
+}
+
+function useVoucher($code) {
+    global $conn;
+    
+    try {
+        $currentTime = date('Y-m-d H:i:s');
+        // Update used_at untuk semua jenis voucher
+        $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ?";
+        $stmt = $conn->prepare($query);
+        
+        if (!$stmt) {
+            error_log("Error preparing statement: " . $conn->error);
+            return false;
+        }
+
+        $stmt->bind_param("ss", $currentTime, $code);
+        return $stmt->execute();
+        
+    } catch (Exception $e) {
+        error_log("Error in useVoucher: " . $e->getMessage());
+        return false;
+    }
+}
+
 // Mengambil data produk
 $query = "SELECT * FROM products";
 $result = mysqli_query($conn, $query);
