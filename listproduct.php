@@ -31,7 +31,7 @@ function applyVoucher($voucherCode, $price) {
         // Jika voucher sekali pakai, cek apakah sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             // Tambahkan buffer waktu 30 detik untuk memastikan transaksi bisa selesai
-            $bufferTime = 10; // dalam detik
+            $bufferTime = 20; // dalam detik
             $usedTime = strtotime($row['used_at']);
             
             if (time() - $usedTime > $bufferTime) {
@@ -532,10 +532,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                                 </div>
                                                 <div id="countdown" class="text-center mb-3"></div>
                                                 <div class="payment-status-container">
-                                                    <div class="progress mb-3" style="height: 25px;">
+                                                    <div class="progress mb-3" style="height: 25px; max-width: 80%; margin: 0 auto;">
                                                         <div class="progress-bar progress-bar-striped progress-bar-animated" 
                                                              role="progressbar" 
-                                                             style="width: 100%; font-size: 14px;"
+                                                             style="width: 100%; font-size: 12px;" 
                                                              id="payment-progress-bar">
                                                              Menunggu Pembayaran...
                                                         </div>
