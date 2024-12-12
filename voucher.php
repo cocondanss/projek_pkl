@@ -400,7 +400,6 @@ function useVoucher($code) {
                                     </div>
                                 </div>
                             </div>
-
                             <button type="submit" class="btn btn-dark mr-2" name="TambahVoucherOtomatis">Simpan</button>
                         </div>
                     </form>
