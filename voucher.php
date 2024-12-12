@@ -131,8 +131,25 @@ function useVoucher($code) {
     global $conn;
     
     try {
+        // Cek apakah voucher ada dan apakah itu voucher gratis
+        $checkQuery = "SELECT * FROM vouchers2 WHERE code = ?";
+        $checkStmt = $conn->prepare($checkQuery);
+        $checkStmt->bind_param("s", $code);
+        $checkStmt->execute();
+        $result = $checkStmt->get_result();
+        $voucher = $result->fetch_assoc();
+
+        if (!$voucher) {
+            return false;
+        }
+
         $currentTime = date('Y-m-d H:i:s');
-        $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ? AND (used_at IS NULL OR one_time_use = 0)";
+        
+        // Update query yang memperhitungkan voucher gratis
+        $query = "UPDATE vouchers2 SET used_at = ? 
+                 WHERE code = ? 
+                 AND (used_at IS NULL OR one_time_use = 0 OR is_free = 1)";
+        
         $stmt = $conn->prepare($query);
         if (!$stmt) {
             error_log("Error preparing statement: " . $conn->error);
