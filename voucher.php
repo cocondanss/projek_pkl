@@ -35,6 +35,7 @@ if (isset($_POST['TambahVoucherOtomatis'])) {
     $voucherType = $_POST['voucherType'];
     $nominalVoucher = $_POST['nominalVoucher'];
     $diskonVoucher = $_POST['diskonVoucher'];
+    $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
 
     if ($voucherType == 'rupiah') {
         $discountAmount = $nominalVoucher;
@@ -43,13 +44,13 @@ if (isset($_POST['TambahVoucherOtomatis'])) {
     }
 
     $query = "ALTER TABLE vouchers2 CHANGE id id INT AUTO_INCREMENT;";
-mysqli_query($conn, $query);
-
-for ($i = 0; $i < $voucherCount; $i++) {
-    $voucherCode = generateVoucherCode();
-    $query = "INSERT INTO vouchers2 (code, discount_amount) VALUES ('$voucherCode', '$discountAmount')";
     mysqli_query($conn, $query);
-}
+
+    for ($i = 0; $i < $voucherCount; $i++) {
+        $voucherCode = generateVoucherCode();
+        $query = "INSERT INTO vouchers2 (code, discount_amount, one_time_use) VALUES ('$voucherCode', '$discountAmount', '$oneTimeUse')";
+        mysqli_query($conn, $query);
+    }
 
     unset($voucherCode);
     unset($discountAmount);
@@ -133,29 +134,24 @@ function useVoucher($code) {
     try {
         $currentTime = date('Y-m-d H:i:s');
         
-        // Cek dulu apakah voucher ada dan tipe penggunaannya
-        $checkQuery = "SELECT one_time_use FROM vouchers2 WHERE code = ?";
-        $checkStmt = $conn->prepare($checkQuery);
-        $checkStmt->bind_param("s", $code);
-        $checkStmt->execute();
-        $result = $checkStmt->get_result();
-        $voucher = $result->fetch_assoc();
-
-        if ($voucher) {
-            // Update used_at untuk semua jenis voucher
-            $updateQuery = "UPDATE vouchers2 SET used_at = ? WHERE code = ?";
-            $stmt = $conn->prepare($updateQuery);
-            
-            if (!$stmt) {
-                error_log("Error preparing statement: " . $conn->error);
-                return false;
-            }
-
-            $stmt->bind_param("ss", $currentTime, $code);
-            return $stmt->execute();
-        }
+        // Update used_at untuk semua jenis voucher
+        $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ?";
+        $stmt = $conn->prepare($query);
         
-        return false;
+        if (!$stmt) {
+            error_log("Error preparing statement: " . $conn->error);
+            return false;
+        }
+
+        $stmt->bind_param("ss", $currentTime, $code);
+        $result = $stmt->execute();
+        
+        if (!$result) {
+            error_log("Error executing statement: " . $stmt->error);
+            return false;
+        }
+
+        return true;
     } catch (Exception $e) {
         error_log("Error in useVoucher: " . $e->getMessage());
         return false;
@@ -261,6 +257,11 @@ function useVoucher($code) {
                                         <?php
 
                                             $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers2 ORDER BY created_at DESC");
+
+                                            if (!$ambilsemuadatavoucher) {
+                                                die("Query failed: " . mysqli_error($conn)); // Periksa apakah query berhasil
+                                            }
+
                                             $i = 1;
                                             while ($data = mysqli_fetch_array($ambilsemuadatavoucher)) {
                                                 $code = $data['code'];
@@ -273,24 +274,31 @@ function useVoucher($code) {
 
                                                 // Format tanggal
                                                 $formattedCreatedAt = date('d-m-Y H:i:s', strtotime($created_at));
-                                                $formattedUsedAt = $used_at ? date('d-m-Y H:i:s', strtotime($used_at)) : '-';
+                                                $formattedUsedAt = !empty($used_at) ? date('d-m-Y H:i:s', strtotime($used_at)) : '-';
 
                                                 // Status penggunaan
                                                 if ($one_time_use == 1) {
                                                     $status_used = !empty($used_at) ? "Sudah digunakan" : "Belum digunakan";
                                                 } else {
+                                                    // Untuk voucher yang bisa digunakan berkali-kali
                                                     $status_used = !empty($used_at) ? "Dapat digunakan kembali" : "Belum digunakan";
                                                 }
                                             ?>
                                                 <tr>
-                                                    <td><?=$i++;?></td>
-                                                    <td><?=htmlspecialchars($code);?></td>
-                                                    <td><?=htmlspecialchars($discount_amount);?></td>
-                                                    <td><?=htmlspecialchars($status_used);?></td>
-                                                    <td><?=htmlspecialchars($one_time_use == 1 ? "Ya" : "Tidak");?></td>
-                                                    <td><?=htmlspecialchars($formattedCreatedAt);?></td>
-                                                    <td><?=htmlspecialchars($formattedUsedAt);?></td>
-                                                    <td><input type="checkbox" name="delete[]" value="<?=htmlspecialchars($id);?>"></td>
+                                                    <td><?= $i++; ?></td>
+                                                    <td><?= htmlspecialchars($code); ?></td>
+                                                    <td>
+                                                        <?php if ($is_free == 1): ?>
+                                                            Gratis
+                                                        <?php else: ?>
+                                                            <?= number_format($discount_amount, 0, ',', '.'); ?>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td><?= htmlspecialchars($status_used); ?></td>
+                                                    <td><?= htmlspecialchars($one_time_use == 1 ? "Ya" : "Tidak"); ?></td>
+                                                    <td><?= htmlspecialchars($formattedCreatedAt); ?></td>
+                                                    <td><?= htmlspecialchars($formattedUsedAt); ?></td>
+                                                    <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
                                                 </tr>
                                             <?php
                                             }
