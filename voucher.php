@@ -35,7 +35,6 @@ if (isset($_POST['TambahVoucherOtomatis'])) {
     $voucherType = $_POST['voucherType'];
     $nominalVoucher = $_POST['nominalVoucher'];
     $diskonVoucher = $_POST['diskonVoucher'];
-    $oneTimeUse = isset($_POST['one_time_use']) ? 1 : 0;
 
     if ($voucherType == 'rupiah') {
         $discountAmount = $nominalVoucher;
@@ -44,13 +43,13 @@ if (isset($_POST['TambahVoucherOtomatis'])) {
     }
 
     $query = "ALTER TABLE vouchers2 CHANGE id id INT AUTO_INCREMENT;";
-    mysqli_query($conn, $query);
+mysqli_query($conn, $query);
 
-    for ($i = 0; $i < $voucherCount; $i++) {
-        $voucherCode = generateVoucherCode();
-        $query = "INSERT INTO vouchers2 (code, discount_amount, one_time_use) VALUES ('$voucherCode', '$discountAmount', '$oneTimeUse')";
-        mysqli_query($conn, $query);
-    }
+for ($i = 0; $i < $voucherCount; $i++) {
+    $voucherCode = generateVoucherCode();
+    $query = "INSERT INTO vouchers2 (code, discount_amount) VALUES ('$voucherCode', '$discountAmount')";
+    mysqli_query($conn, $query);
+}
 
     unset($voucherCode);
     unset($discountAmount);
@@ -133,8 +132,6 @@ function useVoucher($code) {
     
     try {
         $currentTime = date('Y-m-d H:i:s');
-        
-        // Update used_at untuk semua jenis voucher
         $query = "UPDATE vouchers2 SET used_at = ? WHERE code = ?";
         $stmt = $conn->prepare($query);
         
@@ -256,7 +253,7 @@ function useVoucher($code) {
                                         <tbody>
                                         <?php
 
-                                            $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers2 ORDER BY created_at DESC");
+                                            $ambilsemuadatavoucher = mysqli_query($conn, "SELECT * FROM vouchers2");
 
                                             if (!$ambilsemuadatavoucher) {
                                                 die("Query failed: " . mysqli_error($conn)); // Periksa apakah query berhasil
@@ -269,20 +266,22 @@ function useVoucher($code) {
                                                 $is_free = $data['is_free'];
                                                 $one_time_use = $data['one_time_use'];
                                                 $id = $data['id'];
-                                                $created_at = $data['created_at'];
-                                                $used_at = $data['used_at'];
+                                                $created_at = $data['created_at']; // UTC
+                                                $used_at = $data['used_at']; // UTC
 
-                                                // Format tanggal
-                                                $formattedCreatedAt = date('d-m-Y H:i:s', strtotime($created_at));
-                                                $formattedUsedAt = !empty($used_at) ? date('d-m-Y H:i:s', strtotime($used_at)) : '-';
+                                                // Tentukan status berdasarkan used_at
+                                                $status_used = !empty($used_at) ? "Sudah digunakan" : "Belum digunakan";
 
-                                                // Status penggunaan
-                                                if ($one_time_use == 1) {
-                                                    $status_used = !empty($used_at) ? "Sudah digunakan" : "Belum digunakan";
-                                                } else {
-                                                    // Untuk voucher yang bisa digunakan berkali-kali
-                                                    $status_used = !empty($used_at) ? "Dapat digunakan kembali" : "Belum digunakan";
+                                                $isFreeDisplay = ($is_free == 1) ? "Ya" : "Tidak";
+                                                $oneTimeUse = ($one_time_use == 1) ? "Ya" : "Tidak";
+
+                                                // Jika voucher gratis, set discount_amount menjadi 0
+                                                if ($is_free == 1) {
+                                                    $discount_amount = 0;
                                                 }
+
+                                                // Tentukan jenis voucher (diskon atau rupiah)
+                                                $voucherType = ($discount_amount > 100) ? 'rupiah' : 'diskon';
                                             ?>
                                                 <tr>
                                                     <td><?= $i++; ?></td>
@@ -290,14 +289,35 @@ function useVoucher($code) {
                                                     <td>
                                                         <?php if ($is_free == 1): ?>
                                                             Gratis
+                                                        <?php elseif ($voucherType == 'diskon'): ?>
+                                                            <?= htmlspecialchars($discount_amount) . '%' ?>
                                                         <?php else: ?>
-                                                            <?= number_format($discount_amount, 0, ',', '.'); ?>
+                                                            <?= 'Rp ' . number_format($discount_amount, 0, ',', '.') . ',00' ?>
                                                         <?php endif; ?>
                                                     </td>
                                                     <td><?= htmlspecialchars($status_used); ?></td>
-                                                    <td><?= htmlspecialchars($one_time_use == 1 ? "Ya" : "Tidak"); ?></td>
-                                                    <td><?= htmlspecialchars($formattedCreatedAt); ?></td>
-                                                    <td><?= htmlspecialchars($formattedUsedAt); ?></td>
+                                                    <td><?= htmlspecialchars($oneTimeUse); ?></td>
+                                                    <td>
+                                                        <script>
+                                                            // Mengonversi waktu UTC ke waktu lokal untuk created_at
+                                                            var createdAtUTC = '<?= $created_at; ?>';
+                                                            var createdAtLocal = new Date(createdAtUTC + 'Z').toLocaleString('id-ID', { 
+                                                                year: 'numeric', 
+                                                                month: '2-digit', 
+                                                                day: '2-digit', 
+                                                                hour: '2-digit', 
+                                                                minute: '2-digit', 
+                                                                second: '2-digit', 
+                                                                hour12: false // untuk format 24 jam
+                                                            });
+
+                                                            // Menghapus bagian zona waktu dan mengganti '/' dengan '-'
+                                                            createdAtLocal = createdAtLocal.replace(/ GMT.*$/, ''); // Menghapus bagian GMT
+                                                            createdAtLocal = createdAtLocal.replace(/\//g, '-'); // Mengganti '/' dengan '-'
+                                                            document.write(createdAtLocal);
+                                                        </script>
+                                                    </td>
+                                                    <td><?= !empty($used_at) ? htmlspecialchars(date('d-m-Y H:i:s', strtotime($used_at))) : '-'; ?></td>
                                                     <td><input type="checkbox" name="delete[]" value="<?= htmlspecialchars($id); ?>"></td>
                                                 </tr>
                                             <?php
