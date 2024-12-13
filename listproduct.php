@@ -70,26 +70,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
-        if ($row['one_time_use'] == 1) {
-            if ($row['used_at'] === null) {
-                // Update used_at timestamp
-                date_default_timezone_set('Asia/Jakarta');
-                $currentDateTime = date('Y-m-d H:i:s');
-                
-                $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
-                $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
-                $updateStmt->execute();
-                
-                $_SESSION['active_voucher'] = $voucherCode;
-                $_SESSION['voucher_applied_time'] = $currentDateTime;
-                
-                $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
-            } else {
-                $voucherMessages[] = "<p class='voucher-message error'>Voucher ini hanya sekali pakai.</p>";
-            }
-        } else {
+        // Update used_at timestamp untuk semua jenis voucher
+        date_default_timezone_set('Asia/Jakarta');
+        $currentDateTime = date('Y-m-d H:i:s');
+        
+        $updateStmt = $conn->prepare("UPDATE vouchers2 SET used_at = ? WHERE code = ?");
+        $updateStmt->bind_param("ss", $currentDateTime, $voucherCode);
+        
+        if ($updateStmt->execute()) {
             $_SESSION['active_voucher'] = $voucherCode;
+            $_SESSION['voucher_applied_time'] = $currentDateTime;
             $voucherMessages[] = "<p class='voucher-message success'>Voucher berhasil digunakan.</p>";
+        } else {
+            $voucherMessages[] = "<p class='voucher-message error'>Gagal mencatat penggunaan voucher.</p>";
         }
     } else {
         $voucherMessages[] = "<p class='voucher-message error'>Voucher tidak valid.</p>";
