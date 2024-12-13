@@ -70,6 +70,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     $result = $stmt->get_result();
 
     if ($row = $result->fetch_assoc()) {
+        // Jika voucher sekali pakai, cek apakah sudah digunakan
+        if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
+            // Tambahkan buffer waktu 10 detik untuk memastikan transaksi bisa selesai
+            $bufferTime = 10; // dalam detik
+            $usedTime = strtotime($row['used_at']);
+            
+            if (time() - $usedTime > $bufferTime) {
+                $voucherMessages[] = "<p class='voucher-message error'>Voucher sudah digunakan.</p>";
+                return;
+            }
+        }
+
         // Update used_at timestamp untuk semua jenis voucher
         date_default_timezone_set('Asia/Jakarta');
         $currentDateTime = date('Y-m-d H:i:s');
