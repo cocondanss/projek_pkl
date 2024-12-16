@@ -100,6 +100,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $message = 'Success page PIN must be exactly 4 digits.';
         }
     }
+
+    // Update background
+    if (isset($_POST['update_background'])) {
+        $configFile = 'config/background.json';
+        
+        // Handle file upload
+        if (isset($_FILES['background_file']) && $_FILES['background_file']['error'] == 0) {
+            $fileType = pathinfo($_FILES['background_file']['name'], PATHINFO_EXTENSION);
+            $isImage = in_array($fileType, ['jpg', 'jpeg', 'png', 'gif']);
+            $isVideo = in_array($fileType, ['mp4', 'webm']);
+            
+            if ($isImage || $isVideo) {
+                $uploadDir = $isImage ? 'assets/backgrounds/images/' : 'assets/backgrounds/videos/';
+                $fileName = time() . '_' . $_FILES['background_file']['name'];
+                $filePath = $uploadDir . $fileName;
+                
+                if (move_uploaded_file($_FILES['background_file']['tmp_name'], $filePath)) {
+                    $backgroundConfig = [
+                        'type' => $isImage ? 'image' : 'video',
+                        'path' => $filePath
+                    ];
+                    file_put_contents($configFile, json_encode($backgroundConfig));
+                    $message = 'Background uploaded and set successfully!';
+                    $success = true;
+                }
+            }
+        }
+        // Handle background selection
+        else if (!empty($_POST['background_choice'])) {
+            $path = $_POST['background_choice'];
+            $type = strpos($path, '/images/') !== false ? 'image' : 'video';
+            
+            $backgroundConfig = [
+                'type' => $type,
+                'path' => $path
+            ];
+            file_put_contents($configFile, json_encode($backgroundConfig));
+            $message = 'Background selection updated!';
+            $success = true;
+        }
+    }
 }
 ?>
 
@@ -264,16 +305,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="card-body">
                     <form method="POST" enctype="multipart/form-data">
                         <div class="mb-3">
-                            <label class="form-label">Background Type</label>
-                            <select name="background_type" class="form-control">
-                                <option value="image" <?php echo getSetting('background_type') == 'image' ? 'selected' : ''; ?>>Image</option>
-                                <option value="video" <?php echo getSetting('background_type') == 'video' ? 'selected' : ''; ?>>Video</option>
+                            <label class="form-label">Select Background</label>
+                            <select name="background_choice" class="form-control" id="backgroundSelect">
+                                <option value="">None</option>
+                                <optgroup label="Images">
+                                    <?php
+                                    $images = glob('assets/backgrounds/images/*');
+                                    foreach($images as $image) {
+                                        echo "<option value='$image'>".basename($image)."</option>";
+                                    }
+                                    ?>
+                                </optgroup>
+                                <optgroup label="Videos">
+                                    <?php
+                                    $videos = glob('assets/backgrounds/videos/*');
+                                    foreach($videos as $video) {
+                                        echo "<option value='$video'>".basename($video)."</option>";
+                                    }
+                                    ?>
+                                </optgroup>
                             </select>
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label">Upload Background File</label>
+                        <div class="mb-3">
+                            <label class="form-label">Upload New Background</label>
                             <input type="file" class="form-control" name="background_file" 
-                                accept="image/*,video/*">
+                                   accept="image/*,video/*">
                         </div>
                         <button type="submit" name="update_background" class="btn btn-dark mr-2">Update Background</button>
                     </form>
