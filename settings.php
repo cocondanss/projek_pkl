@@ -270,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <option value="video" <?php echo getSetting('background_type') == 'video' ? 'selected' : ''; ?>>Video</option>
                             </select>
                         </div>
-                        <div class="mb-3">
+                        <div class="mb-4">
                             <label class="form-label">Upload Background File</label>
                             <input type="file" class="form-control" name="background_file" 
                                 accept="image/*,video/*">
