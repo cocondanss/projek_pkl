@@ -257,6 +257,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
             </footer>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Background Settings</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label">Background Type</label>
+                            <select name="background_type" class="form-control">
+                                <option value="image" <?php echo getSetting('background_type') == 'image' ? 'selected' : ''; ?>>Image</option>
+                                <option value="video" <?php echo getSetting('background_type') == 'video' ? 'selected' : ''; ?>>Video</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Upload Background File</label>
+                            <input type="file" class="form-control" name="background_file" 
+                                accept="image/*,video/*">
+                        </div>
+                        <button type="submit" name="update_background" class="btn btn-dark mr-2">Update Background</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
