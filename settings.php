@@ -161,12 +161,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="container-fluid">
                     <h1>Settings Management</h1>
                     
-                    <!-- <?php if (isset($message)): ?>
+                    <?php if (isset($message)): ?>
                         <div class="alert alert-<?php echo $success ? 'success' : 'danger'; ?> alert-dismissible fade show">
                             <?php echo $message; ?>
                             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                         </div>
-                    <?php endif; ?> -->
+                    <?php endif; ?>
 
                     <!-- Midtrans Settings -->
                     <div class="card mb-4">
