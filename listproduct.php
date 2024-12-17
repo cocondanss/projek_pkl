@@ -141,70 +141,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         </div>
         <div class="product-container">
             <div class="row">
-                <div class="product-list" id="product-list">
-                    <?php foreach ($produk as $item): 
-                        $originalPrice = $item['price'];
-                        $discountedPrice = applyVoucher($voucherCode, $originalPrice);
-                        $productId = $item['id'];             
-                    ?>
-                        <!-- Setiap produk memiliki class unik berdasarkan ID -->
-                        <div class="product-<?php echo $productId; ?>" data-product-id="<?php echo $productId; ?>">
-                            <div class="product-content"> 
-                                <h2 class="product-title-<?php echo $productId; ?>">
-                                    <?php echo htmlspecialchars($item['name']); ?>
-                                </h2>
-                                
-                                <div class="price-container-<?php echo $productId; ?>">
-                                    <?php if ($discountedPrice < $originalPrice): ?>
-                                        <p class="original-price-<?php echo $productId; ?>">
-                                            Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span>
-                                        </p>
-                                        <p class="discounted-price-<?php echo $productId; ?>">
-                                            Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span>
-                                        </p>
-                                    <?php else: ?>
-                                        <p class="regular-price-<?php echo $productId; ?>">
-                                            Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span>
-                                        </p>
-                                    <?php endif; ?>
-                                </div>
-                                
-                                <p class="product-description-<?php echo $productId; ?>">
-                                    <?php echo htmlspecialchars($item['description']); ?>
-                                </p>
-                                
-                                <button class="buy-button-<?php echo $productId; ?>" 
-                                        onclick="showPaymentModal(<?php echo $productId; ?>, 
-                                        '<?php echo htmlspecialchars($item['name']); ?>', 
-                                        <?php echo number_format($discountedPrice, 0, '', ''); ?>)">
-                                    Buy
-                                </button>                            
+                <div class="product-list" style="background: none;" id="product-list">
+                <?php foreach ($produk as $item): 
+                    $originalPrice = $item['price'];
+                    // Hitung harga diskon berdasarkan voucher yang ada
+                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
+                ?>
+                    <div class="product product-<?php echo $item['id']; ?>" data-product-id="<?php echo $item['id']; ?>" style="">
+                        <div class="card-body"> 
+                            <h2><?php echo htmlspecialchars($item['name']); ?></h2>
+                            <div class="price-container">
+                                <?php if ($discountedPrice < $originalPrice): ?>
+                                    <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                    <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
+                                <?php else: ?>
+                                    <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                <?php endif; ?>
                             </div>
+                            <p><?php echo htmlspecialchars($item['description']); ?></p>
+                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">Buy</button>                            
                         </div>
-                    <?php endforeach; ?>
-
-                    <!-- Voucher section dengan class yang lebih spesifik -->
-                    <div class="voucher-section">
-                        <div id="voucher-message-container" class="message-container">
-                            <?php foreach ($voucherMessages as $message): ?>
-                                <div class="voucher-message">
-                                    <?php echo $message; ?>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                        
-                        <form id="voucher-form" method="POST" class="voucher-input-form">
-                            <input type="text" 
-                                   name="voucher_code" 
-                                   id="voucher-input" 
-                                   class="voucher-input-field"
-                                   placeholder="Masukkan kode voucher" 
-                                   onclick="showVirtualKeyboard()">
-                            <button type="submit" class="voucher-submit-button">
-                                Terapkan Voucher
-                            </button>
-                        </form>
                     </div>
+                <?php endforeach; ?>
+                    <div class="voucher-form">
+                    <div id="voucher-message-container">
+                        <?php
+                            // Tampilkan semua pesan voucher
+                            foreach ($voucherMessages as $message) {
+                                echo $message;
+                            }
+                        ?>
+                    </div>
+                    <form id="voucher-form" method="POST">
+                        <input type="text" name="voucher_code" id="voucher-input" placeholder="Masukkan kode voucher" onclick="showVirtualKeyboard()">
+                        <button type="submit">Terapkan Voucher</button>
+                    </form>
+                </div>
                 </div>
             </div>
         </div>
