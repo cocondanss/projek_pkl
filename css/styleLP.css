@@ -26,7 +26,7 @@ body {
     gap: 20px;
 }
 
-.product {
+/* .product {
     background-color: #2b2d42;
     color: white;
     border-radius: 30px;
@@ -36,18 +36,18 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-}
+} */
 
-.product h2 {
+/* .product h2 {
     margin-top: 0;
     font-size: 24px;
-}
+} */
 
-.product p {
+/* .product p {
     margin: 10px 0;
-}
+} */
 
-.product button {
+/* .product button {
     margin-left: 73%;
     background-color: #d3d3d3;
     color: #2b2d42;
@@ -57,13 +57,13 @@ body {
     cursor: pointer;
     font-weight: bold;
     align-self: flex-end;
-    min-width: 80px; /* Memberikan lebar minimum */
+    min-width: 80px; 
     white-space: nowrap;
-}
+} */
 
-.product button:hover {
+/* .product button:hover {
     background-color: #b0b0b0;
-}
+} */
 
 #modal-price {
     font-size: 24px;
@@ -687,7 +687,7 @@ h1.product-list-title {
 }
 
 /* Product 1 */
-/* .product-1 {
+.product-1 {
     background-color: #2b2d42;
     color: white;
     border-radius: 30px;
@@ -697,7 +697,7 @@ h1.product-list-title {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-} */
+}
 
 .product-1 h2 {
     margin-top: 0;
