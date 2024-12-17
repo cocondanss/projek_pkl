@@ -26,8 +26,8 @@ body {
     gap: 20px;
 }
 
-.product {
-    background-color: #2b2d42;
+/* Base styling untuk semua produk */
+[class*="product-"] {
     color: white;
     border-radius: 30px;
     padding: 25px;
@@ -38,16 +38,51 @@ body {
     flex-direction: column;
 }
 
-.product h2 {
+/* Styling khusus untuk Produk 1 */
+.product-1 {
+    background-color: #2b2d42; /* Warna default */
+}
+
+/* Styling khusus untuk Produk 2 */
+.product-2 {
+    background-color: #1a1b2e; /* Sedikit lebih gelap */
+}
+
+/* Styling khusus untuk Produk 3 */
+.product-3 {
+    background-color: #3c3f5c; /* Sedikit lebih terang */
+}
+
+/* Styling untuk elemen dalam produk */
+[class*="product-"] .card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+[class*="product-"] h2 {
     margin-top: 0;
     font-size: 24px;
 }
 
-.product p {
+[class*="product-"] .price-container {
+    min-height: 50px;
+    transition: all 0.3s ease;
+}
+
+[class*="product-"] .original-price {
+    text-decoration: line-through;
+    color: #a0a0a0;
+}
+
+[class*="product-"] .discounted-price {
+    color: white;
+}
+
+[class*="product-"] p {
     margin: 10px 0;
 }
 
-.product button {
+[class*="product-"] button {
     margin-left: 73%;
     background-color: #d3d3d3;
     color: #2b2d42;
@@ -57,13 +92,32 @@ body {
     cursor: pointer;
     font-weight: bold;
     align-self: flex-end;
-    min-width: 80px; /* Memberikan lebar minimum */
+    min-width: 80px;
     white-space: nowrap;
 }
 
-.product button:hover {
+[class*="product-"] button:hover {
     background-color: #b0b0b0;
 }
+
+/* Untuk menonaktifkan produk tertentu, cukup komentari atau gunakan style berikut */
+/* 
+.product-1 {
+    display: none;
+}
+*/
+
+/* 
+.product-2 {
+    display: none;
+}
+*/
+
+/* 
+.product-3 {
+    display: none;
+}
+*/
 
 #modal-price {
     font-size: 24px;
