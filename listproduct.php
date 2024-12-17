@@ -144,10 +144,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                 <div class="product-list" style="background: none;" id="product-list">
                 <?php foreach ($produk as $item): 
                     $originalPrice = $item['price'];
-                    // Hitung harga diskon berdasarkan voucher yang ada
-                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
+                    $discountedPrice = applyVoucher($voucherCode, $originalPrice);
+                    // Tambahkan class product-wrapper untuk container tambahan             
                 ?>
-                    <div class="product product-<?php echo $item['id']; ?>" data-product-id="<?php echo $item['id']; ?>" style="">
+                    <div class="product-wrapper product-<?php echo $item['id']; ?>" data-product-id="<?php echo $item['id']; ?>">
                         <div class="card-body"> 
                             <h2><?php echo htmlspecialchars($item['name']); ?></h2>
                             <div class="price-container">
@@ -155,28 +155,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
                                     <p class="original-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
                                     <p class="discounted-price">Rp <span><?php echo number_format($discountedPrice, 0, ',', '.'); ?>,00</span></p>
                                 <?php else: ?>
-                                    <p>Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
+                                    <p class="regular-price">Rp <span><?php echo number_format($originalPrice, 0, ',', '.'); ?>,00</span></p>
                                 <?php endif; ?>
                             </div>
-                            <p><?php echo htmlspecialchars($item['description']); ?></p>
-                            <button onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">Buy</button>                            
+                            <p class="product-description"><?php echo htmlspecialchars($item['description']); ?></p>
+                            <button class="buy-button" onclick="showPaymentModal(<?php echo $item['id']; ?>, '<?php echo htmlspecialchars($item['name']); ?>', <?php echo number_format($discountedPrice, 0, '', ''); ?>)">Buy</button>                            
                         </div>
                     </div>
                 <?php endforeach; ?>
-                    <div class="voucher-form">
-                    <div id="voucher-message-container">
-                        <?php
-                            // Tampilkan semua pesan voucher
-                            foreach ($voucherMessages as $message) {
-                                echo $message;
-                            }
-                        ?>
+                    <div class="voucher-section">
+                        <div class="voucher-form">
+                            <div id="voucher-message-container">
+                                <?php foreach ($voucherMessages as $message) echo $message; ?>
+                            </div>
+                            <form id="voucher-form" method="POST">
+                                <input type="text" 
+                                       name="voucher_code" 
+                                       id="voucher-input" 
+                                       placeholder="Masukkan kode voucher" 
+                                       onclick="showVirtualKeyboard()">
+                                <button type="submit">Terapkan Voucher</button>
+                            </form>
+                        </div>
                     </div>
-                    <form id="voucher-form" method="POST">
-                        <input type="text" name="voucher_code" id="voucher-input" placeholder="Masukkan kode voucher" onclick="showVirtualKeyboard()">
-                        <button type="submit">Terapkan Voucher</button>
-                    </form>
-                </div>
                 </div>
             </div>
         </div>
