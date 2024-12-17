@@ -687,7 +687,7 @@ h1.product-list-title {
 }
 
 /* Product 1 */
-.product-1 {
+/* .product-1 {
     background-color: #2b2d42;
     color: white;
     border-radius: 30px;
@@ -697,7 +697,7 @@ h1.product-list-title {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-}
+} */
 
 .product-1 h2 {
     margin-top: 0;
