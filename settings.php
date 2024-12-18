@@ -251,38 +251,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="card-body">
                             <form method="POST" enctype="multipart/form-data">
                                 <div class="mb-3">
-                                    <label class="form-label">Select Background</label>
-                                    <select name="background_choice" class="form-control" id="backgroundSelect">
-                                        <option value="">None</option>
-                                        <optgroup label="Images">
-                                            <?php
-                                            $images = glob('assets/backgrounds/images/*');
-                                            if (empty($images)) {
-                                                echo "<option value=''>No images found.</option>";
-                                            } else {
-                                                foreach($images as $image) {
-                                                    echo "<option value='".htmlspecialchars($image)."'>".htmlspecialchars(basename($image))."</option>";
-                                                }
-                                            }
-                                            ?>
-                                        </optgroup>
-                                        <optgroup label="Videos">
-                                            <?php
-                                            $videos = glob('assets/backgrounds/videos/*');
-                                            if (empty($videos)) {
-                                                echo "<option value=''>No videos found.</option>";
-                                            } else {
-                                                foreach($videos as $video) {
-                                                    echo "<option value='".htmlspecialchars($video)."'>".htmlspecialchars(basename($video))."</option>";
-                                                }
-                                            }
-                                            ?>
-                                        </optgroup>
+                                    <label class="form-label">Background Type</label>
+                                    <select name="background_type" class="form-control">
+                                        <option value="image" <?php echo getSetting('background_type') == 'image' ? 'selected' : ''; ?>>Image</option>
+                                        <option value="video" <?php echo getSetting('background_type') == 'video' ? 'selected' : ''; ?>>Video</option>
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <label class="form-label">Upload New Background</label>
-                                    <input type="file" class="form-control" name="background_file" accept="image/*,video/*">
+                                    <label class="form-label">Upload Background File</label>
+                                    <input type="file" class="form-control" name="background_file" 
+                                        accept="image/*,video/*">
                                 </div>
                                 <button type="submit" name="update_background" class="btn btn-dark mr-2">Update Background</button>
                             </form>
