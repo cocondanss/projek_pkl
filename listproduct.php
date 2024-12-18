@@ -7,7 +7,6 @@
 
 require 'function.php';
 
-$backgroundConfig = json_decode(file_get_contents('config/background.json'), true);
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
@@ -132,18 +131,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     <link href="css/styleLP.css" rel="stylesheet" />
 </head>
 <body>
-<?php if (isset($backgroundConfig['path'])): ?>
-    <div class="background-container">
-        <?php if ($backgroundConfig['type'] === 'image'): ?>
-            <img src="<?php echo htmlspecialchars($backgroundConfig['path']); ?>" alt="Background" style="width: 100%; height: auto;">
-        <?php else: ?>
-            <video autoplay muted loop playsinline style="width: 100%; height: auto;">
-                <source src="<?php echo htmlspecialchars($backgroundConfig['path']); ?>" type="video/mp4">
-            </video>
-        <?php endif; ?>
-        <div class="background-overlay"></div>
-    </div>
-<?php endif; ?>
 <div class="container-index" style="max-width: 100%;">
     <div class="header-index">
         <div class="container-button">
