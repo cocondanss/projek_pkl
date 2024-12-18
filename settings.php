@@ -257,16 +257,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <optgroup label="Images">
                                             <?php
                                             $images = glob('assets/backgrounds/images/*');
-                                            foreach($images as $image) {
-                                                echo "<option value='$image'>".basename($image)."</option>";
+                                            if (empty($images)) {
+                                                echo "<option value=''>No images found.</option>";
+                                            } else {
+                                                foreach($images as $image) {
+                                                    echo "<option value='".htmlspecialchars($image)."'>".htmlspecialchars(basename($image))."</option>";
+                                                }
                                             }
                                             ?>
                                         </optgroup>
                                         <optgroup label="Videos">
                                             <?php
                                             $videos = glob('assets/backgrounds/videos/*');
-                                            foreach($videos as $video) {
-                                                echo "<option value='$video'>".basename($video)."</option>";
+                                            if (empty($videos)) {
+                                                echo "<option value=''>No videos found.</option>";
+                                            } else {
+                                                foreach($videos as $video) {
+                                                    echo "<option value='".htmlspecialchars($video)."'>".htmlspecialchars(basename($video))."</option>";
+                                                }
                                             }
                                             ?>
                                         </optgroup>
@@ -274,8 +282,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Upload New Background</label>
-                                    <input type="file" class="form-control" name="background_file" 
-                                        accept="image/*,video/*">
+                                    <input type="file" class="form-control" name="background_file" accept="image/*,video/*">
                                 </div>
                                 <button type="submit" name="update_background" class="btn btn-dark mr-2">Update Background</button>
                             </form>
