@@ -300,5 +300,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="js/scripts.js"></script>
+    <script>
+        if (isset($_POST['update_background'])) {
+    $configFile = 'config/background.json';
+    
+    // Handle file upload
+    if (isset($_FILES['background_file']) && $_FILES['background_file']['error'] == 0) {
+        $fileType = pathinfo($_FILES['background_file']['name'], PATHINFO_EXTENSION);
+        $isImage = in_array($fileType, ['jpg', 'jpeg', 'png', 'gif']);
+        $isVideo = in_array($fileType, ['mp4', 'webm']);
+        
+        if ($isImage || $isVideo) {
+            $uploadDir = $isImage ? 'assets/backgrounds/images/' : 'assets/backgrounds/videos/';
+            $fileName = time() . '_' . $_FILES['background_file']['name'];
+            $filePath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['background_file']['tmp_name'], $filePath)) {
+                $backgroundConfig = [
+                    'type' => $isImage ? 'image' : 'video',
+                    'path' => $filePath
+                ];
+                file_put_contents($configFile, json_encode($backgroundConfig));
+                $message = 'Background uploaded and set successfully!';
+                $success = true;
+            }
+        }
+    }
+    // Handle background selection
+    else if (!empty($_POST['background_choice'])) {
+        $path = $_POST['background_choice'];
+        $type = strpos($path, '/images/') !== false ? 'image' : 'video';
+        
+        $backgroundConfig = [
+            'type' => $type,
+            'path' => $path
+        ];
+        file_put_contents($configFile, json_encode($backgroundConfig));
+        $message = 'Background selection updated!';
+        $success = true;
+    }
+}
+    </script>
 </body>
 </html>
