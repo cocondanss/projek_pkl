@@ -101,6 +101,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_background'])) {
+    if (isset($_FILES['background_file']) && $_FILES['background_file']['error'] == UPLOAD_ERR_OK) {
+        $uploadDir = 'assets/backgrounds/'; // Pastikan direktori ini ada
+        $uploadFile = $uploadDir . basename($_FILES['background_file']['name']);
+        
+        // Pindahkan file yang diupload
+        if (move_uploaded_file($_FILES['background_file']['tmp_name'], $uploadFile)) {
+            // Update pengaturan latar belakang
+            $backgroundType = $_POST['background_type'];
+            updateBackgroundSetting($uploadFile, $backgroundType); // Fungsi untuk memperbarui pengaturan
+            echo "<p>Background updated successfully!</p>";
+        } else {
+            echo "<p>Error uploading file.</p>";
+        }
+    }
+}
+
+// Fungsi untuk memperbarui pengaturan latar belakang
+function updateBackgroundSetting($path, $type) {
+    $settings = json_decode(file_get_contents('config/background.json'), true);
+    $settings['path'] = $path; // Update path
+    $settings['type'] = $type; // Update type
+    file_put_contents('config/background.json', json_encode($settings));
+}
+$backgroundConfig = json_decode(file_get_contents('config/background.json'), true);
 ?>
 
 <html lang="en">
@@ -117,6 +143,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/js/all.min.js" crossorigin="anonymous"></script>          
 </head>
 <body class="sb-nav-fixed">
+<?php if (isset($backgroundConfig['path'])): ?>
+    <div class="background-container">
+        <?php if ($backgroundConfig['type'] === 'image'): ?>
+            <img src="<?php echo htmlspecialchars($backgroundConfig['path']); ?>" alt="Background" style="width: 100%; height: auto;">
+        <?php else: ?>
+            <video autoplay muted loop playsinline style="width: 100%; height: auto;">
+                <source src="<?php echo htmlspecialchars($backgroundConfig['path']); ?>" type="video/mp4">
+            </video>
+        <?php endif; ?>
+        <div class="background-overlay"></div>
+    </div>
+<?php endif; ?>
+
+<div class="container">
+    <h1>Product List</h1>
+    <div class="product-list">
+        <?php
+        // Ambil data produk dari database
+        $produk = mysqli_query($conn, "SELECT * FROM products WHERE visible = 1");
+        while ($item = mysqli_fetch_assoc($produk)) {
+            echo '<div class="product">';
+            echo '<h2>' . htmlspecialchars($item['name']) . '</h2>';
+            echo '<p>Price: Rp ' . number_format($item['price'], 0, ',', '.') . '</p>';
+            echo '<p>' . htmlspecialchars($item['description']) . '</p>';
+            echo '<button onclick="showPaymentModal(' . $item['id'] . ', \'' . htmlspecialchars($item['name']) . '\', ' . $item['price'] . ')">Buy</button>';
+            echo '</div>';
+        }
+        ?>
+    </div>
+</div>
+
     <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark  ">
         <a class="navbar-brand" href="index.php" style="color: white;">Daclen</a>
         <button class="btn btn-link btn-sm order-1 order-lg-0" id="sidebarToggle" href="#"><i class="fas fa-bars"></i></button>
