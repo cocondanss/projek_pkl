@@ -243,10 +243,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </form>
                         </div>
                     </div>
-                    <form method="POST" enctype="multipart/form-data">
-                        <input type="file" name="background_file" accept="image/*,video/*" required>
-                        <button type="submit" name="upload_background">Upload Background</button>
-                    </form>
+                    <!-- Background Settings -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Background Settings</h4>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" enctype="multipart/form-data">
+                                <div class="mb-3">
+                                    <label class="form-label">Select Background</label>
+                                    <select name="background_choice" class="form-control" id="backgroundSelect">
+                                        <option value="">None</option>
+                                        <optgroup label="Images">
+                                            <?php
+                                            $images = glob('assets/backgrounds/images/*');
+                                            foreach($images as $image) {
+                                                echo "<option value='$image'>".basename($image)."</option>";
+                                            }
+                                            ?>
+                                        </optgroup>
+                                        <optgroup label="Videos">
+                                            <?php
+                                            $videos = glob('assets/backgrounds/videos/*');
+                                            foreach($videos as $video) {
+                                                echo "<option value='$video'>".basename($video)."</option>";
+                                            }
+                                            ?>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Upload New Background</label>
+                                    <input type="file" class="form-control" name="background_file" 
+                                        accept="image/*,video/*">
+                                </div>
+                                <button type="submit" name="update_background" class="btn btn-dark mr-2">Update Background</button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </main>
             <footer class="py-4 bg-light mt-auto">
