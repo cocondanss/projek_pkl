@@ -257,6 +257,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
                 </div>
             </footer>
+            <form method="POST" enctype="multipart/form-data">
+                <input type="file" name="background_file" accept="image/*,video/*" required>
+                <button type="submit" name="upload_background">Upload Background</button>
+            </form>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" crossorigin="anonymous"></script>
