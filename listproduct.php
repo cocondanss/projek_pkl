@@ -119,8 +119,8 @@ if (!$produk) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
-$backgroundPath = getSetting('background_path');
-$backgroundType = getSetting('background_type');
+// $backgroundPath = getSetting('background_path');
+// $backgroundType = getSetting('background_type');
 ?>
 <!doctype html>
 <html lang="en">
