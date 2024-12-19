@@ -136,6 +136,10 @@ if (!function_exists('getSetting')) {
 // Mengambil pengaturan latar belakang
 $background_type = getSetting('background_type');
 $background_file = getSetting('background_file');
+
+// Debugging
+echo "Background Type: " . $background_type . "<br>";
+echo "Background File: " . $background_file . "<br>";
 ?>
 <!doctype html>
 <html lang="en">
