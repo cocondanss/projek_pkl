@@ -722,7 +722,7 @@ h1.product-list-title {
 }
 
 .product {
-    background-color: #282A51; /* Warna latar belakang produk */
+    background-color: #fff; /* Warna latar belakang produk */
     border-radius: 10px; /* Sudut melengkung */
     padding: 15px; /* Padding untuk produk */
     margin: 10px; /* Margin antar produk */
