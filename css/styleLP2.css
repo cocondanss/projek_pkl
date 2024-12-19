@@ -39,7 +39,7 @@ body.background-video video {
 }
 
 .header-index {
-    /* padding-top: 20px; */
+    padding-top: 20px;
     background: transparent;
 }
 
@@ -52,7 +52,7 @@ body.background-video video {
 }
 
 .product {
-    background-color: #0015f8;
+    background-color: #2b2d42;
     color: white;
     border-radius: 30px;
     padding: 25px;
