@@ -131,10 +131,7 @@ if (!function_exists('getSetting')) {
         // Ambil nilai pengaturan dari database atau file konfigurasi
         // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
         // Contoh implementasi:
-        $settings = [
-            'background_type' => 'image',
-            'background_file' => 'uploads/default.jpg'
-        ];
+        $settings = json_decode(file_get_contents('settings.json'), true);
         return isset($settings[$key]) ? $settings[$key] : null;
     }
 }
