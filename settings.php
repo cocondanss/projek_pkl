@@ -104,14 +104,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_background'])) {
     if (isset($_FILES['background_file']) && $_FILES['background_file']['error'] == UPLOAD_ERR_OK) {
-        $uploadDir = 'assets/backgrounds/'; // Pastikan direktori ini ada
+        $uploadDir = 'assets/backgrounds/'; // Make sure this directory exists
         $uploadFile = $uploadDir . basename($_FILES['background_file']['name']);
         
-        // Pindahkan file yang diupload
+        // Move the uploaded file to the desired directory
         if (move_uploaded_file($_FILES['background_file']['tmp_name'], $uploadFile)) {
-            // Update pengaturan latar belakang
+            // Update the background settings in the database or configuration
             $backgroundType = $_POST['background_type'];
-            updateBackgroundSetting($uploadFile, $backgroundType); // Fungsi untuk memperbarui pengaturan
+            updateBackgroundSetting($uploadFile, $backgroundType); // Function to update settings
             echo "<p>Background updated successfully!</p>";
         } else {
             echo "<p>Error uploading file.</p>";
@@ -119,14 +119,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_background']))
     }
 }
 
-// Fungsi untuk memperbarui pengaturan latar belakang
+// Function to update background settings
 function updateBackgroundSetting($path, $type) {
-    $settings = json_decode(file_get_contents('config/background.json'), true);
-    $settings['path'] = $path; // Update path
-    $settings['type'] = $type; // Update type
-    file_put_contents('config/background.json', json_encode($settings));
+    global $conn; // Make sure to use the global connection
+    $stmt = $conn->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'background_path'");
+    $stmt->bind_param("s", $path);
+    $stmt->execute();
+
+    $stmt = $conn->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'background_type'");
+    $stmt->bind_param("s", $type);
+    $stmt->execute();
 }
-$backgroundConfig = json_decode(file_get_contents('config/background.json'), true);
 ?>
 
 <html lang="en">
