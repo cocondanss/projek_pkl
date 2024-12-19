@@ -102,31 +102,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_background'])) {
-    if (isset($_FILES['background_file']) && $_FILES['background_file']['error'] == UPLOAD_ERR_OK) {
-        $uploadDir = 'assets/backgrounds/'; // Pastikan direktori ini ada
-        $uploadFile = $uploadDir . basename($_FILES['background_file']['name']);
-        
-        // Pindahkan file yang diupload
-        if (move_uploaded_file($_FILES['background_file']['tmp_name'], $uploadFile)) {
-            // Update pengaturan latar belakang
-            $backgroundType = $_POST['background_type'];
-            updateBackgroundSetting($uploadFile, $backgroundType); // Fungsi untuk memperbarui pengaturan
-            echo "<p>Background updated successfully!</p>";
+if (isset($_POST['update_background'])) {
+    $backgroundType = $_POST['background_type'];
+    $backgroundFile = $_FILES['background_file'];
+
+    if ($backgroundFile['error'] == UPLOAD_ERR_OK) {
+        $uploadDir = 'uploads/';
+        $uploadFile = $uploadDir . basename($backgroundFile['name']);
+        if (move_uploaded_file($backgroundFile['tmp_name'], $uploadFile)) {
+            // Simpan informasi latar belakang ke database atau file konfigurasi
+            saveSetting('background_type', $backgroundType);
+            saveSetting('background_file', $uploadFile);
+            echo "Background updated successfully.";
         } else {
-            echo "<p>Error uploading file.</p>";
+            echo "Failed to upload file.";
         }
+    } else {
+        echo "Error uploading file.";
     }
 }
 
-// Fungsi untuk memperbarui pengaturan latar belakang
-function updateBackgroundSetting($path, $type) {
-    $settings = json_decode(file_get_contents('config/background.json'), true);
-    $settings['path'] = $path; // Update path
-    $settings['type'] = $type; // Update type
-    file_put_contents('config/background.json', json_encode($settings));
+function saveSetting($key, $value) {
+    // Implementasikan fungsi ini untuk menyimpan pengaturan ke database atau file konfigurasi
 }
-$backgroundConfig = json_decode(file_get_contents('config/background.json'), true);
 ?>
 
 <html lang="en">

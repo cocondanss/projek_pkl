@@ -119,6 +119,9 @@ if (!$produk) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
+
+$backgroundType = getSetting('background_type');
+$backgroundFile = getSetting('background_file');
 ?>
 <!doctype html>
 <html lang="en">
@@ -130,8 +133,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/styleLP2.css" rel="stylesheet"/>
+    <style>
+        body {
+            <?php if ($backgroundType == 'image'): ?>
+                background-image: url('<?php echo $backgroundFile; ?>');
+                background-size: cover;
+            <?php elseif ($backgroundType == 'video'): ?>
+                background: none;
+            <?php endif; ?>
+        }
+    </style>
 </head>
 <body>
+<?php if ($backgroundType == 'video'): ?>
+        <video autoplay muted loop class="background-video">
+            <source src="<?php echo $backgroundFile; ?>" type="video/mp4">
+        </video>
+    <?php endif; ?>
+    <div class="container-index" style="max-width: 100%;">
+        <div class="header-index">
+            <div class="container-button">
+                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal"
+                    style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
+                    <i class="fas fa-lock" style="font-size: 20px; color: rgba(0, 0, 0, 0.2);"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 <div class="container-index" style="max-width: 100%;">
     <div class="header-index">
         <div class="container-button">
