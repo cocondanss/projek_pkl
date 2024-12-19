@@ -193,7 +193,7 @@ body {
 .header-index,
 .product-list {
     /* padding: 20px; */
-    background: #eb4040;
+    background: transparent;
 }
 
 .header-index h1 {
@@ -206,6 +206,7 @@ body {
     flex-wrap: wrap;
     flex-direction: column;
     width: 25%;
+    background: transparent;
 }
 
 
