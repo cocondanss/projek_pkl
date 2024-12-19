@@ -10,6 +10,9 @@ require 'function.php';
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
+$backgroundType = getSetting('background_type');
+$backgroundFile = getSetting('background_file');
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
