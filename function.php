@@ -345,3 +345,36 @@ $query = "SELECT * FROM products";
 $result = mysqli_query($conn, $query);
 $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
 $products = mysqli_query($conn, "SELECT * FROM products");
+
+// ...existing code...
+
+// Fungsi untuk mendapatkan nilai pengaturan
+if (!function_exists('getSetting')) {
+    function getSetting($key) {
+        // Ambil nilai pengaturan dari database atau file konfigurasi
+        // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
+        // Contoh implementasi:
+        $settings = json_decode(file_get_contents('settings.json'), true);
+        return isset($settings[$key]) ? $settings[$key] : null;
+    }
+}
+
+// Fungsi untuk menyimpan nilai pengaturan
+if (!function_exists('saveSetting')) {
+    function saveSetting($key, $value) {
+        // Simpan nilai pengaturan ke database atau file konfigurasi
+        // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
+        // Contoh implementasi:
+        $settings = json_decode(file_get_contents('settings.json'), true);
+        $settings[$key] = $value;
+        file_put_contents('settings.json', json_encode($settings));
+    }
+}
+
+// Mengambil data produk
+$query = "SELECT * FROM products";
+$result = mysqli_query($conn, $query);
+$products = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$products = mysqli_query($conn, "SELECT * FROM products");
+
+// ...existing code...
