@@ -7,7 +7,9 @@
 
 require 'function.php';
 
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
@@ -133,6 +135,7 @@ $backgroundFile = getSetting('background_file');
     <link rel="stylesheet" href="css/style.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/styleLP2.css" rel="stylesheet"/>
+    <link href="css/styleBG.css" rel="stylesheet"/>
     <style>
         body {
             <?php if ($backgroundType == 'image'): ?>
