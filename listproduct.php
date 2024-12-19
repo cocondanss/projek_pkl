@@ -119,8 +119,14 @@ if (!$produk) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
-// $backgroundPath = getSetting('background_path');
-// $backgroundType = getSetting('background_type');
+$backgroundPath = getSetting('background_path');
+$backgroundType = getSetting('background_type');
+
+if ($backgroundPath === null || $backgroundType === null) {
+    echo "<p>Error: Background settings not found.</p>";
+    // Optionally set a default background
+    $backgroundPath = 'path/to/default/background.jpg'; // Set a default background if needed
+}
 ?>
 <!doctype html>
 <html lang="en">
