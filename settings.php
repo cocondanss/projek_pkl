@@ -310,8 +310,7 @@ if (!function_exists('saveSetting')) {
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Upload Background File</label>
-                                    <input type="file" class="form-control" name="background_file" 
-                                        accept="image/*,video/*">
+                                    <input type="file" class="form-control" name="background_file" accept="image/*,video/*">
                                 </div>
                                 <button type="submit" name="update_background" class="btn btn-dark mr-2">Update Background</button>
                             </form>
