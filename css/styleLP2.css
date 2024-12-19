@@ -3,6 +3,29 @@ body {
     font-family: 'Poppins', sans-serif;
 }
 
+body.background-image {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
+body.background-video {
+    position: relative;
+    overflow: hidden;
+}
+
+body.background-video video {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -1;
+    transform: translateX(-50%) translateY(-50%);
+}
+
 .container-index {
     max-width: 1200px;
     margin: 0 auto;
@@ -72,6 +95,7 @@ body {
     margin-bottom: 20px;
     text-align: center;
 }
+
 .product .price-changed {
     animation: highlight 4s ease-in-out;
 }
@@ -84,8 +108,9 @@ body {
 .product .discounted-price {
     color: white;
 }
+
 .voucher-form {
-    margin:20px auto;
+    margin: 20px auto;
     width: 300px;
 }
 
@@ -107,7 +132,6 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    
 }
 
 .voucher-form button[type="submit"]:hover {
@@ -401,6 +425,7 @@ body {
     min-width: 120px;
     position: relative;
 }
+
 #voucher-form {
     width: 400px;
     padding: 20px;
@@ -419,6 +444,7 @@ body {
     top: 20px;
     left: 43px;
 }
+
 #product-container {
     max-width: 1200px;
     /* margin: 0 auto; */
@@ -426,8 +452,8 @@ body {
     flex: 1;
     overflow-y: auto;
     margin-top: 10px;
-    
 }
+
 h1.product-list-title {
     margin-bottom: 10px;
     font-size: 24px;
@@ -436,22 +462,26 @@ h1.product-list-title {
     padding: 10px 0;
     border-bottom: 2px solid #eee;
 }
+
 .price-container {
     min-height: 50px; 
     transition: all 0.3s ease;
-
 }
+
 #product-container {
     margin-top: 10px;
 }
+
 #voucher-message-container {
     transition: opacity 0.5s ease-in-out;
 }
+
 .voucher-message {
     padding: 10px;
     margin: 10px 0;
     border-radius: 5px;
 }
+
 .voucher-message.error {
     margin-left: 36%;
     width: 100%;
@@ -459,6 +489,7 @@ h1.product-list-title {
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+
 .voucher-message.success {
     margin-left: 28%;
     width: 100%;
@@ -466,6 +497,7 @@ h1.product-list-title {
     color: #155724;
     border: 1px solid #c3e6cb;
 }
+
 /* Modifikasi style yang sudah ada */
 .fa-keyboard {
     color: #6c757d;
@@ -475,6 +507,7 @@ h1.product-list-title {
 .fa-keyboard:hover {
     color: #495057;
 }
+
 .virtual-keyboard {
     padding: 20px;
     background-color: #ffffff; /* Menambahkan background putih */
@@ -609,6 +642,7 @@ h1.product-list-title {
 .keyboard-display.active:empty::before {
     content: '';
 }
+
 /* Progress Bar Styling */
 .payment-status-container {
     margin: 25px 0;
