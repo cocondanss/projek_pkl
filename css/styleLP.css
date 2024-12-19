@@ -722,9 +722,13 @@ h1.product-list-title {
 }
 
 .product {
-    background-color: #fff; /* Warna latar belakang produk */
-    border-radius: 10px; /* Sudut melengkung */
-    padding: 15px; /* Padding untuk produk */
-    margin: 10px; /* Margin antar produk */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Bayangan untuk produk */
+    background-color: #2b2d42;
+    color: white;
+    border-radius: 30px;
+    padding: 25px;
+    margin: 20px;
+    width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
 }
