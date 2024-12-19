@@ -192,8 +192,8 @@ body {
 
 .header-index,
 .product-list {
-    padding: 20px;
-    background: #fff;
+    /* padding: 20px; */
+    background: #000000;
 }
 
 .header-index h1 {
