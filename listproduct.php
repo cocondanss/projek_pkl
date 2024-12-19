@@ -7,7 +7,9 @@
 
 require 'function.php';
 
-
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
