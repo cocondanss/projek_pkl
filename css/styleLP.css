@@ -721,14 +721,3 @@ h1.product-list-title {
     padding: 20px; /* Tambahkan padding untuk konten */
 }
 
-.product {
-    background-color: #2b2d42;
-    color: white;
-    border-radius: 30px;
-    padding: 25px;
-    margin: 20px;
-    width: 400px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-}
