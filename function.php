@@ -345,15 +345,3 @@ $query = "SELECT * FROM products";
 $result = mysqli_query($conn, $query);
 $products = mysqli_fetch_all($result, MYSQLI_ASSOC);
 $products = mysqli_query($conn, "SELECT * FROM products");
-
-
-function getSetting($key) {
-    global $conn;
-    $sql = "SELECT value FROM settings WHERE key = '$key'";
-    $result = mysqli_query($conn, $sql);
-    if ($result && mysqli_num_rows($result) > 0) {
-        $row = mysqli_fetch_assoc($result);
-        return $row['value'];
-    }
-    return null;
-}

@@ -101,30 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
-
-if (isset($_POST['update_background'])) {
-    $backgroundType = $_POST['background_type'];
-    $backgroundFile = $_FILES['background_file'];
-
-    if ($backgroundFile['error'] == UPLOAD_ERR_OK) {
-        $uploadDir = 'uploads/';
-        $uploadFile = $uploadDir . basename($backgroundFile['name']);
-        if (move_uploaded_file($backgroundFile['tmp_name'], $uploadFile)) {
-            // Simpan informasi latar belakang ke database atau file konfigurasi
-            saveSetting('background_type', $backgroundType);
-            saveSetting('background_file', $uploadFile);
-            echo "Background updated successfully.";
-        } else {
-            echo "Failed to upload file.";
-        }
-    } else {
-        echo "Error uploading file.";
-    }
-}
-
-function saveSetting($key, $value) {
-    // Implementasikan fungsi ini untuk menyimpan pengaturan ke database atau file konfigurasi
-}
 ?>
 
 <html lang="en">
