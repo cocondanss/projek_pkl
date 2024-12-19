@@ -113,7 +113,7 @@ if (isset($_POST['update_background'])) {
         $upload_file = $upload_dir . basename($background_file['name']);
         
         if (move_uploaded_file($background_file['tmp_name'], $upload_file)) {
-            // Simpan pengaturan ke database atau file konfigurasi
+            // Simpan pengaturan ke file konfigurasi
             saveSetting('background_type', $background_type);
             saveSetting('background_file', $upload_file);
             echo "Pengaturan latar belakang berhasil diperbarui.";
@@ -128,9 +128,7 @@ if (isset($_POST['update_background'])) {
 // Fungsi untuk mendapatkan nilai pengaturan
 if (!function_exists('getSetting')) {
     function getSetting($key) {
-        // Ambil nilai pengaturan dari database atau file konfigurasi
-        // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
-        // Contoh implementasi:
+        // Ambil nilai pengaturan dari file konfigurasi
         $settings = json_decode(file_get_contents('settings.json'), true);
         return isset($settings[$key]) ? $settings[$key] : null;
     }
@@ -139,9 +137,7 @@ if (!function_exists('getSetting')) {
 // Fungsi untuk menyimpan nilai pengaturan
 if (!function_exists('saveSetting')) {
     function saveSetting($key, $value) {
-        // Simpan nilai pengaturan ke database atau file konfigurasi
-        // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
-        // Contoh implementasi:
+        // Simpan nilai pengaturan ke file konfigurasi
         $settings = json_decode(file_get_contents('settings.json'), true);
         $settings[$key] = $value;
         file_put_contents('settings.json', json_encode($settings));
