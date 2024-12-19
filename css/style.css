@@ -191,9 +191,9 @@ body {
 }
 
 .header-index,
-.product-list {
-    /* padding: 20px; */
-    background: #000000;
+/* .product-list {
+    padding: 20px;
+    background: #fff;
 }
 
 .header-index h1 {
@@ -237,7 +237,7 @@ body {
 
 .product button:hover {
     background: #001a40;
-}
+} */
 
 #qrcode iframe {
     border: none;
