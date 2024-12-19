@@ -27,7 +27,7 @@ body {
 }
 
 .product {
-    background-color: #2b2d42; /* Warna default */
+    background-color: #2b2d42;
     color: white;
     border-radius: 30px;
     padding: 25px;
@@ -38,19 +38,6 @@ body {
     flex-direction: column;
 }
 
-.product-1 {
-    background-color: #ff5733; /* Warna khusus untuk produk 1 */
-}
-
-.product-2 {
-    background-color: #33c1ff; /* Warna khusus untuk produk 2 */
-}
-
-.product-3 {
-    background-color: #75ff33; /* Warna khusus untuk produk 3 */
-}
-
-/* Gaya untuk elemen di dalam produk */
 .product h2 {
     margin-top: 0;
     font-size: 24px;
