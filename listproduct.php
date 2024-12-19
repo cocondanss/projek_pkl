@@ -142,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         </div>
         <div class="product-container">
             <div class="row">
-                <div class="product-list" style="background: none;" id="product-list">
+                <div class="product-list" style="background: color;" id="product-list">
                 <?php foreach ($produk as $item): 
                     $originalPrice = $item['price'];
                     // Hitung harga diskon berdasarkan voucher yang ada
