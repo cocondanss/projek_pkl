@@ -48,12 +48,12 @@ body.background-video video {
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    background: palegreen;
+    background: transparent;
 }
 
 .product {
     background-color: #2b2d42;
-    color: rgb(241, 52, 52);
+    color: white;
     border-radius: 30px;
     padding: 25px;
     margin: 20px;
