@@ -158,7 +158,12 @@ $background_file = getSetting('background_file');
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/styleLP2.css" rel="stylesheet"/>
 </head>
-<body>
+<body class="<?php echo $background_type == 'image' ? 'background-image' : 'background-video'; ?>">
+    <?php if ($background_type == 'video'): ?>
+        <video autoplay muted loop>
+            <source src="<?php echo $background_file; ?>" type="video/mp4">
+        </video>
+    <?php endif; ?>
 <div class="container-index" style="max-width: 100%;">
     <div class="header-index">
         <div class="container-button">
