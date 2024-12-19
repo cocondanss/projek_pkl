@@ -145,7 +145,9 @@ if (!function_exists('saveSetting')) {
         // Simpan nilai pengaturan ke database atau file konfigurasi
         // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
         // Contoh implementasi:
-        // file_put_contents('settings.json', json_encode([$key => $value]));
+        $settings = json_decode(file_get_contents('settings.json'), true);
+        $settings[$key] = $value;
+        file_put_contents('settings.json', json_encode($settings));
     }
 }
 
