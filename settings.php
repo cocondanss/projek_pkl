@@ -101,6 +101,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+// ...existing code...
+
+if (isset($_POST['update_background'])) {
+    $background_type = $_POST['background_type'];
+    $background_file = $_FILES['background_file'];
+
+    // Validasi dan unggah file
+    if ($background_file['error'] == UPLOAD_ERR_OK) {
+        $upload_dir = 'uploads/';
+        $upload_file = $upload_dir . basename($background_file['name']);
+        
+        if (move_uploaded_file($background_file['tmp_name'], $upload_file)) {
+            // Simpan pengaturan ke database atau file konfigurasi
+            saveSetting('background_type', $background_type);
+            saveSetting('background_file', $upload_file);
+            echo "Pengaturan latar belakang berhasil diperbarui.";
+        } else {
+            echo "Gagal mengunggah file latar belakang.";
+        }
+    } else {
+        echo "Terjadi kesalahan saat mengunggah file.";
+    }
+}
+
+// Fungsi untuk mendapatkan nilai pengaturan
+if (!function_exists('getSetting')) {
+    function getSetting($key) {
+        // Ambil nilai pengaturan dari database atau file konfigurasi
+        // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
+        // Contoh implementasi:
+        $settings = [
+            'background_type' => 'image',
+            'background_file' => 'uploads/default.jpg'
+        ];
+        return isset($settings[$key]) ? $settings[$key] : null;
+    }
+}
+
+// Fungsi untuk menyimpan nilai pengaturan
+if (!function_exists('saveSetting')) {
+    function saveSetting($key, $value) {
+        // Simpan nilai pengaturan ke database atau file konfigurasi
+        // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
+        // Contoh implementasi:
+        // file_put_contents('settings.json', json_encode([$key => $value]));
+    }
+}
+
+// ...existing code...
 ?>
 
 <html lang="en">

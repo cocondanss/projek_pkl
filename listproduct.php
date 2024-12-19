@@ -119,12 +119,39 @@ if (!$produk) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
+
+if (!function_exists('getSetting')) {
+    function getSetting($key) {
+        // Ambil nilai pengaturan dari database atau file konfigurasi
+        // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
+        // Contoh implementasi:
+        $settings = [
+            'background_type' => 'image',
+            'background_file' => 'uploads/default.jpg'
+        ];
+        return isset($settings[$key]) ? $settings[$key] : null;
+    }
+}
+
+// Mengambil pengaturan latar belakang
+$background_type = getSetting('background_type');
+$background_file = getSetting('background_file');
 ?>
 <!doctype html>
 <html lang="en">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product List</title>
+    <style>
+        body {
+            <?php if ($background_type == 'image'): ?>
+                background-image: url('<?php echo $background_file; ?>');
+                background-size: cover;
+            <?php elseif ($background_type == 'video'): ?>
+                /* Tambahkan CSS untuk video background jika diperlukan */
+            <?php endif; ?>
+        }
+    </style>
     <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link rel="stylesheet" href="css/style.css">
