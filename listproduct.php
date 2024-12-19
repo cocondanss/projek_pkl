@@ -122,8 +122,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
 
-$backgroundType = getSetting('background_type');
-$backgroundFile = getSetting('background_file');
+
 ?>
 <!doctype html>
 <html lang="en">
