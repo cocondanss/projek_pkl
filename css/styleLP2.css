@@ -48,7 +48,7 @@ body.background-video video {
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    background: transparent;
+    background: palegreen;
 }
 
 .product {
