@@ -107,10 +107,6 @@ if (isset($_POST['update_background'])) {
     $background_type = $_POST['background_type'];
     $background_file = $_FILES['background_file'];
 
-    // Debugging
-    echo "Background Type: " . $background_type . "<br>";
-    echo "Background File: " . $background_file['name'] . "<br>";
-
     // Validasi dan unggah file
     if ($background_file['error'] == UPLOAD_ERR_OK) {
         $upload_dir = 'uploads/';
@@ -133,9 +129,6 @@ if (isset($_POST['update_background'])) {
 if (!function_exists('getSetting')) {
     function getSetting($key) {
         // Ambil nilai pengaturan dari file konfigurasi
-        if (!file_exists('settings.json')) {
-            return null;
-        }
         $settings = json_decode(file_get_contents('settings.json'), true);
         return isset($settings[$key]) ? $settings[$key] : null;
     }
@@ -145,7 +138,7 @@ if (!function_exists('getSetting')) {
 if (!function_exists('saveSetting')) {
     function saveSetting($key, $value) {
         // Simpan nilai pengaturan ke file konfigurasi
-        $settings = file_exists('settings.json') ? json_decode(file_get_contents('settings.json'), true) : [];
+        $settings = json_decode(file_get_contents('settings.json'), true);
         $settings[$key] = $value;
         file_put_contents('settings.json', json_encode($settings));
     }
