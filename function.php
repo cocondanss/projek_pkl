@@ -351,9 +351,10 @@ $products = mysqli_query($conn, "SELECT * FROM products");
 // Fungsi untuk mendapatkan nilai pengaturan
 if (!function_exists('getSetting')) {
     function getSetting($key) {
-        // Ambil nilai pengaturan dari database atau file konfigurasi
-        // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
-        // Contoh implementasi:
+        // Ambil nilai pengaturan dari file konfigurasi
+        if (!file_exists('settings.json')) {
+            return null;
+        }
         $settings = json_decode(file_get_contents('settings.json'), true);
         return isset($settings[$key]) ? $settings[$key] : null;
     }
@@ -362,10 +363,8 @@ if (!function_exists('getSetting')) {
 // Fungsi untuk menyimpan nilai pengaturan
 if (!function_exists('saveSetting')) {
     function saveSetting($key, $value) {
-        // Simpan nilai pengaturan ke database atau file konfigurasi
-        // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
-        // Contoh implementasi:
-        $settings = json_decode(file_get_contents('settings.json'), true);
+        // Simpan nilai pengaturan ke file konfigurasi
+        $settings = file_exists('settings.json') ? json_decode(file_get_contents('settings.json'), true) : [];
         $settings[$key] = $value;
         file_put_contents('settings.json', json_encode($settings));
     }
