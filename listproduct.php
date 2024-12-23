@@ -150,7 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     <link rel="stylesheet" href="css/styleLP2.css">
     <style>
     body {
-    background-image: url('images/truz.jpg') !important;
+    background-image: url('images/contoh.jpg') !important;
     background-size: cover !important;
     background-repeat: no-repeat !important;
     background-position: center center !important;
