@@ -122,14 +122,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 
 if (!function_exists('getSetting')) {
     function getSetting($key) {
-        // Ambil nilai pengaturan dari database atau file konfigurasi
-        // Ini adalah fungsi placeholder, implementasikan sesuai dengan setup Anda
-        // Contoh implementasi:
-        $settings = [
-            'background_type' => 'image',
-            'background_file' => 'uploads/default.jpg'
-        ];
-        return isset($settings[$key]) ? $settings[$key] : null;
+        global $conn;
+        $result = mysqli_query($conn, "SELECT value FROM settings WHERE key = '$key'");
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            return $row['value'];
+        } else {
+            return null;
+        }
     }
 }
 
