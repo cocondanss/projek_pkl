@@ -120,22 +120,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
 
-if (!function_exists('getSetting')) {
-    function getSetting($key) {
-        global $conn;
-        $result = mysqli_query($conn, "SELECT value FROM settings WHERE key = '$key'");
-        if ($result) {
-            $row = mysqli_fetch_assoc($result);
-            return $row['value'];
-        } else {
-            return null;
-        }
-    }
-}
+// if (!function_exists('getSetting')) {
+//     function getSetting($key) {
+//         global $conn;
+//         $result = mysqli_query($conn, "SELECT value FROM settings WHERE key = '$key'");
+//         if ($result) {
+//             $row = mysqli_fetch_assoc($result);
+//             return $row['value'];
+//         } else {
+//             return null;
+//         }
+//     }
+// }
 
-// Mengambil pengaturan latar belakang
-$background_type = getSetting('background_type');
-$background_file = getSetting('background_file');
+// // Mengambil pengaturan latar belakang
+// $background_type = getSetting('background_type');
+// $background_file = getSetting('background_file');
 
 // Debugging
 // echo "Background Type: " . $background_type . "<br>";
