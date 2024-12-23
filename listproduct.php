@@ -149,10 +149,11 @@ $background_file = getSetting('background_file');
     <title>List Product</title>
     <link rel="stylesheet" href="css/styleLP2.css">
     <style>
-        body {
+    body {
             <?php if ($background_type == 'image'): ?>
-                background-image: url('<?php echo $background_file; ?>');
-                background-size: cover;
+                background-image: url('<?php echo $background_file; ?>') !important;
+                background-size: cover !important;
+                background-repeat: no-repeat !important;
             <?php elseif ($background_type == 'video'): ?>
                 /* Tambahkan CSS untuk video background jika diperlukan */
             <?php endif; ?>
