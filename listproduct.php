@@ -153,6 +153,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
         background-image: url('assets/backgrounds/images/truz.jpg') !important;
         background-size: cover !important;
         background-repeat: no-repeat !important;
+        background-position: center center !important;
+        height: 100vh; /* Ensure the body takes full height */
+        margin: 0; /* Remove default margin */
     }
     </style>
     <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700' rel='stylesheet'>
