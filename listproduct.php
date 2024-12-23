@@ -150,14 +150,10 @@ $background_file = getSetting('background_file');
     <link rel="stylesheet" href="css/styleLP2.css">
     <style>
     body {
-            <?php if ($background_type == 'image'): ?>
-                background-image: url('<?php echo $background_file; ?>') !important;
-                background-size: cover !important;
-                background-repeat: no-repeat !important;
-            <?php elseif ($background_type == 'video'): ?>
-                /* Tambahkan CSS untuk video background jika diperlukan */
-            <?php endif; ?>
-        }
+        background-image: url('assets/backgrounds/images/truz.jpg') !important;
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+    }
     </style>
     <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
