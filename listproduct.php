@@ -120,16 +120,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
 }
 
-function getSetting($key) {
-    global $conn;
-    $stmt = $conn->prepare("SELECT value FROM settings WHERE key = ?");
-    $stmt->bind_param("s", $key);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($row = $result->fetch_assoc()) {
-        return $row['value'];
+if (!function_exists('getSetting')) {
+    function getSetting($key) {
+        global $conn;
+        $result = mysqli_query($conn, "SELECT value FROM settings WHERE key = '$key'");
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            return $row['value'];
+        } else {
+            return null;
+        }
     }
-    return null;
 }
 
 // Mengambil pengaturan latar belakang
@@ -137,8 +138,8 @@ $background_type = getSetting('background_type');
 $background_file = getSetting('background_file');
 
 // Debugging
-echo "Background Type: " . $background_type . "<br>";
-echo "Background File: " . $background_file . "<br>";
+// echo "Background Type: " . $background_type . "<br>";
+// echo "Background File: " . $background_file . "<br>";
 ?>
 <!DOCTYPE html>
 <html lang="en">
