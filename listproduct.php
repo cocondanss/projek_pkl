@@ -150,13 +150,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     <link rel="stylesheet" href="css/styleLP2.css">
     <style>
     body {
-        background-image: url('assets/backgrounds/images/truz.jpg') !important;
-        background-size: cover !important;
-        background-repeat: no-repeat !important;
-        background-position: center center !important;
-        height: 100vh; /* Ensure the body takes full height */
-        margin: 0; /* Remove default margin */
-    }
+    background-image: url('assets/backgrounds/images/truz.jpg') !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
+    height: 100vh; /* Ensure the body takes full height */
+    margin: 0; /* Remove default margin */
+    border: 5px solid red; /* Debugging border */
+}
     </style>
     <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
