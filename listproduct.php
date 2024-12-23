@@ -7,20 +7,7 @@
 
 require 'function.php';
 
-// Fungsi untuk mendapatkan pengaturan
-function getSetting($key) {
-    global $conn;
-    $stmt = $conn->prepare("SELECT value FROM settings WHERE key = ?");
-    $stmt->bind_param("s", $key);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($row = $result->fetch_assoc()) {
-        return $row['value'];
-    }
-    return null;
-}
 
-// Fungsi untuk menerapkan voucher pada harga produk
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
  * @param string $voucherCode - Kode voucher yang diinput
@@ -131,6 +118,19 @@ if (!$produk) {
 // Mulai output buffering untuk request AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     ob_start();
+}
+
+if (!function_exists('getSetting')) {
+    function getSetting($key) {
+        global $conn;
+        $result = mysqli_query($conn, "SELECT value FROM settings WHERE key = '$key'");
+        if ($result) {
+            $row = mysqli_fetch_assoc($result);
+            return $row['value'];
+        } else {
+            return null;
+        }
+    }
 }
 
 // Mengambil pengaturan latar belakang
