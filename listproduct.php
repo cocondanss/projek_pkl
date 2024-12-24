@@ -149,15 +149,11 @@ $backgroundType = file_get_contents('config/background_type.txt');
     <title>List Product</title>
     <link rel="stylesheet" href="css/styleLP2.css">
     <style>
-     body {
-    <?php if ($backgroundType == 'image'): ?>
-        background-image: url('<?php echo $backgroundFile; ?>') !important;
-        background-size: cover !important;
-        background-repeat: no-repeat !important;
-        background-position: center center !important;
-    <?php elseif ($backgroundType == 'video'): ?>
-        background: none !important;
-    <?php endif; ?>
+    body {
+    background-image: url('<?php echo $backgroundFile; ?>') !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
     height: 100vh; /* Ensure the body takes full height */
     margin: 0; /* Remove default margin */
     }
