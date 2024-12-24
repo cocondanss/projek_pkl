@@ -7,10 +7,6 @@
 
 require 'function.php';
 
-// Mengambil path gambar latar belakang dari file konfigurasi
-$backgroundFile = file_get_contents('config/background.txt');
-$backgroundType = file_get_contents('config/background_type.txt');
-
 
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
@@ -154,17 +150,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     <link rel="stylesheet" href="css/styleLP2.css">
     <style>
     body {
-    <?php if ($backgroundType == 'image'): ?>
-        background-image: url('<?php echo $backgroundFile; ?>') !important;
-        background-size: cover !important;
-        background-repeat: no-repeat !important;
-        background-position: center center !important;
-    <?php elseif ($backgroundType == 'video'): ?>
-        background: none !important;
-    <?php endif; ?>
+    background-image: url('images/contoh.jpg') !important;
+    background-size: cover !important;
+    background-repeat: no-repeat !important;
+    background-position: center center !important;
     height: 100vh; /* Ensure the body takes full height */
     margin: 0; /* Remove default margin */
-    }
+    
+}
     </style>
     <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -173,11 +166,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
     <link href="css/styleLP2.css" rel="stylesheet"/>
 </head>
 <body>
-    <?php if ($backgroundType == 'video'): ?>
-        <video autoplay muted loop id="backgroundVideo" style="position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%;">
-            <source src="<?php echo $backgroundFile; ?>" type="video/mp4">
-        </video>
-    <?php endif; ?>
     <div class="container-index" style="max-width: 100%;">
         <div class="header-index">
             <div class="container-button">
