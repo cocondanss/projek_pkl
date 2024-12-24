@@ -7,6 +7,10 @@
 
 require 'function.php';
 
+// Mengambil path gambar latar belakang dari file konfigurasi
+$backgroundFile = file_get_contents('config/background.txt');
+$backgroundType = file_get_contents('config/background_type.txt');
+
 
 /**
  * Fungsi untuk menerapkan voucher pada harga produk
@@ -134,8 +138,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST['voucher_code'])) {
 // }
 
 // // Mengambil pengaturan latar belakang
-$backgroundFile = file_get_contents('config/background.txt');
-$backgroundType = file_get_contents('config/background_type.txt');
+// $background_type = getSetting('background_type');
+// $background_file = getSetting('background_file');
 
 // Debugging
 // echo "Background Type: " . $background_type . "<br>";
@@ -150,10 +154,14 @@ $backgroundType = file_get_contents('config/background_type.txt');
     <link rel="stylesheet" href="css/styleLP2.css">
     <style>
     body {
-    background-image: url('<?php echo $backgroundFile; ?>') !important;
-    background-size: cover !important;
-    background-repeat: no-repeat !important;
-    background-position: center center !important;
+    <?php if ($backgroundType == 'image'): ?>
+        background-image: url('<?php echo $backgroundFile; ?>') !important;
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        background-position: center center !important;
+    <?php elseif ($backgroundType == 'video'): ?>
+        background: none !important;
+    <?php endif; ?>
     height: 100vh; /* Ensure the body takes full height */
     margin: 0; /* Remove default margin */
     }
@@ -165,6 +173,11 @@ $backgroundType = file_get_contents('config/background_type.txt');
     <link href="css/styleLP2.css" rel="stylesheet"/>
 </head>
 <body>
+    <?php if ($backgroundType == 'video'): ?>
+        <video autoplay muted loop id="backgroundVideo" style="position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%;">
+            <source src="<?php echo $backgroundFile; ?>" type="video/mp4">
+        </video>
+    <?php endif; ?>
     <div class="container-index" style="max-width: 100%;">
         <div class="header-index">
             <div class="container-button">

@@ -103,20 +103,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Handle form submission for updating background settings
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_background'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_background'])) {
     $backgroundType = $_POST['background_type'];
-    $target_dir = "uploads/";
+    $backgroundFile = $_FILES['background_file'];
 
-    if (isset($_FILES['background_file']) && $_FILES['background_file']['error'] == UPLOAD_ERR_OK) {
-        $target_file = $target_dir . basename($_FILES["background_file"]["name"]);
-        if (move_uploaded_file($_FILES["background_file"]["tmp_name"], $target_file)) {
-            // Simpan path gambar ke file konfigurasi atau database
-            file_put_contents('config/background.txt', $target_file);
-            file_put_contents('config/background_type.txt', $backgroundType);
-            echo "The file ". htmlspecialchars(basename($_FILES["background_file"]["name"])). " has been uploaded.";
+    // Update background type setting
+    if (updateSetting('background_type', $backgroundType)) {
+        echo "Background type updated successfully.";
+    } else {
+        echo "Failed to update background type.";
+    }
+
+    // Handle file upload
+    if ($backgroundFile['error'] == UPLOAD_ERR_OK) {
+        $uploadDir = 'uploads/';
+        $uploadFile = $uploadDir . basename($backgroundFile['name']);
+        if (move_uploaded_file($backgroundFile['tmp_name'], $uploadFile)) {
+            if (updateSetting('background_file', $uploadFile)) {
+                echo "Background file uploaded and updated successfully.";
+            } else {
+                echo "Failed to update background file.";
+            }
         } else {
-            echo "Sorry, there was an error uploading your file.";
+            echo "Failed to upload background file.";
         }
+    } else {
+        echo "No file uploaded or upload error.";
     }
 }
 
@@ -139,7 +151,23 @@ if (!function_exists('saveSetting')) {
     }
 }
 
-// ...existing code...
+// Handle form submission for updating background settings
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_background'])) {
+    $backgroundType = $_POST['background_type'];
+    $target_dir = "images/";
+
+    if (isset($_FILES['background_file']) && $_FILES['background_file']['error'] == UPLOAD_ERR_OK) {
+        $target_file = $target_dir . basename($_FILES["background_file"]["name"]);
+        if (move_uploaded_file($_FILES["background_file"]["tmp_name"], $target_file)) {
+            // Simpan path gambar ke file konfigurasi atau database
+            file_put_contents('config/background.txt', $target_file);
+            file_put_contents('config/background_type.txt', $backgroundType);
+            echo "The file ". htmlspecialchars(basename($_FILES["background_file"]["name"])). " has been uploaded.";
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
+}
 ?>
 
 <html lang="en">
