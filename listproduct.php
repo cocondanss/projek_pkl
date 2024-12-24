@@ -169,11 +169,6 @@ $backgroundType = file_get_contents('config/background_type.txt');
     <link href="css/styleLP2.css" rel="stylesheet"/>
 </head>
 <body>
-<?php if ($backgroundType == 'video'): ?>
-        <video autoplay muted loop id="backgroundVideo" style="position: fixed; right: 0; bottom: 0; min-width: 100%; min-height: 100%;">
-            <source src="<?php echo $backgroundFile; ?>" type="video/mp4">
-        </video>
-    <?php endif; ?>
     <div class="container-index" style="max-width: 100%;">
         <div class="header-index">
             <div class="container-button">
