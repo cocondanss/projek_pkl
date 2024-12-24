@@ -320,7 +320,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_background'])) 
                                 <div class="mb-3">
                                     <label class="form-label">Background Type</label>
                                     <select name="background_type" class="form-control">
-                                        <option value="image" <?php echo getSetting('background_type') == 'image' ? 'selected' : ''; ?>>Image</option>
+                                        <option value="image" <?php echo getSetting('background_type') == 'image' ? 'selected' : ''; ?>>Image/gif</option>
                                         <option value="video" <?php echo getSetting('background_type') == 'video' ? 'selected' : ''; ?>>Video</option>
                                     </select>
                                 </div>
