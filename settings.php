@@ -318,13 +318,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_background'])) 
                         <div class="card-body">
                             <form method="POST" enctype="multipart/form-data">
                                 <div class="mb-3">
-                                    <label class="form-label">Background Type</label>
-                                    <select name="background_type" class="form-control">
-                                        <option value="image" <?php echo getSetting('background_type') == 'image' ? 'selected' : ''; ?>>Image</option>
-                                        <option value="video" <?php echo getSetting('background_type') == 'video' ? 'selected' : ''; ?>>Video</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
                                     <label class="form-label">Upload Background File</label>
                                     <input type="file" class="form-control" name="background_file" accept="image/*,video/*">
                                 </div>
