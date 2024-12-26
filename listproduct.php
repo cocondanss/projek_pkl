@@ -32,7 +32,7 @@ function applyVoucher($voucherCode, $price) {
         // Jika voucher sekali pakai, cek apakah sudah digunakan
         if ($row['one_time_use'] == 1 && $row['used_at'] !== null) {
             // Tambahkan buffer waktu 30 detik untuk memastikan transaksi bisa selesai
-            $bufferTime = 10; // dalam detik
+            $bufferTime = 20; // dalam detik
             $usedTime = strtotime($row['used_at']);
             
             if (time() - $usedTime > $bufferTime) {
