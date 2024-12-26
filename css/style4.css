@@ -10718,20 +10718,3 @@ body {
 .sb-sidenav-light .sb-sidenav-footer {
   background-color: #e9ecef;
 }
-/* Contoh warna untuk produk dengan ID 1 */
-.product-color-1 {
-  background-color: #f8d7da; /* Warna merah muda */
-}
-
-/* Contoh warna untuk produk dengan ID 2 */
-.product-color-2 {
-  background-color: #d4edda; /* Warna hijau muda */
-}
-
-/* Contoh warna untuk produk dengan ID 3 */
-.product-color-3 {
-  background-color: #d1ecf1; /* Warna biru muda */
-}
-
-/* Tambahkan lebih banyak kelas sesuai dengan ID produk */
-

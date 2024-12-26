@@ -148,7 +148,7 @@ $backgroundType = file_get_contents('config/background_type.txt');
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link rel="stylesheet" href="css/style4.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/styleLP2.css">
+    <link rel="stylesheet"  href="css/styleLP2.css">
 </head>
 <body>
 <?php if ($backgroundType == 'video'): ?>
@@ -173,7 +173,7 @@ $backgroundType = file_get_contents('config/background_type.txt');
                         $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
                     ?>
                         <div class="product product-<?php echo $item['id']; ?>" data-product-id="<?php echo $item['id']; ?>" style="">
-                            <div class="card-body product-color-<?php echo $item['id']; ?>"> 
+                            <div class="card-body"> 
                                 <h2><?php echo htmlspecialchars($item['name']); ?></h2>
                                 <div class="price-container">
                                     <?php if ($discountedPrice < $originalPrice): ?>
