@@ -51,7 +51,7 @@ body.background-video video {
 }
 
 .product {
-   
+    /* background-color: #2b2d42; */
     color: white;
     border-radius: 30px;
     padding: 25px;
@@ -720,7 +720,6 @@ h1.product-list-title {
     margin-top: 15px;
     text-align: center;
 }
-
 /* Contoh warna untuk produk dengan ID 1 */
 .product-color-1 {
     background-color: #f8d7da; /* Warna merah muda */
@@ -737,3 +736,4 @@ h1.product-list-title {
 }
 
 /* Tambahkan lebih banyak kelas sesuai dengan ID produk */
+
