@@ -173,7 +173,7 @@ $backgroundType = file_get_contents('config/background_type.txt');
                         $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
                     ?>
                         <div class="product product-<?php echo $item['id']; ?>" data-product-id="<?php echo $item['id']; ?>" style="">
-                            <div class="card-body"> 
+                            <div class="card-body product-color-<?php echo $item['id']; ?>"> 
                                 <h2><?php echo htmlspecialchars($item['name']); ?></h2>
                                 <div class="price-container">
                                     <?php if ($discountedPrice < $originalPrice): ?>
