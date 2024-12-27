@@ -143,46 +143,6 @@ $backgroundType = file_get_contents('config/background_type.txt');
     height: 100vh; /* Ensure the body takes full height */
     margin: 0; /* Remove default margin */
     }
-    /* Contoh warna untuk produk dengan ID 1 */
-    /* .product-color-1 {
-        background-color:rgb(255, 0, 21);
-        color: white;
-        border-radius: 30px;
-        padding: 25px;
-        margin: 20px;
-        width: 400px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column; 
-    } */
-
-    /* Contoh warna untuk produk dengan ID 2 */
-    .product-color-2 {
-        background-color: #d4edda; 
-        color: white;
-        border-radius: 30px;
-        padding: 25px;
-        margin: 20px;
-        width: 400px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Contoh warna untuk produk dengan ID 3 */
-    .product-color-3 {
-        background-color: #d1ecf1;
-        color: white;
-        border-radius: 30px;
-        padding: 25px;
-        margin: 20px;
-        width: 400px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Tambahkan lebih banyak kelas sesuai dengan ID produk */
     </style>
     <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
