@@ -143,6 +143,22 @@ $backgroundType = file_get_contents('config/background_type.txt');
     height: 100vh; /* Ensure the body takes full height */
     margin: 0; /* Remove default margin */
     }
+    /* Contoh warna untuk produk dengan ID 1 */
+    .product-color-1 {
+        background-color: #f8d7da; /* Warna merah muda */
+    }
+
+    /* Contoh warna untuk produk dengan ID 2 */
+    .product-color-2 {
+        background-color: #d4edda; /* Warna hijau muda */
+    }
+
+    /* Contoh warna untuk produk dengan ID 3 */
+    .product-color-3 {
+        background-color: #d1ecf1; /* Warna biru muda */
+    }
+
+    /* Tambahkan lebih banyak kelas sesuai dengan ID produk */
     </style>
     <link href='https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700' rel='stylesheet'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -173,7 +189,7 @@ $backgroundType = file_get_contents('config/background_type.txt');
                         $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
                     ?>
                         <div class="product product-<?php echo $item['id']; ?>" data-product-id="<?php echo $item['id']; ?>" style="">
-                            <div class="card-body"> 
+                            <div class="card-body product-color-<?php echo $item['id']; ?>"> 
                                 <h2><?php echo htmlspecialchars($item['name']); ?></h2>
                                 <div class="price-container">
                                     <?php if ($discountedPrice < $originalPrice): ?>
