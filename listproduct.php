@@ -145,7 +145,7 @@ $backgroundType = file_get_contents('config/background_type.txt');
     }
     /* Contoh warna untuk produk dengan ID 1 */
     .product-color-1 {
-        background-color: #f8d7da; /* Warna merah muda */
+        background-color:rgb(255, 0, 21); /* Warna merah muda */
     }
 
     /* Contoh warna untuk produk dengan ID 2 */
