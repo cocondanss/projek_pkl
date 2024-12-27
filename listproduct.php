@@ -145,17 +145,41 @@ $backgroundType = file_get_contents('config/background_type.txt');
     }
     /* Contoh warna untuk produk dengan ID 1 */
     .product-color-1 {
-        background-color:rgb(255, 0, 21); /* Warna merah muda */
+        background-color:rgb(255, 0, 21);
+        color: white;
+        border-radius: 30px;
+        padding: 25px;
+        margin: 20px;
+        width: 400px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column; 
     }
 
     /* Contoh warna untuk produk dengan ID 2 */
     .product-color-2 {
-        background-color: #d4edda; /* Warna hijau muda */
+        background-color: #d4edda; 
+        color: white;
+        border-radius: 30px;
+        padding: 25px;
+        margin: 20px;
+        width: 400px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
     }
 
     /* Contoh warna untuk produk dengan ID 3 */
     .product-color-3 {
-        background-color: #d1ecf1; /* Warna biru muda */
+        background-color: #d1ecf1;
+        color: white;
+        border-radius: 30px;
+        padding: 25px;
+        margin: 20px;
+        width: 400px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
     }
 
     /* Tambahkan lebih banyak kelas sesuai dengan ID produk */
