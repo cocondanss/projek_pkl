@@ -144,7 +144,7 @@ $backgroundType = file_get_contents('config/background_type.txt');
     margin: 0; /* Remove default margin */
     }
     /* Contoh warna untuk produk dengan ID 1 */
-    .product-color-1 {
+    /* .product-color-1 {
         background-color:rgb(255, 0, 21);
         color: white;
         border-radius: 30px;
@@ -154,7 +154,7 @@ $backgroundType = file_get_contents('config/background_type.txt');
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         display: flex;
         flex-direction: column; 
-    }
+    } */
 
     /* Contoh warna untuk produk dengan ID 2 */
     .product-color-2 {
