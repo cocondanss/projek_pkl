@@ -51,7 +51,7 @@ body.background-video video {
 }
 
 .product {
-    background-color: #0015ff;
+    background-color: #0015ff !important;
     color: white;
     border-radius: 30px;
     padding: 25px;
