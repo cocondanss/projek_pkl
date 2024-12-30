@@ -681,7 +681,6 @@ h1.product-list-title {
 .progress-bar.bg-warning {
     background-color: #ffc107; /* Warna warning Bootstrap */
 }
-
 .progress-bar-striped {
     background-image: linear-gradient(
         45deg,
