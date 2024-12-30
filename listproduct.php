@@ -129,7 +129,7 @@ $backgroundType = file_get_contents('config/background_type.txt');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List Product</title>
-    <link rel="stylesheet" href="css/styleLP2.css">
+    <!-- <link rel="stylesheet" href="css/styleLP2.css"> -->
     <style>
     body {
     <?php if ($backgroundType == 'image'): ?>
