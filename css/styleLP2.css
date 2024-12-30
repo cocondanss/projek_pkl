@@ -720,3 +720,20 @@ h1.product-list-title {
     margin-top: 15px;
     text-align: center;
 }
+/* Contoh warna untuk produk dengan ID 1 */
+.product-color-1 {
+    background-color: #9c000d; /* Warna merah muda */
+}
+
+/* Contoh warna untuk produk dengan ID 2 */
+.product-color-2 {
+    background-color: #a7c5ae; /* Warna hijau muda */
+}
+
+/* Contoh warna untuk produk dengan ID 3 */
+.product-color-3 {
+    background-color: #d1ecf1; /* Warna biru muda */
+}
+
+/* Tambahkan lebih banyak kelas sesuai dengan ID produk */
+
