@@ -161,7 +161,7 @@ $backgroundType = file_get_contents('config/background_type.txt');
             <div class="container-button">
                 <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#keypadModal"
                     style="position: absolute; right: 30px; top: 30px; background: none; border: none;">
-                    <i class="fas fa-lock" style="font-size: 20px; color: rgb(255, 255, 255);"></i>
+                    <i class="fas fa-lock" style="font-size: 20px; color: rgba(255, 255, 255, 0.83);"></i>
                 </button>
             </div>
             <div class="product-container">
