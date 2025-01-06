@@ -211,55 +211,7 @@ body.background-video video {
     padding: 20px;
 }
 
-.header-index,
-.product-list {
-    /* padding: 20px; */
-    background: transparent;
-}
 
-.header-index h1 {
-    margin: 0;
-    font-size: 24px;
-}
-
-.product-list {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: column;
-    width: 25%;
-    background: transparent;
-}
-
-
-.product {
-    width: 100%;
-    margin: 1%;
-    padding: 20px;
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
-
-.product h2 {
-    font-size: 20px;
-    margin: 0 0 10px;
-}
-
-.product p {
-    margin: 5px 0;
-}
-
-.product button {
-    padding: 10px 20px;
-    background: #002855;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-.product button:hover {
-    background: #001a40;
-}
 
 #qrcode iframe {
     border: none;
