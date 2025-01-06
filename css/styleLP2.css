@@ -50,7 +50,7 @@ body.background-video video {
     background: transparent;
 }
 
-.product {
+/* .product {
     background-color: #2b2d42;
     color: white;
     border-radius: 30px;
@@ -60,7 +60,7 @@ body.background-video video {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-}
+} */
 
 .product h2 {
     margin-top: 0;
