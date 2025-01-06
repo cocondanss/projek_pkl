@@ -41,17 +41,12 @@ body.background-video video {
     padding-top: 20px;
     background: transparent;
 }
-.header-index h1 {
-    margin: 0;
-    font-size: 24px;
-}
+
 .product-list {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    flex-direction: column;
     gap: 20px;
-    width: 25%;
     background: transparent;
 }
 
@@ -65,7 +60,6 @@ body.background-video video {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    border: 1px solid #ddd;
 }
 
 .product h2 {
