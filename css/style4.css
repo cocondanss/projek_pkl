@@ -231,7 +231,7 @@ body.background-video video {
 }
 
 
-.product {
+/* .product {
     width: 100%;
     margin: 1%;
     padding: 20px;
@@ -259,7 +259,7 @@ body.background-video video {
 
 .product button:hover {
     background: #001a40;
-}
+} */
 
 #qrcode iframe {
     border: none;
