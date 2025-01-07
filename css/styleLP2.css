@@ -50,6 +50,7 @@ body.background-video video {
     background: transparent;
 }
 
+/* Default product style */
 .product {
     background-color: #2b2d42;
     color: white;
@@ -88,6 +89,21 @@ body.background-video video {
 .product button:hover {
     background-color: #b0b0b0;
 }
+
+/* Custom styles for specific products */
+.product-1 {
+    background-color: #ff0000; /* Red */
+}
+
+.product-2 {
+    background-color: #00ff00; /* Green */
+}
+
+.product-3 {
+    background-color: #0000ff; /* Blue */
+}
+
+/* Add more styles for other products as needed */
 
 #modal-price {
     font-size: 24px;

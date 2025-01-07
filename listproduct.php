@@ -169,7 +169,7 @@ $backgroundType = file_get_contents('config/background_type.txt');
                         // Hitung harga diskon berdasarkan voucher yang ada
                         $discountedPrice = applyVoucher($voucherCode, $originalPrice);             
                     ?>
-                        <div class="product product-<?php echo $item['id']; ?>" data-product-id="<?php echo $item['id']; ?>" style="">
+                        <div class="product product-<?php echo $item['id']; ?>" data-product-id="<?php echo $item['id']; ?>">
                             <div class="card-body"> 
                                 <h2><?php echo htmlspecialchars($item['name']); ?></h2>
                                 <div class="price-container">
