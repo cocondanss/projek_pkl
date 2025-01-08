@@ -92,7 +92,7 @@ body.background-video video {
 
 /*product 1 */
 .product-1 {
-    background-color: #a93f3f; 
+    background-color: #2b2d42; 
     color: white;
     border-radius: 30px;
     padding: 25px;
@@ -113,7 +113,7 @@ body.background-video video {
 
 .product-1 button {
     margin-left: 73%;
-    background-color: #d3d3d3;
+    background-color: #2b2d42;
     color: #2b2d42;
     border: none;
     padding: 10px 20px;
@@ -130,7 +130,7 @@ body.background-video video {
 }
 /* product 2*/
 .product-2 {
-    background-color: #66b566;
+    background-color: #2b2d42;
     color: white;
     border-radius: 30px;
     padding: 25px;
