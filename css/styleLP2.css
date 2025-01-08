@@ -344,7 +344,7 @@ body.background-video video {
     border: none;
     overflow: hidden;
     max-width: 500px;
-    max-height: 500px;
+    max-height: 600px;
     position: absolute;
     left: 150px;
 }
