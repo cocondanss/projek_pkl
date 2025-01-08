@@ -343,7 +343,7 @@ body.background-video video {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     border: none;
     overflow: hidden;
-    max-width: 450px;
+    max-width: 500px;
     position: absolute;
     left: 150px;
 }
