@@ -258,7 +258,7 @@ function cancel_transaction($data) {
         $stmt = $db->prepare("SELECT * FROM transaksi WHERE order_id = ?");
         $stmt->execute([$data['transaction_id']]);
         $transaction = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         if ($transaction) {
             $_SESSION['cancelled_transaction'] = [
                 'transaction_id' => $transaction['order_id'],
@@ -289,10 +289,23 @@ function midtrans_notification() {
 
     try {
         $notif = new \Midtrans\Notification();
-        
-        // Update status transaksi berdasarkan notifikasi
-        $stmt = $db->prepare("UPDATE transaksi SET status = ? WHERE order_id = ?");
-        $stmt->execute([$notif->transaction_status, $notif->order_id]);
+
+        $transaction = $notif->transaction_status;
+        $order_id = $notif->order_id;
+
+        if ($transaction == 'settlement') {
+            // Update status transaksi menjadi 'settlement'
+            $stmt = $db->prepare("UPDATE transaksi SET status = 'settlement' WHERE order_id = ?");
+            $stmt->execute([$order_id]);
+        } else if ($transaction == 'cancel') {
+            // Update status transaksi menjadi 'cancelled'
+            $stmt = $db->prepare("UPDATE transaksi SET status = 'cancelled' WHERE order_id = ?");
+            $stmt->execute([$order_id]);
+        } else if ($transaction == 'expire') {
+            // Update status transaksi menjadi 'expire' hanya jika status sebelumnya bukan 'cancelled'
+            $stmt = $db->prepare("UPDATE transaksi SET status = 'expire' WHERE order_id = ? AND status != 'cancelled'");
+            $stmt->execute([$order_id]);
+        }
 
         echo json_encode(["success" => true]);
     } catch (Exception $e) {
